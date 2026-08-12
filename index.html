@@ -73,7 +73,6 @@
   .brand{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500;
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
   .tright{display:flex;align-items:center;gap:9px}
-  .clock{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:500;white-space:nowrap}
   .gear{background:var(--surface2);border:1px solid var(--border);color:var(--text);width:38px;height:38px;
     border-radius:12px;font-size:16px;cursor:pointer;display:grid;place-items:center;transition:transform .12s,background .15s}
   .gear:active{transform:scale(.9);background:var(--border)}
@@ -348,6 +347,8 @@
   .cell .mk.mkP.mid{left:50%;top:50%;bottom:auto;transform:translate(-50%,-50%)}
   .cell .mk.mkP.two-a{left:34%}
   .cell .mk.mkP.two-b{left:66%}
+  .cell .mk.mkD{left:1px;top:50%;transform:translateY(-50%);z-index:4;
+    filter:drop-shadow(0 1px 2px rgba(0,0,0,.75))}
   .cell .mk.mkH{right:0px;bottom:-1px;opacity:1;
     filter:drop-shadow(0 1px 3px rgba(0,0,0,.6)) drop-shadow(0 0 5px rgba(255,214,140,.5))}
   .cell .mk.mkH-s{right:0}
@@ -569,6 +570,31 @@
   .ac-txt b{color:#fff;font-size:16px;font-weight:800}
   .ac-txt i{color:rgba(255,255,255,.82);font-size:12px;font-style:normal;margin-top:2px}
   .ac-go{color:rgba(255,255,255,.9);font-size:22px;line-height:1}
+  .rg-add{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:16px}
+  .rg-kind{display:flex;gap:7px;margin-bottom:12px}
+  .rg-kind button{flex:1;background:var(--bg);border:1px solid var(--border);color:var(--muted);
+    border-radius:10px;padding:9px 4px;font-size:12px;font-weight:700;cursor:pointer}
+  .rg-kind button.on[data-kind="holF"]{background:var(--fiaza);color:#2a1f04;border-color:transparent}
+  .rg-kind button.on[data-kind="holS"]{background:var(--shaad);color:#fff;border-color:transparent}
+  .rg-kind button.on[data-kind="per"]{background:#ff5f8a;color:#fff;border-color:transparent}
+  .rg-dates{display:flex;gap:9px;margin-bottom:12px}
+  .rg-dates label{flex:1;display:flex;flex-direction:column;gap:5px;font-size:11px;color:var(--muted);font-weight:600}
+  .rg-dates input{background:var(--bg);border:1px solid var(--border);color:var(--text);
+    border-radius:10px;padding:10px;font-size:14px}
+  .rg-save{width:100%;background:var(--accent);border:none;color:var(--ink);border-radius:12px;
+    padding:13px;font-size:14px;font-weight:800;cursor:pointer}
+  .rg-msg{font-size:12px;margin-top:9px;display:none;color:#37c07a;font-weight:600}
+  .rg-msg.on{display:block}
+  .rg-msg.bad{color:#ff7a7a}
+  .rg-head{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+    font-weight:700;margin:18px 0 9px}
+  .rg-row{display:flex;align-items:center;gap:11px;background:var(--surface);border:1px solid var(--border);
+    border-radius:12px;padding:11px 13px;margin-bottom:8px}
+  .rg-dot{width:10px;height:10px;border-radius:50%;flex:none}
+  .rg-txt{flex:1;font-size:13.5px;color:var(--text);font-weight:600}
+  .rg-sub{font-size:11.5px;color:var(--muted);font-weight:400;margin-top:2px}
+  .rg-del{background:none;border:none;color:#c9b3d8;font-size:20px;cursor:pointer;padding:0 2px}
+  .rg-empty{text-align:center;color:var(--muted);font-size:13px;padding:22px 10px;line-height:1.6}
   .foldhead{width:100%;display:flex;align-items:center;gap:10px;background:none;border:none;
     padding:0 0 2px;cursor:pointer;text-align:left}
   .foldhead span{flex:1;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
@@ -959,7 +985,6 @@
   <div class="brand" id="brand-names">Shaad &amp; Fiaza</div>
   <div class="since" id="since"></div>
   <div class="tright">
-    <div class="clock" id="clock"></div>
     <button class="nudgebtn" id="nudge" aria-label="Send a nudge">&#9829;</button>
     <button class="gear" id="openSettings" aria-label="Settings">&#9881;</button>
   </div>
@@ -1125,13 +1150,6 @@
     <div class="who">Busy / has plans<span class="tag">blocks out the day</span></div>
     <div class="toggle busytog"><button data-busy="shaad">Shaad</button><button data-busy="fiaza">Fiaza</button></div>
   </div>
-  <div class="prow">
-    <div class="who">Away / on holiday<span class="tag">whole trip</span></div>
-    <div class="toggle holtog"><button data-hol="shaad">Shaad</button><button data-hol="fiaza">Fiaza</button></div>
-    <div class="holrange" id="hol-range" style="display:none">
-      <label>until</label><input type="date" id="hol-until"><button id="hol-fill">Fill</button>
-    </div>
-  </div>
   <div class="notewrap">
     <label>Note for this day</label>
     <textarea id="sh-note" rows="3" placeholder="e.g. date night, leave booked, mum visiting"></textarea>
@@ -1220,6 +1238,24 @@
   <button class="reset" id="w-delete" style="margin-top:10px;display:none">Delete</button>
 </div>
 
+<div class="panel" id="ranges">
+  <div class="phead"><h2>Holidays</h2><button class="x" id="closeRanges">&#10005;</button></div>
+  <div class="rg-add">
+    <div class="rg-kind" id="rg-kind">
+      <button data-kind="holF" class="on">Fiaza away</button>
+      <button data-kind="holS">Shaad away</button>
+      <button data-kind="per">Period</button>
+    </div>
+    <div class="rg-dates">
+      <label>From<input type="date" id="rg-from"></label>
+      <label>To<input type="date" id="rg-to"></label>
+    </div>
+    <button class="rg-save" id="rg-save">Add to calendar</button>
+    <div class="rg-msg" id="rg-msg"></div>
+  </div>
+  <div id="rg-list"></div>
+</div>
+
 <div class="panel" id="healthday">
   <div class="phead"><h2 id="hd-title">Day</h2><button class="x" id="closeHealthDay">&#10005;</button></div>
   <div class="hd-summary" id="hd-summary"></div>
@@ -1264,6 +1300,7 @@
       <button class="morebtn" id="go-us">Us &mdash; things to do together &rsaquo;</button>
       <button class="morebtn" id="go-stats">Countdowns &amp; counters &rsaquo;</button>
       <button class="morebtn" id="go-special">Special days &rsaquo;</button>
+      <button class="morebtn" id="go-ranges">Holidays &rsaquo;</button>
       <button class="morebtn" id="go-phone">This phone: <b id="more-owner"></b> &rsaquo;</button>
     </div>
   </div>
@@ -1962,6 +1999,11 @@ const STAR_SVG='<svg viewBox="0 0 48 60" width="17" height="21" style="display:b
   +'<path class="st-s3" d="M41 42 L42.1 45.1 L45 46.2 L42.1 47.3 L41 50.4 L39.9 47.3 L37 46.2 L39.9 45.1 Z"/>'
   +'<path class="st-s4" d="M8 44 L9.1 47.1 L12 48.2 L9.1 49.3 L8 52.4 L6.9 49.3 L4 48.2 L6.9 47.1 Z"/>'
   +'</g></svg>';
+const DROP_SVG='<svg viewBox="0 0 24 30" width="13" height="16" style="display:block" aria-hidden="true">'
+  +'<path d="M12 2C12 2 4 12.5 4 19 4 24 7.6 27.5 12 27.5S20 24 20 19C20 12.5 12 2 12 2z" '
+    +'fill="#ff5f8a" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/>'
+  +'<path d="M9.6 19.4c0 2 1.2 3.4 2.9 3.7" fill="none" stroke="rgba(255,255,255,.75)" stroke-width="1.6" stroke-linecap="round"/>'
+  +'</svg>';
 const PALM_SVG='<svg viewBox="0 0 48 60" width="22" height="27" style="display:block" aria-hidden="true">'
   +'<ellipse class="plm-glow" cx="24" cy="26" rx="22" ry="22" fill="url(#plmA)"/>'
   +'<ellipse cx="24" cy="55" rx="15" ry="4" fill="#e8c07a" opacity=".35"/>'
@@ -2007,7 +2049,8 @@ function mkNode(kind){
     _mkTpl.bolt=mk('mkS',BOLT_SVG);_mkTpl.flame=mk('mkF',FLAME_SVG);
     const st=document.createElement('span');st.className='star pstar';st.innerHTML=STAR_SVG;_mkTpl.star=st;
     _mkTpl.payS=mk('mkP',PAY_NOTE_SVG);_mkTpl.payF=mk('mkP',PAY_COIN_SVG);
-    _mkTpl.palmS=mk('mkH mkH-s',PALM_SVG);_mkTpl.palmF=mk('mkH mkH-f',PALM_SVG);}
+    _mkTpl.palmS=mk('mkH mkH-s',PALM_SVG);_mkTpl.palmF=mk('mkH mkH-f',PALM_SVG);
+    _mkTpl.drop=mk('mkD',DROP_SVG);}
   return _mkTpl[kind].cloneNode(true);
 }
 function cellClass(k){const s=shaadStatus(k)==='working',w=fiazaStatus(k)==='working';if(!s&&!w)return'bo';if(s&&w)return'bw';if(s&&!w)return'sh';return'wf';}
@@ -2157,6 +2200,7 @@ function renderMonth(){
     else if(cls==='bo'){const st=document.createElement('span');st.className='star';st.textContent='\u2605';c.appendChild(st);}
     if(noteObj(k)){const nd=document.createElement('span');nd.className='ndot';c.appendChild(nd);}
     if(o&&o.gym){const gd=document.createElement('span');gd.className='gdot';c.appendChild(gd);}
+    if(o&&o.per)c.appendChild(mkNode('drop'));
     if(o&&(o.holS||o.holF))c.appendChild(mkNode(o.holS?'palmS':'palmF'));
     if(o&&o.busyS)c.appendChild(mkNode('bolt'));
     if(o&&o.busyF)c.appendChild(mkNode('flame'));
@@ -3238,7 +3282,7 @@ function openSheet(k){sheetKey=k;
     c.innerHTML='<span class="sd" style="background:'+(o.e.color||'var(--accent)')+'"></span><div class="st"><div>'+esc(o.e.name)+'</div>'+noteHtml+'</div>';
     c.onclick=()=>{closeSheet();openTracker(o.i);};eb.appendChild(c);});}
   else eb.style.display='none';
-  syncSpecial();syncMet();syncHol();syncPlan();syncGym();syncBusy();syncNoteBy();syncToggles();setElapsed(k);scrim.classList.add('on');sheet.classList.add('on');
+  syncSpecial();syncMet();syncPlan();syncGym();syncBusy();syncNoteBy();syncToggles();setElapsed(k);scrim.classList.add('on');sheet.classList.add('on');
 }
 function closeSheet(){
   try{const n=$('sh-note');if(document.activeElement===n)n.blur();}catch(e){}  // fires the save while the date is still set
@@ -3283,7 +3327,7 @@ function syncToggles(){const k=sheetKey;const sv=shaadStatus(k),fv=fiazaStatus(k
   document.querySelectorAll('#sheet [data-p]').forEach(t=>{const p=t.dataset.p,val=p==='shaad'?sv:fv;
     t.querySelectorAll('button').forEach(b=>{b.className=b.dataset.v===val?(val==='working'?'act-work':'act-off'):'';});});
   $('reset').disabled=!(overrides[k]&&(overrides[k].shaad||overrides[k].fiaza));}
-function cleanupKey(k){if(overrides[k]&&!overrides[k].shaad&&!overrides[k].fiaza&&!overrides[k].note&&!overrides[k].special&&!overrides[k].met&&!overrides[k].gym&&!overrides[k].plan&&!overrides[k].busyS&&!overrides[k].busyF&&!overrides[k].holS&&!overrides[k].holF)delete overrides[k];}
+function cleanupKey(k){if(overrides[k]&&!overrides[k].shaad&&!overrides[k].fiaza&&!overrides[k].note&&!overrides[k].special&&!overrides[k].met&&!overrides[k].gym&&!overrides[k].plan&&!overrides[k].busyS&&!overrides[k].busyF&&!overrides[k].holS&&!overrides[k].holF&&!overrides[k].per)delete overrides[k];}
 document.querySelectorAll('#sheet [data-p] button').forEach(b=>{b.onclick=async()=>{
   const p=b.parentElement.dataset.p,v=b.dataset.v,k=sheetKey;
   const auto=p==='shaad'?shaadAuto(k):fiazaAuto(k);
@@ -3326,36 +3370,6 @@ $('sh-gym').onclick=async()=>{const k=sheetKey;overrides[k]=overrides[k]||{};
   cleanupKey(k);await saveOverrides();syncGym();renderMonth();if(view==='stats')renderStats();
   if(on)setTimeout(()=>burstAt(cellEl(k),'\u2726','#ff3ea5',6),40);};
 /* ---- away / on holiday (per person, like busy) ---- */
-function syncHol(){const o=overrides[sheetKey]||{};
-  document.querySelectorAll('#sheet [data-hol]').forEach(b=>{
-    const flag=b.dataset.hol==='shaad'?'holS':'holF';b.className=o[flag]?'on':'';});
-  const any=!!(o.holS||o.holF);
-  const r=$('hol-range'); if(r){r.style.display=any?'flex':'none';
-    if(any&&!$('hol-until').value)$('hol-until').value=sheetKey;}
-}
-document.querySelectorAll('#sheet [data-hol]').forEach(b=>{b.onclick=async()=>{const k=sheetKey;
-  const flag=b.dataset.hol==='shaad'?'holS':'holF';
-  overrides[k]=overrides[k]||{};
-  if(overrides[k][flag])delete overrides[k][flag];else overrides[k][flag]=true;
-  cleanupKey(k);await saveOverrides();syncHol();renderMonth();
-};});
-/* mark every day from this one up to the chosen date - holidays span days */
-$('hol-fill').onclick=async()=>{
-  const k=sheetKey, o=overrides[k]||{};
-  const flags=[];if(o.holS)flags.push('holS');if(o.holF)flags.push('holF');
-  if(!flags.length)return;
-  const endStr=$('hol-until').value; if(!endStr)return;
-  let start=keyToUTC(k), end=keyToUTC(endStr);
-  if(end<start){const t=start;start=end;end=t;}
-  const days=Math.round((end-start)/DAY);
-  if(days<0||days>400)return;                       // sanity guard
-  for(let i=0;i<=days;i++){
-    const key=utcKey(start+i*DAY);
-    overrides[key]=overrides[key]||{};
-    flags.forEach(f=>{overrides[key][f]=true;});
-  }
-  await saveOverrides();syncHol();renderMonth();
-};
 function syncBusy(){const o=overrides[sheetKey]||{};
   document.querySelectorAll('#sheet [data-busy]').forEach(b=>{
     const flag=b.dataset.busy==='shaad'?'busyS':'busyF';b.className=o[flag]?'on':'';});}
@@ -3429,6 +3443,7 @@ function syncPanelFlag(){
   const covered = $('settings').classList.contains('on')
     || $('logpanel').classList.contains('on')
     || $('healthday').classList.contains('on')
+    || $('ranges').classList.contains('on')
     || $('ms').classList.contains('on')
     || $('env').classList.contains('on')
     || $('rsx').classList.contains('on');
@@ -3538,6 +3553,71 @@ $('go-stats').onclick=()=>{closeSettings();setView('stats');};
 $('go-special').onclick=()=>{closeSettings();setView('special');};
 $('go-phone').onclick=()=>{showPhoneSec=true;syncOwnerUI();
   const s=$('sec-phone');if(s)s.scrollIntoView({behavior:'smooth',block:'center'});};
+
+/* ---- holidays & cycle: added as date ranges, not day by day ---- */
+let rgKind='holF';
+const RG_META={holF:{lbl:()=>S.fiazaName+' away',col:'#f5c542'},
+               holS:{lbl:()=>S.shaadName+' away',col:'#a882f5'},
+               per:{lbl:()=>'Period',col:'#ff5f8a'}};
+function rgRuns(flag){                       // group consecutive days into runs
+  const keys=Object.keys(overrides).filter(k=>/^\d{4}-\d{2}-\d{2}$/.test(k)&&overrides[k][flag]).sort();
+  const runs=[];
+  keys.forEach(k=>{
+    const last=runs[runs.length-1];
+    if(last&&keyToUTC(k)-keyToUTC(last.end)===DAY)last.end=k;
+    else runs.push({start:k,end:k});
+  });
+  return runs.reverse();
+}
+function renderRanges(){
+  const box=$('rg-list');box.innerHTML='';
+  let any=false;
+  ['per','holF','holS'].forEach(flag=>{
+    const runs=rgRuns(flag);if(!runs.length)return;
+    any=true;
+    const hd=document.createElement('div');hd.className='rg-head';hd.textContent=RG_META[flag].lbl();box.appendChild(hd);
+    runs.forEach(r=>{
+      const days=Math.round((keyToUTC(r.end)-keyToUTC(r.start))/DAY)+1;
+      const row=document.createElement('div');row.className='rg-row';
+      row.innerHTML='<span class="rg-dot" style="background:'+RG_META[flag].col+'"></span>'
+        +'<div class="rg-txt">'+(r.start===r.end?fmtShort(r.start):fmtShort(r.start)+' \u2192 '+fmtShort(r.end))
+        +'<div class="rg-sub">'+days+' day'+(days===1?'':'s')+'</div></div>';
+      const del=document.createElement('button');del.className='rg-del';del.innerHTML='&times;';
+      del.onclick=async()=>{
+        for(let t=keyToUTC(r.start);t<=keyToUTC(r.end);t+=DAY){
+          const k=utcKey(t);if(overrides[k]){delete overrides[k][flag];cleanupKey(k);}
+        }
+        await saveOverrides();renderMonth();renderRanges();
+      };
+      row.appendChild(del);box.appendChild(row);
+    });
+  });
+  if(!any)box.innerHTML='<div class="rg-empty">Nothing added yet.<br>Pick what it is, choose the dates, and it\u2019ll show on the calendar.</div>';
+}
+function openRanges(){
+  const t=todayKey;$('rg-from').value=t;$('rg-to').value=t;
+  $('rg-msg').className='rg-msg';renderRanges();
+  $('ranges').classList.add('on');syncPanelFlag();
+}
+function closeRanges(){$('ranges').classList.remove('on');syncPanelFlag();}
+$('closeRanges').onclick=closeRanges;
+document.querySelectorAll('#rg-kind button').forEach(b=>{b.onclick=()=>{
+  rgKind=b.dataset.kind;
+  document.querySelectorAll('#rg-kind button').forEach(x=>x.classList.toggle('on',x.dataset.kind===rgKind));};});
+$('rg-save').onclick=async()=>{
+  const msg=$('rg-msg');
+  const a=$('rg-from').value,b=$('rg-to').value;
+  if(!a||!b){msg.className='rg-msg on bad';msg.textContent='Pick both dates.';return;}
+  let s=keyToUTC(a),e=keyToUTC(b);
+  if(e<s){const t=s;s=e;e=t;}
+  const days=Math.round((e-s)/DAY)+1;
+  if(days>200){msg.className='rg-msg on bad';msg.textContent='That range is too long.';return;}
+  for(let t=s;t<=e;t+=DAY){const k=utcKey(t);overrides[k]=overrides[k]||{};overrides[k][rgKind]=true;}
+  await saveOverrides();renderMonth();renderRanges();
+  msg.className='rg-msg on';msg.textContent='Added '+days+' day'+(days===1?'':'s')+' to the calendar.';
+};
+$('go-ranges').onclick=()=>{closeSettings();openRanges();};
+
 document.querySelectorAll('.foldhead').forEach(b=>{
   b.onclick=()=>{const s=$(b.dataset.fold);if(s)s.classList.toggle('open');};
 });
@@ -3613,7 +3693,7 @@ $('saveSettings').onclick=async()=>{
 };
 
 /* ---------- keep today fresh ---------- */
-function tick(){const t=computeToday();if(t!==todayKey){todayKey=t;$('clock').textContent=fmtShort(todayKey);renderAll();checkStarDay();}}
+function tick(){const t=computeToday();if(t!==todayKey){todayKey=t;renderAll();checkStarDay();}}
 setInterval(tick,60000);
 setInterval(()=>{if(!document.hidden)paintPresence();},15000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick();});
@@ -3900,7 +3980,6 @@ $('lock-input').addEventListener('keydown',e=>{if(e.key==='Enter')tryUnlock();})
   todayKey=computeToday();
   const[cy,cm]=todayKey.split('-').map(Number);viewY=cy;viewM=cm-1;
   applyNames();
-  $('clock').textContent=fmtShort(todayKey);
   renderSince();renderCountdown();renderEvents();renderMonth();
   setView('cal');requestAnimationFrame(moveInd);
   setTimeout(()=>{const d=Math.round((keyToUTC(todayKey)-keyToUTC(S.togetherSince))/DAY);
