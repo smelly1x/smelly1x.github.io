@@ -291,7 +291,10 @@
   .dow{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:7px}
   .dow span{text-align:center;font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.03em}
   .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
-  .cell{position:relative;aspect-ratio:1;border-radius:13px;border:1px solid transparent;overflow:hidden;
+  /* perf: hold marker animations while the grid is being dragged - that's when
+     jank is felt. Resumes the moment the gesture ends. */
+  #grid.dragging .cell *,#grid.dragging .cell::before,#grid.dragging .cell::after{animation-play-state:paused!important}
+  .cell{contain:layout paint style;position:relative;aspect-ratio:1;border-radius:13px;border:1px solid transparent;overflow:hidden;
     display:flex;align-items:flex-start;justify-content:flex-end;padding:6px;cursor:pointer;
     font-size:14px;font-weight:600;color:#fff;transition:transform .1s,filter .15s;
     text-shadow:0 1px 2px rgba(0,0,0,.45)}
@@ -555,6 +558,26 @@
   #view-special{display:none}
   #view-us{display:none}
   .backbtn{background:none;border:none;color:var(--muted);font-size:14px;font-weight:600;padding:4px 0 12px;cursor:pointer}
+  .appcard{width:100%;display:flex;align-items:center;gap:13px;margin-bottom:16px;cursor:pointer;
+    border:none;border-radius:16px;padding:15px 15px;text-align:left;
+    background:linear-gradient(135deg,#7b3cf0 0%,#b44cf0 45%,#ff5c9d 100%);
+    box-shadow:0 12px 26px -12px rgba(180,76,240,.85);transition:transform .12s,filter .15s}
+  .appcard:active{transform:scale(.985);filter:brightness(.95)}
+  .ac-icon{flex:none;width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+    background:rgba(255,255,255,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
+  .ac-txt{flex:1;display:flex;flex-direction:column;justify-content:center;line-height:1.25}
+  .ac-txt b{color:#fff;font-size:16px;font-weight:800}
+  .ac-txt i{color:rgba(255,255,255,.82);font-size:12px;font-style:normal;margin-top:2px}
+  .ac-go{color:rgba(255,255,255,.9);font-size:22px;line-height:1}
+  .foldhead{width:100%;display:flex;align-items:center;gap:10px;background:none;border:none;
+    padding:0 0 2px;cursor:pointer;text-align:left}
+  .foldhead span{flex:1;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--muted);font-weight:700}
+  .foldchev{color:var(--muted);font-size:18px;font-style:normal;line-height:1;
+    transition:transform .2s ease;display:inline-block}
+  .psec.fold.open .foldchev{transform:rotate(90deg)}
+  .psec.fold .foldbody{display:none;padding-top:12px}
+  .psec.fold.open .foldbody{display:block}
   .morebtn{width:100%;text-align:left;background:var(--bg);border:1px solid var(--border);color:var(--text);
     border-radius:12px;padding:13px 14px;font-size:14px;font-weight:600;margin-bottom:9px;cursor:pointer}
   .morebtn:active{background:var(--surface2)}
@@ -1212,11 +1235,8 @@
 <div class="panel" id="settings">
   <div class="phead"><h2>Settings</h2><button class="x" id="closeSettings">&#10005;</button></div>
 
-  <div class="psec">
-    <h4>You two</h4>
-    <div class="fld"><label>Your name</label><input id="s-shaadName"></div>
-    <div class="fld"><label>Partner's name</label><input id="s-fiazaName"></div>
-    <div class="fld"><label>Talking since (day counter)</label><input type="date" id="s-since"></div>
+  <div class="psec" id="sec-phone">
+    <h4>This phone</h4>
     <div class="fld" id="fld-owner"><label>This phone belongs to</label>
       <div class="ownpick" id="s-owner"><button data-o="shaad">Shaad</button><button data-o="fiaza">Fiaza</button></div>
       <div class="hint">New notes you add on this phone get tagged with this name automatically.</div>
@@ -1224,24 +1244,33 @@
     <div class="fld ownset" id="fld-owner-set" style="display:none">This phone: <b id="owner-name"></b> <button class="linkbtn" id="owner-change">change</button></div>
   </div>
 
-  <div class="psec">
-    <h4>Seeing each other</h4>
-    <div class="herorow" id="hero-extra"></div>
+  <button class="appcard" id="go-health">
+    <span class="ac-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="26" height="26">
+        <path d="M3 13h3.2l1.6-4.2 2.6 8 2.1-5.4 1.3 1.6H21" fill="none"
+              stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+    <span class="ac-txt"><b>Health app</b></span>
+    <span class="ac-go">&rsaquo;</span>
+  </button>
+
+  <div class="psec fold" id="sec-more">
+    <button class="foldhead" data-fold="sec-more"><span>More</span><i class="foldchev">&rsaquo;</i></button>
+    <div class="foldbody">
+      <button class="morebtn" id="go-hundred" style="display:none">Day 100 note &rsaquo;</button>
+      <button class="morebtn" id="go-reasons">70 reasons why I love you &rsaquo;</button>
+      <button class="morebtn" id="go-up">Upcoming days off &rsaquo;</button>
+      <button class="morebtn" id="go-us">Us &mdash; things to do together &rsaquo;</button>
+      <button class="morebtn" id="go-stats">Countdowns &amp; counters &rsaquo;</button>
+      <button class="morebtn" id="go-special">Special days &rsaquo;</button>
+      <button class="morebtn" id="go-phone">This phone: <b id="more-owner"></b> &rsaquo;</button>
+    </div>
   </div>
 
-  <div class="psec">
-    <h4>More</h4>
-    <button class="morebtn" id="go-hundred" style="display:none">Day 100 note &rsaquo;</button>
-    <button class="morebtn" id="go-reasons">70 reasons why I love you &rsaquo;</button>
-    <button class="morebtn" id="go-up">Upcoming days off &rsaquo;</button>
-    <button class="morebtn" id="go-us">Us &mdash; things to do together &rsaquo;</button>
-    <button class="morebtn" id="go-stats">Countdowns &amp; counters &rsaquo;</button>
-    <button class="morebtn" id="go-special">Special days &rsaquo;</button>
-    <button class="morebtn" id="go-health">Health &amp; fitness &rsaquo;</button>
-  </div>
-
-  <div class="psec">
-    <h4>Backup</h4>
+  <div class="psec fold" id="sec-backup">
+    <button class="foldhead" data-fold="sec-backup"><span>Backup</span><i class="foldchev">&rsaquo;</i></button>
+    <div class="foldbody">
     <div class="bk-nudge" id="bk-nudge" style="display:none"></div>
     <div class="hint" id="bk-last">Last backup: never</div>
     <button class="morebtn" id="bk-export">&#8595; Export everything to a file</button>
@@ -1253,6 +1282,7 @@
         <button class="bk-yes" id="bk-yes">Restore &amp; replace</button>
         <button class="bk-no" id="bk-no">Cancel</button>
       </div>
+    </div>
     </div>
   </div>
 
@@ -1308,7 +1338,11 @@ try{lastNudgeSeen=+(localStorage.getItem('lastNudgeSeen')||0);}catch(e){}
 /* ---------- storage: local cache + firebase ---------- */
 async function sget(k){try{if(window.storage){const r=await window.storage.get(k);return r&&r.value?r.value:null;}return localStorage.getItem(k);}catch(e){return null;}}
 async function sset(k,v){try{if(window.storage){await window.storage.set(k,v);return;}localStorage.setItem(k,v);}catch(e){}}
-function migrateOverrides(){for(const k in overrides){if(overrides[k].wife){overrides[k].fiaza=overrides[k].wife;delete overrides[k].wife;}}}
+function migrateOverrides(){
+  // strip phantom days created by the old note bug (key 'null'/'undefined')
+  Object.keys(overrides).forEach(k=>{
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(k))delete overrides[k];
+  });for(const k in overrides){if(overrides[k].wife){overrides[k].fiaza=overrides[k].wife;delete overrides[k].wife;}}}
 async function loadAll(){
   const s=await sget('settings'); if(s){try{S={...DEFAULTS,...JSON.parse(s)};}catch(e){}}
   const o=await sget('overrides'); if(o){try{overrides=JSON.parse(o);migrateOverrides();lastGoodOverrideCount=Object.keys(overrides).length;}catch(e){}}
@@ -3206,7 +3240,9 @@ function openSheet(k){sheetKey=k;
   else eb.style.display='none';
   syncSpecial();syncMet();syncHol();syncPlan();syncGym();syncBusy();syncNoteBy();syncToggles();setElapsed(k);scrim.classList.add('on');sheet.classList.add('on');
 }
-function closeSheet(){sheet.classList.remove('on');sheetKey=null;updateScrim();}
+function closeSheet(){
+  try{const n=$('sh-note');if(document.activeElement===n)n.blur();}catch(e){}  // fires the save while the date is still set
+  sheet.classList.remove('on');sheetKey=null;updateScrim();}
 scrim.onclick=()=>{closeSheet();closeTracker();closeSpecialAdd();closeWish();closeMoneyEntry();closeActuals();};
 
 /* swipe a sheet down to dismiss */
@@ -3256,6 +3292,9 @@ document.querySelectorAll('#sheet [data-p] button').forEach(b=>{b.onclick=async(
   cleanupKey(k);await saveOverrides();
   $('sh-state').textContent=stateWords(k);syncToggles();renderMonth();renderCountdown();};});
 async function saveNote(){const k=sheetKey,val=$('sh-note').value.trim();
+  // the textarea saves on blur, and closing the sheet used to clear the date
+  // first - which wrote the note to a day called "null" and lost it
+  if(!k||!/^\d{4}-\d{2}-\d{2}$/.test(k))return;
   overrides[k]=overrides[k]||{};
   if(val){overrides[k].note=noteBy?{text:val,by:noteBy}:{text:val};}else{delete overrides[k].note;}
   cleanupKey(k);await saveOverrides();renderMonth();renderEvents();}
@@ -3368,13 +3407,19 @@ function readDays(cid){return[...$(cid).querySelectorAll('.dbtn.on')].map(b=>+b.
 let tmpOwner=null;
 function syncOwnerPick(){[...$('s-owner').children].forEach(b=>b.className=b.dataset.o===tmpOwner?'on':'');}
 [...$('s-owner').children].forEach(b=>{b.onclick=()=>{tmpOwner=b.dataset.o;syncOwnerPick();};});
+let showPhoneSec=false;   // revealed only when they choose to change it
 function syncOwnerUI(){const set=!!deviceOwner;
-  $('fld-owner').style.display=set?'none':'';
+  $('fld-owner').style.display=set&&!showPhoneSec?'none':'';
   $('fld-owner-set').style.display=set?'':'none';
-  if(set)$('owner-name').textContent=deviceOwner==='shaad'?S.shaadName:S.fiazaName;}
+  if(set)$('owner-name').textContent=deviceOwner==='shaad'?S.shaadName:S.fiazaName;
+  // once this phone is claimed it never needs changing - tuck the whole
+  // section away and leave a way back into it under More
+  const sec=$('sec-phone'), more=$('go-phone'), mo=$('more-owner');
+  if(sec)sec.style.display=(set&&!showPhoneSec)?'none':'';
+  if(more)more.style.display=set?'':'none';
+  if(mo&&set)mo.textContent=deviceOwner==='shaad'?S.shaadName:S.fiazaName;}
 function openSettings(){
-  $('s-shaadName').value=S.shaadName;$('s-fiazaName').value=S.fiazaName;$('s-since').value=S.togetherSince;
-  tmpOwner=deviceOwner;syncOwnerPick();syncOwnerUI();updateBackupUI();renderNextSee();
+  showPhoneSec=false;tmpOwner=deviceOwner;syncOwnerPick();syncOwnerUI();updateBackupUI();renderNextSee();
   $('go-hundred').style.display=daysTogether()>=MILESTONE?'':'none';
   $('settings').classList.add('on');syncPanelFlag();
 }
@@ -3491,6 +3536,11 @@ $('go-up').onclick=()=>{closeSettings();setView('up');};
 $('go-us').onclick=()=>{closeSettings();setView('us');};
 $('go-stats').onclick=()=>{closeSettings();setView('stats');};
 $('go-special').onclick=()=>{closeSettings();setView('special');};
+$('go-phone').onclick=()=>{showPhoneSec=true;syncOwnerUI();
+  const s=$('sec-phone');if(s)s.scrollIntoView({behavior:'smooth',block:'center'});};
+document.querySelectorAll('.foldhead').forEach(b=>{
+  b.onclick=()=>{const s=$(b.dataset.fold);if(s)s.classList.toggle('open');};
+});
 $('go-health').onclick=()=>{closeSettings();setView('health');};
 
 /* ---------- backup (export / import) ---------- */
@@ -3503,6 +3553,8 @@ function updateBackupUI(){
     const days=Math.floor((Date.now()-dt.getTime())/86400000);
     if(days>=30){nudge.style.display='';nudge.textContent='It\u2019s been '+days+' days \u2014 time to back up.';}else nudge.style.display='none';
   }else{lastEl.textContent='Last backup: never';nudge.style.display='';nudge.textContent='No backup yet \u2014 tap Export to make one.';}
+  // a due/never-taken backup shouldn't hide behind a collapsed section
+  try{if(nudge.style.display===''&&$('sec-backup'))$('sec-backup').classList.add('open');}catch(e){}
 }
 $('bk-export').onclick=()=>{
   const payload={app:'shaad-x-fiaza',version:1,exported:new Date().toISOString(),
@@ -3531,7 +3583,7 @@ $('bk-file').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new Fil
 $('bk-no').onclick=()=>{$('bk-confirm').style.display='none';pendingImport=null;$('bk-yes').style.display='';};
 $('bk-yes').onclick=async()=>{if(!pendingImport)return;const d=pendingImport;
   if(d.settings)S={...DEFAULTS,...d.settings};
-  overrides=d.overrides||{};events=Array.isArray(d.events)?d.events:[];wishes=Array.isArray(d.wishes)?d.wishes:[];bumpEarn();
+  overrides=d.overrides||{};migrateOverrides();events=Array.isArray(d.events)?d.events:[];wishes=Array.isArray(d.wishes)?d.wishes:[];bumpEarn();
   if(d.health&&typeof d.health==='object'){health=d.health;bumpHealth();}
   if(d.money&&typeof d.money==='object'){money={...money,...d.money};
     money.entries=Array.isArray(money.entries)?money.entries:[];money.actuals=money.actuals||{};bumpEarn();}
@@ -3547,9 +3599,10 @@ $('bk-yes').onclick=async()=>{if(!pendingImport)return;const d=pendingImport;
   applyNames();renderAll();$('bk-confirm').style.display='none';pendingImport=null;$('bk-last').textContent='Restored from backup just now';
 };
 $('saveSettings').onclick=async()=>{
-  S.shaadName=$('s-shaadName').value.trim()||'Shaad';
-  S.fiazaName=$('s-fiazaName').value.trim()||'Fiaza';
-  if($('s-since').value)S.togetherSince=$('s-since').value;
+  // names and 'talking since' are set already and no longer editable here -
+  // keep whatever is stored rather than reading inputs that don't exist
+  S.shaadName=S.shaadName||'Shaad';
+  S.fiazaName=S.fiazaName||'Fiaza';
   const ownerChanged=(deviceOwner!==tmpOwner);
   if(ownerChanged)stopPresence();
   deviceOwner=tmpOwner;try{if(deviceOwner)localStorage.setItem('deviceOwner',deviceOwner);}catch(e){}
