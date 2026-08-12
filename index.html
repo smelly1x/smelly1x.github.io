@@ -930,6 +930,13 @@
   .h-status.on{display:block;color:var(--muted)}
   .h-status.ok{display:block;color:#37c07a;font-weight:600}
   .h-status.bad{display:block;color:#ff6b6b;font-weight:600}
+  .nutcard .nut-row{display:flex;gap:8px;margin-top:11px}
+  .nut-m{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+    background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:11px 4px}
+  .nut-n{font-size:17px;font-weight:800;line-height:1}
+  .nut-l{font-size:10.5px;color:var(--muted);font-weight:600}
+  .nut-bar{display:flex;height:7px;border-radius:5px;overflow:hidden;margin-top:11px;background:var(--bg)}
+  .nut-bar i{display:block;height:100%}
   .cin-row{display:flex;gap:8px;margin-top:10px}
   .cin-row input[type=date]{flex:1.2;min-width:0}
   .cin-row input{background:var(--bg);border:1px solid var(--border);color:var(--text);
@@ -1591,17 +1598,21 @@ async function importHealthZip(file,onProgress){
       try{
         const data=JSON.parse(text);
         const list=Array.isArray(data)?data:(Array.isArray(data.foods)?data.foods:[]);
+        const pick=(...v)=>{for(const x of v){const n=+x;if(x!==undefined&&x!==null&&x!==''&&!isNaN(n))return n;}return NaN;};
         list.forEach(it=>{
           if(!it||typeof it!=='object')return;
           const d=dayOf(it.logDate||it.LogDate||it.date||it.Date||it.dateTime||it.DateTime||'');
+          if(!d)return;
           const lf=it.loggedFood||it.LoggedFood||{};
-          const nv=it.nutritionalValues||it.NutritionalValues||{};
-          const cal=+(lf.calories!==undefined?lf.calories:
-                      lf.Calories!==undefined?lf.Calories:
-                      nv.calories!==undefined?nv.calories:
-                      it.calories!==undefined?it.calories:
-                      it.Calories);
-          if(d&&!isNaN(cal))sums[d+'|calin']=(sums[d+'|calin']||0)+cal;
+          const nv=it.nutritionalValues||it.NutritionalValues||lf.nutritionalValues||lf.NutritionalValues||{};
+          const cal=pick(lf.calories,lf.Calories,nv.calories,nv.Calories,it.calories,it.Calories);
+          const fat=pick(nv.fat,nv.Fat,lf.fat,lf.Fat,it.fat,it.Fat);
+          const carb=pick(nv.carbs,nv.Carbs,nv.carbohydrates,nv.Carbohydrates,lf.carbs,lf.Carbs,it.carbs,it.Carbs);
+          const pro=pick(nv.protein,nv.Protein,lf.protein,lf.Protein,it.protein,it.Protein);
+          if(!isNaN(cal)) sums[d+'|calin']=(sums[d+'|calin']||0)+cal;
+          if(!isNaN(fat)) sums[d+'|fat']  =(sums[d+'|fat']  ||0)+fat;
+          if(!isNaN(carb))sums[d+'|carb'] =(sums[d+'|carb'] ||0)+carb;
+          if(!isNaN(pro)) sums[d+'|pro']  =(sums[d+'|pro']  ||0)+pro;
         });
       }catch(err){}
     }
@@ -1637,7 +1648,10 @@ async function importHealthZip(file,onProgress){
     if(f==='dist')put(d,'km',Math.round(v/100)/10);
     if(f==='cals')put(d,'cals',Math.round(v));
     if(f==='azm')put(d,'azm',Math.round(v));
-    if(f==='calin')put(d,'calIn',Math.round(v));});
+    if(f==='calin')put(d,'calIn',Math.round(v));
+    if(f==='fat')put(d,'fat',Math.round(v));
+    if(f==='carb')put(d,'carb',Math.round(v));
+    if(f==='pro')put(d,'pro',Math.round(v));});
   Object.keys(hrAgg).forEach(d=>{const a=hrAgg[d];
     put(d,'hrAvg',Math.round(a.sum/a.n));put(d,'hrMin',Math.round(a.min));put(d,'hrMax',Math.round(a.max));});
 
@@ -1735,6 +1749,9 @@ function openHealthDay(k){
               ['Resting heart rate',H.rhr!=null?H.rhr+' bpm':null,'rhr'],
               ['Heart rate range',(H.hrMin!=null&&H.hrMax!=null)?H.hrMin+'\u2013'+H.hrMax+' bpm':null,null],
               ['Calories eaten',H.calIn!=null?H.calIn.toLocaleString():null,'calIn'],
+              ['Protein',H.pro!=null?H.pro+'g':null,'pro'],
+              ['Carbs',H.carb!=null?H.carb+'g':null,'carb'],
+              ['Fat',H.fat!=null?H.fat+'g':null,'fat'],
               ['Calories burned',H.cals!=null?H.cals.toLocaleString():null,'cals'],
               ['Weight',H.kg!=null?H.kg+' kg':null,null]].filter(r=>r[1]!=null);
   $('hd-rows').innerHTML=rows.map(r=>{
@@ -1745,7 +1762,7 @@ function openHealthDay(k){
           const up=diff>0;
           // direction matters: a lower resting heart rate is the favourable way.
           // calories and weight stay neutral - no good/bad implied.
-          const neutral=(r[2]==='cals'||r[2]==='calIn');
+          const neutral=(r[2]==='cals'||r[2]==='calIn'||r[2]==='pro'||r[2]==='carb'||r[2]==='fat');
           const lowerBetter=(r[2]==='rhr');
           const good=lowerBetter?!up:up;
           const cls=neutral?'flat':(good?'up':'down');
@@ -1786,7 +1803,10 @@ const H_METRICS={
   rhr:  {lbl:'Resting heart rate', col:'#ff5c7a', unit:' bpm', fmt:v=>Math.round(v)},
   cals: {lbl:'Calories', col:'#ff7a45', unit:'',    fmt:v=>Math.round(v).toLocaleString()},
   km:   {lbl:'Distance', col:'#4db8ff', unit:' km', fmt:v=>Math.round(v*10)/10},
-  calIn:{lbl:'Calories eaten', col:'#ffd166', unit:'', fmt:v=>Math.round(v).toLocaleString()}
+  calIn:{lbl:'Calories eaten', col:'#ffd166', unit:'', fmt:v=>Math.round(v).toLocaleString()},
+  pro:  {lbl:'Protein', col:'#5ad1a0', unit:'g', fmt:v=>Math.round(v)},
+  carb: {lbl:'Carbs',   col:'#7fb2ff', unit:'g', fmt:v=>Math.round(v)},
+  fat:  {lbl:'Fat',     col:'#ff9f68', unit:'g', fmt:v=>Math.round(v)}
 };
 /* an actual chart you can scrub with your finger */
 function chartCard(field){
@@ -1902,13 +1922,37 @@ function renderHealth(){
       healthMsg=null;renderHealth();
     };
 
+    // what you ate, pulled straight from the export
+    if(H.calIn!=null||H.pro!=null||H.carb!=null||H.fat!=null){
+      const nut=document.createElement('div');nut.className='hcard nutcard';
+      const macro=(lbl,v,unit,col)=>'<div class="nut-m"><span class="nut-n" style="color:'+col+'">'
+        +(v!=null?v+unit:'\u2014')+'</span><span class="nut-l">'+lbl+'</span></div>';
+      // rough split of where the calories came from, if we have the macros
+      let bar='';
+      if(H.pro!=null&&H.carb!=null&&H.fat!=null){
+        const pc=H.pro*4,cc=H.carb*4,fc=H.fat*9,tot=pc+cc+fc;
+        if(tot>0)bar='<div class="nut-bar">'
+          +'<i style="width:'+(pc/tot*100)+'%;background:#5ad1a0"></i>'
+          +'<i style="width:'+(cc/tot*100)+'%;background:#7fb2ff"></i>'
+          +'<i style="width:'+(fc/tot*100)+'%;background:#ff9f68"></i></div>';
+      }
+      nut.innerHTML='<div class="h-lbl">Nutrition</div>'
+        +'<div class="nut-row">'
+          +macro('kcal',H.calIn!=null?H.calIn.toLocaleString():null,'','#ffd166')
+          +macro('protein',H.pro,'g','#5ad1a0')
+          +macro('carbs',H.carb,'g','#7fb2ff')
+          +macro('fat',H.fat,'g','#ff9f68')
+        +'</div>'+bar;
+      box.appendChild(nut);
+    }
+
     const tiles=[['Steps',H.steps!=null?H.steps.toLocaleString():'\u2014','#37c07a'],
                  ['Sleep score',H.sleep!=null?H.sleep:'\u2014','#8f7bff'],
                  ['Resting HR',H.rhr!=null?H.rhr+' bpm':'\u2014','#ff5c7a'],
                  ['Calories',H.cals!=null?H.cals.toLocaleString():'\u2014','#ff7a45'],
                  ['Distance',H.km!=null?H.km+' km':'\u2014','#4db8ff'],
                  ['Deep sleep',H.deep!=null?H.deep+'m':'\u2014','#6fd3ff'],
-                 ['Calories eaten',H.calIn!=null?H.calIn.toLocaleString():'\u2014','#ffd166']];
+];
     const grid=document.createElement('div');grid.className='hgrid';
     tiles.forEach(([lbl,val,col])=>{const t=document.createElement('div');t.className='htile';
       t.innerHTML='<div class="ht-lbl">'+lbl+'</div><div class="ht-val" style="color:'+col+'">'+val+'</div>';
@@ -1928,6 +1972,9 @@ function renderHealth(){
                 ['rhr','Resting HR','#ff5c7a',v=>Math.round(v)+' bpm'],
                 ['deep','Deep sleep','#6fd3ff',v=>Math.round(v)+' min'],
                 ['calIn','Calories eaten','#ffd166',v=>Math.round(v).toLocaleString()],
+                ['pro','Protein','#5ad1a0',v=>Math.round(v)+'g'],
+                ['carb','Carbs','#7fb2ff',v=>Math.round(v)+'g'],
+                ['fat','Fat','#ff9f68',v=>Math.round(v)+'g'],
                 ['cals','Calories burned','#ff7a45',v=>Math.round(v).toLocaleString()],
                 ['km','Distance','#4db8ff',v=>(Math.round(v*10)/10)+' km']];
     let avgHead='<div class="havg-head"><span>Averages</span><i>7 days</i><i>30 days</i></div>';
@@ -1960,7 +2007,7 @@ function renderHealth(){
     const hint=document.createElement('div');hint.className='hc-hint';
     hint.textContent='Touch and drag a chart to read any day';box.appendChild(hint);
 
-    ['steps','sleep','rhr','calIn','cals','km'].forEach(f=>{const c=chartCard(f);if(c)box.appendChild(c);});
+    ['steps','sleep','rhr','calIn','pro','carb','fat','cals','km'].forEach(f=>{const c=chartCard(f);if(c)box.appendChild(c);});
 
     const lh=document.createElement('div');lh.className='h-day';lh.textContent='Day by day \u00b7 tap for detail';box.appendChild(lh);
     days.slice().reverse().slice(0,60).forEach(d=>{const x=health[d]||{};
