@@ -293,6 +293,18 @@
   /* perf: hold marker animations while the grid is being dragged - that's when
      jank is felt. Resumes the moment the gesture ends. */
   #grid.dragging .cell *,#grid.dragging .cell::before,#grid.dragging .cell::after{animation-play-state:paused!important}
+  /* perf: a month with lots of markers can run 200+ concurrent animations, which
+     drops frames. When it gets busy we keep every marker's main animation and
+     only stand down the decorative extras (sparks, embers, drips, falling leaves).
+     Quiet months are untouched, so most of the time you see the full thing. */
+  #grid.lite .st-s1,#grid.lite .st-s2,#grid.lite .st-s3,#grid.lite .st-s4,
+  #grid.lite .ck-e1,#grid.lite .ck-e2,#grid.lite .ck-e3,
+  #grid.lite .ck-e4,#grid.lite .ck-e5,#grid.lite .ck-e6,
+  #grid.lite .ck-lick1,#grid.lite .ck-lick2,
+  #grid.lite .dr-d1,#grid.lite .dr-d2,#grid.lite .dr-d3,
+  #grid.lite .plm-l1,#grid.lite .plm-l2,#grid.lite .plm-l3,
+  #grid.lite .py-p1,#grid.lite .py-p2,#grid.lite .py-p3,#grid.lite .py-p4,
+  #grid.lite .py-k1,#grid.lite .py-k2{animation:none!important}
   .cell{contain:layout paint style;position:relative;aspect-ratio:1;border-radius:13px;border:1px solid transparent;overflow:hidden;
     display:flex;align-items:flex-start;justify-content:flex-end;padding:6px;cursor:pointer;
     font-size:14px;font-weight:600;color:#fff;transition:transform .1s,filter .15s;
@@ -494,6 +506,9 @@
   .log-row.f .log-who{color:#f5c542}
   .log-time{font-size:13px;color:var(--text);font-variant-numeric:tabular-nums}
   .log-empty{text-align:center;color:var(--muted);font-size:13px;padding:26px 10px;line-height:1.6}
+  .shanni{margin:5px 0 1px;font-size:13.5px;font-weight:800;
+    background:linear-gradient(90deg,#ff8fd0,#b47cff,#6fd3ff);-webkit-background-clip:text;
+    background-clip:text;color:transparent}
   .sh-elapsed{margin-top:7px;display:flex;flex-direction:column;gap:2px}
   .sh-elapsed .sh-rel{font-size:14px;font-weight:700;color:var(--text);letter-spacing:.1px}
   .sh-elapsed .sh-day{font-size:12.5px;font-weight:600;color:var(--muted);letter-spacing:.2px}
@@ -915,6 +930,16 @@
   .h-status.on{display:block;color:var(--muted)}
   .h-status.ok{display:block;color:#37c07a;font-weight:600}
   .h-status.bad{display:block;color:#ff6b6b;font-weight:600}
+  .cin-row{display:flex;gap:8px;margin-top:10px}
+  .cin-row input[type=date]{flex:1.2;min-width:0}
+  .cin-row input{background:var(--bg);border:1px solid var(--border);color:var(--text);
+    border-radius:11px;padding:11px;font-size:15px;min-width:0}
+  .cin-row input[type=number]{flex:1}
+  .cin-row button{background:#ffd166;border:none;color:#3a2c05;border-radius:11px;
+    padding:0 18px;font-size:14px;font-weight:800;cursor:pointer}
+  .cin-msg{font-size:12px;margin-top:8px;display:none;color:#37c07a;font-weight:600}
+  .cin-msg.on{display:block}
+  .cin-msg.bad{color:#ff7a7a}
   .h-empty{text-align:center;color:var(--muted);font-size:13px;padding:26px 10px;line-height:1.7}
   .h-day{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
     font-weight:700;margin:18px 0 9px}
@@ -974,6 +999,13 @@
   .hd-row span{flex:1;color:var(--muted);font-size:13.5px}
   .hd-row b{color:var(--text);font-size:15px;font-weight:800}
   .hd-cmp{font-size:10.5px;font-weight:700;font-style:normal;width:54px;text-align:right}
+  .hd-edit{display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--border);
+    border-radius:14px;padding:12px 14px;margin-top:12px}
+  .hd-edit span{flex:1;color:var(--muted);font-size:13.5px}
+  .hd-edit input{width:92px;background:var(--bg);border:1px solid var(--border);color:var(--text);
+    border-radius:10px;padding:9px;font-size:15px;text-align:right}
+  .hd-edit button{background:#ffd166;border:none;color:#3a2c05;border-radius:10px;padding:9px 14px;
+    font-size:13px;font-weight:800;cursor:pointer}
   .hd-cmp.up{color:#37c07a}.hd-cmp.down{color:#ff7a7a}.hd-cmp.flat{color:var(--muted)}
   #view-health{display:none}
 </style>
@@ -1149,6 +1181,7 @@
     <div class="grab"></div>
     <h3 id="sh-date"></h3>
     <div class="state" id="sh-state"></div>
+    <div class="shanni" id="sh-anni" style="display:none"></div>
     <div class="sh-elapsed" id="sh-elapsed"></div>
   </div>
   <div class="shevs" id="sh-events"></div>
@@ -1535,8 +1568,10 @@ async function importHealthZip(file,onProgress){
   const zip=await unzip(file);
   const want=e=>{
     const n=e.name;
+    // fitbit exports food logs as JSON (Global Export Data/food_logs-0.json)
+    if(/food_log/i.test(n)&&/\.json$/i.test(n))return true;
     if(!/\.csv$/i.test(n))return false;
-    return /steps_|distance_|\/calories_2|heart_rate_2|daily_resting_heart_rate|daily_respiratory_rate|daily_oxygen_saturation|daily_heart_rate_variability|sleep_score|Active Zone Minutes|weight\.csv/i.test(n);
+    return /steps_|distance_|\/calories_2|heart_rate_2|daily_resting_heart_rate|daily_respiratory_rate|daily_oxygen_saturation|daily_heart_rate_variability|sleep_score|Active Zone Minutes|weight\.csv|food_log|nutrition|Foods\//i.test(n);
   };
   const files=zip.entries.filter(want);
   const D={};
@@ -1549,7 +1584,28 @@ async function importHealthZip(file,onProgress){
     const n=e.name;
     const small=!/steps_|distance_|\/calories_2|heart_rate_2|Active Zone Minutes/i.test(n);
     const rows=small?csvRows(text):null;
-    if(/steps_/i.test(n))       csvScan(text,['timestamp','steps'],c=>{const d=c[0]&&c[0].slice(0,10);const v=+c[1];if(d&&!isNaN(v))sums[d+'|steps']=(sums[d+'|steps']||0)+v;});
+    if(/food_log/i.test(n)&&/\.json$/i.test(n)){
+      /* shape varies: entries usually carry a logDate/dateTime and either
+         calories directly or nested under loggedFood/nutritionalValues.
+         Written tolerantly so a slightly different export still works. */
+      try{
+        const data=JSON.parse(text);
+        const list=Array.isArray(data)?data:(Array.isArray(data.foods)?data.foods:[]);
+        list.forEach(it=>{
+          if(!it||typeof it!=='object')return;
+          const d=dayOf(it.logDate||it.LogDate||it.date||it.Date||it.dateTime||it.DateTime||'');
+          const lf=it.loggedFood||it.LoggedFood||{};
+          const nv=it.nutritionalValues||it.NutritionalValues||{};
+          const cal=+(lf.calories!==undefined?lf.calories:
+                      lf.Calories!==undefined?lf.Calories:
+                      nv.calories!==undefined?nv.calories:
+                      it.calories!==undefined?it.calories:
+                      it.Calories);
+          if(d&&!isNaN(cal))sums[d+'|calin']=(sums[d+'|calin']||0)+cal;
+        });
+      }catch(err){}
+    }
+    else if(/steps_/i.test(n))       csvScan(text,['timestamp','steps'],c=>{const d=c[0]&&c[0].slice(0,10);const v=+c[1];if(d&&!isNaN(v))sums[d+'|steps']=(sums[d+'|steps']||0)+v;});
     else if(/distance_/i.test(n))csvScan(text,['timestamp','distance'],c=>{const d=c[0]&&c[0].slice(0,10);const v=+c[1];if(d&&!isNaN(v))sums[d+'|dist']=(sums[d+'|dist']||0)+v;});
     else if(/\/calories_2/i.test(n))csvScan(text,['timestamp','calories'],c=>{const d=c[0]&&c[0].slice(0,10);const v=+c[1];if(d&&!isNaN(v))sums[d+'|cals']=(sums[d+'|cals']||0)+v;});
     else if(/heart_rate_2/i.test(n))csvScan(text,['timestamp','beats per minute'],c=>{
@@ -1562,6 +1618,14 @@ async function importHealthZip(file,onProgress){
     else if(/daily_oxygen_saturation/i.test(n))rows.forEach(r=>put(dayOf(r.timestamp),'spo2',Math.round(+r['average percentage']*10)/10));
     else if(/daily_heart_rate_variability/i.test(n))rows.forEach(r=>put(dayOf(r.timestamp),'hrv',Math.round(+r['average heart rate variability milliseconds'])));
     else if(/weight\.csv/i.test(n))rows.forEach(r=>{const g=+r['weight grams'];if(!isNaN(g))put(dayOf(r.timestamp),'kg',Math.round(g/100)/10);});
+    else if(/food_log|nutrition|Foods\//i.test(n)){
+      // fitbit only exports this if meals were logged; sum calories per day
+      const cols=Object.keys(rows[0]||{});
+      const dcol=cols.find(c=>/date|logDate|timestamp/i.test(c));
+      const ccol=cols.find(c=>/^calories$/i.test(c))||cols.find(c=>/calorie/i.test(c));
+      if(dcol&&ccol)rows.forEach(r=>{const d=dayOf(r[dcol]);const v=+r[ccol];
+        if(d&&!isNaN(v))sums[d+'|calin']=(sums[d+'|calin']||0)+v;});
+    }
     else if(/sleep_score/i.test(n))rows.forEach(r=>{const d=dayOf(r.timestamp);
         put(d,'sleep',parseInt(r.overall_score)||0);
         if(r.deep_sleep_in_minutes)put(d,'deep',parseInt(r.deep_sleep_in_minutes));
@@ -1572,7 +1636,8 @@ async function importHealthZip(file,onProgress){
     if(f==='steps')put(d,'steps',Math.round(v));
     if(f==='dist')put(d,'km',Math.round(v/100)/10);
     if(f==='cals')put(d,'cals',Math.round(v));
-    if(f==='azm')put(d,'azm',Math.round(v));});
+    if(f==='azm')put(d,'azm',Math.round(v));
+    if(f==='calin')put(d,'calIn',Math.round(v));});
   Object.keys(hrAgg).forEach(d=>{const a=hrAgg[d];
     put(d,'hrAvg',Math.round(a.sum/a.n));put(d,'hrMin',Math.round(a.min));put(d,'hrMax',Math.round(a.max));});
 
@@ -1658,6 +1723,7 @@ function daySummary(k){
 }
 function openHealthDay(k){
   hDayKey=k;
+  const oldEd=document.querySelector('.hd-edit');if(oldEd)oldEd.remove();
   const H=health[k]||{};
   $('hd-title').textContent=fmtLong(k);
   const s=daySummary(k);
@@ -1668,7 +1734,8 @@ function openHealthDay(k){
               ['Deep sleep',H.deep!=null?H.deep+' min':null,'deep'],
               ['Resting heart rate',H.rhr!=null?H.rhr+' bpm':null,'rhr'],
               ['Heart rate range',(H.hrMin!=null&&H.hrMax!=null)?H.hrMin+'\u2013'+H.hrMax+' bpm':null,null],
-              ['Calories',H.cals!=null?H.cals.toLocaleString():null,'cals'],
+              ['Calories eaten',H.calIn!=null?H.calIn.toLocaleString():null,'calIn'],
+              ['Calories burned',H.cals!=null?H.cals.toLocaleString():null,'cals'],
               ['Weight',H.kg!=null?H.kg+' kg':null,null]].filter(r=>r[1]!=null);
   $('hd-rows').innerHTML=rows.map(r=>{
     let cmp='';
@@ -1678,7 +1745,7 @@ function openHealthDay(k){
           const up=diff>0;
           // direction matters: a lower resting heart rate is the favourable way.
           // calories and weight stay neutral - no good/bad implied.
-          const neutral=(r[2]==='cals');
+          const neutral=(r[2]==='cals'||r[2]==='calIn');
           const lowerBetter=(r[2]==='rhr');
           const good=lowerBetter?!up:up;
           const cls=neutral?'flat':(good?'up':'down');
@@ -1686,6 +1753,20 @@ function openHealthDay(k){
         else cmp='<i class="hd-cmp flat">avg</i>';}}
     return '<div class="hd-row"><span>'+r[0]+'</span><b>'+r[1]+'</b>'+cmp+'</div>';
   }).join('');
+  // quick edit of calories eaten for this day
+  const ed=document.createElement('div');ed.className='hd-edit';
+  ed.innerHTML='<span>Calories eaten</span>'
+    +'<input id="hd-cin" type="number" inputmode="numeric" min="0" max="20000" placeholder="kcal" value="'+(H.calIn!=null?H.calIn:'')+'">'
+    +'<button id="hd-cin-save">Save</button>';
+  const host=$('hd-rows'); if(host&&host.parentNode)host.parentNode.insertBefore(ed,host.nextSibling);
+  $('hd-cin-save').onclick=async()=>{
+    const raw=$('hd-cin').value.trim();
+    health[k]=health[k]||{};
+    if(raw==='')delete health[k].calIn;
+    else{const v=Math.round(+raw);if(isNaN(v)||v<0)return;health[k].calIn=v;}
+    if(!Object.keys(health[k]).length)delete health[k];
+    bumpHealth();await saveHealth();openHealthDay(k);if(view==='health')renderHealth();
+  };
   $('healthday').classList.add('on');syncPanelFlag();
 }
 function closeHealthDay(){$('healthday').classList.remove('on');syncPanelFlag();}
@@ -1704,7 +1785,8 @@ const H_METRICS={
   sleep:{lbl:'Sleep score', col:'#8f7bff', unit:'', fmt:v=>Math.round(v)},
   rhr:  {lbl:'Resting heart rate', col:'#ff5c7a', unit:' bpm', fmt:v=>Math.round(v)},
   cals: {lbl:'Calories', col:'#ff7a45', unit:'',    fmt:v=>Math.round(v).toLocaleString()},
-  km:   {lbl:'Distance', col:'#4db8ff', unit:' km', fmt:v=>Math.round(v*10)/10}
+  km:   {lbl:'Distance', col:'#4db8ff', unit:' km', fmt:v=>Math.round(v*10)/10},
+  calIn:{lbl:'Calories eaten', col:'#ffd166', unit:'', fmt:v=>Math.round(v).toLocaleString()}
 };
 /* an actual chart you can scrub with your finger */
 function chartCard(field){
@@ -1796,12 +1878,37 @@ function renderHealth(){
     const head=document.createElement('div');head.className='h-day';
     head.textContent='Latest \u00b7 '+fmtLong(d0);box.appendChild(head);
 
+    // log what you've eaten - typed in, since food logging isn't in the export
+    const ci=document.createElement('div');ci.className='hcard cin';
+    ci.innerHTML='<div class="h-lbl">Calories eaten</div>'
+      +'<div class="cin-row">'
+        +'<input id="cin-date" type="date" value="'+todayKey+'">'
+        +'<input id="cin-val" type="number" inputmode="numeric" min="0" max="20000" placeholder="kcal">'
+        +'<button id="cin-save">Save</button>'
+      +'</div><div class="cin-msg" id="cin-msg"></div>';
+    box.appendChild(ci);
+    $('cin-date').onchange=()=>{const k=$('cin-date').value;
+      $('cin-val').value=(health[k]&&health[k].calIn!=null)?health[k].calIn:'';};
+    $('cin-date').onchange();
+    $('cin-save').onclick=async()=>{
+      const k=$('cin-date').value, raw=$('cin-val').value.trim(), m=$('cin-msg');
+      if(!k){m.className='cin-msg on bad';m.textContent='Pick a day.';return;}
+      health[k]=health[k]||{};
+      if(raw===''){delete health[k].calIn;if(!Object.keys(health[k]).length)delete health[k];}
+      else{const v=Math.round(+raw);
+        if(isNaN(v)||v<0){m.className='cin-msg on bad';m.textContent='Enter a number.';return;}
+        health[k].calIn=v;}
+      bumpHealth();await saveHealth();
+      healthMsg=null;renderHealth();
+    };
+
     const tiles=[['Steps',H.steps!=null?H.steps.toLocaleString():'\u2014','#37c07a'],
                  ['Sleep score',H.sleep!=null?H.sleep:'\u2014','#8f7bff'],
                  ['Resting HR',H.rhr!=null?H.rhr+' bpm':'\u2014','#ff5c7a'],
                  ['Calories',H.cals!=null?H.cals.toLocaleString():'\u2014','#ff7a45'],
                  ['Distance',H.km!=null?H.km+' km':'\u2014','#4db8ff'],
-                 ['Deep sleep',H.deep!=null?H.deep+'m':'\u2014','#6fd3ff']];
+                 ['Deep sleep',H.deep!=null?H.deep+'m':'\u2014','#6fd3ff'],
+                 ['Calories eaten',H.calIn!=null?H.calIn.toLocaleString():'\u2014','#ffd166']];
     const grid=document.createElement('div');grid.className='hgrid';
     tiles.forEach(([lbl,val,col])=>{const t=document.createElement('div');t.className='htile';
       t.innerHTML='<div class="ht-lbl">'+lbl+'</div><div class="ht-val" style="color:'+col+'">'+val+'</div>';
@@ -1820,7 +1927,8 @@ function renderHealth(){
                 ['sleep','Sleep score','#8f7bff',v=>Math.round(v)],
                 ['rhr','Resting HR','#ff5c7a',v=>Math.round(v)+' bpm'],
                 ['deep','Deep sleep','#6fd3ff',v=>Math.round(v)+' min'],
-                ['cals','Calories','#ff7a45',v=>Math.round(v).toLocaleString()],
+                ['calIn','Calories eaten','#ffd166',v=>Math.round(v).toLocaleString()],
+                ['cals','Calories burned','#ff7a45',v=>Math.round(v).toLocaleString()],
                 ['km','Distance','#4db8ff',v=>(Math.round(v*10)/10)+' km']];
     let avgHead='<div class="havg-head"><span>Averages</span><i>7 days</i><i>30 days</i></div>';
     let avgBody=mets.map(([f,lbl,col,fmt])=>{
@@ -1852,7 +1960,7 @@ function renderHealth(){
     const hint=document.createElement('div');hint.className='hc-hint';
     hint.textContent='Touch and drag a chart to read any day';box.appendChild(hint);
 
-    ['steps','sleep','rhr','cals','km'].forEach(f=>{const c=chartCard(f);if(c)box.appendChild(c);});
+    ['steps','sleep','rhr','calIn','cals','km'].forEach(f=>{const c=chartCard(f);if(c)box.appendChild(c);});
 
     const lh=document.createElement('div');lh.className='h-day';lh.textContent='Day by day \u00b7 tap for detail';box.appendChild(lh);
     days.slice().reverse().slice(0,60).forEach(d=>{const x=health[d]||{};
@@ -2074,6 +2182,22 @@ function mkNode(kind){
     _mkTpl.drop=mk('mkD',DROP_SVG);}
   return _mkTpl[kind].cloneNode(true);
 }
+/* monthly anniversary of the day you two started talking. Worked out on the
+   fly from S.togetherSince, so there's nothing to add or maintain, and it can
+   never clash with a note you've written on the same day. */
+function anniversaryOf(k){
+  if(!S.togetherSince)return null;
+  const [sy,sm,sd]=S.togetherSince.split('-').map(Number);
+  const [y,m,d]=k.split('-').map(Number);
+  if(!sy||d!==sd)return null;
+  const months=(y-sy)*12+(m-sm);
+  if(months<1)return null;
+  return months;
+}
+function anniversaryLabel(n){
+  if(n%12===0){const yr=n/12;return yr+' year'+(yr===1?'':'s')+' together';}
+  return n+' month'+(n===1?'':'s')+' together';
+}
 function cellClass(k){const s=shaadStatus(k)==='working',w=fiazaStatus(k)==='working';if(!s&&!w)return'bo';if(s&&w)return'bw';if(s&&!w)return'sh';return'wf';}
 function stateWords(k){const s=shaadStatus(k)==='working',w=fiazaStatus(k)==='working';
   if(!s&&!w)return'Both off together';if(s&&w)return'Both working';
@@ -2214,7 +2338,8 @@ function renderMonth(){
     const cls=cellClass(k);
     const o=overrides[k];
     const c=document.createElement('div');
-    c.className='cell '+cls+(k===todayKey?' today':'')+(o&&o.special?' special':'')+(o&&o.met?' met':'')+(o&&o.gym?' gym':'')+(o&&o.busyS?' busyS':'')+(o&&o.busyF?' busyF':'')+(o&&o.holS?' holS':'')+(o&&o.holF?' holF':'');
+    const anni=anniversaryOf(k);
+    c.className='cell '+cls+(k===todayKey?' today':'')+((o&&o.special)||anni?' special':'')+(o&&o.met?' met':'')+(o&&o.gym?' gym':'')+(o&&o.busyS?' busyS':'')+(o&&o.busyF?' busyF':'')+(o&&o.holS?' holS':'')+(o&&o.holF?' holF':'');
     const num=document.createElement('span');num.className='num';num.textContent=d;c.appendChild(num);
     const planStar=!!(o&&o.plan&&!o.met);
     if(planStar){c.appendChild(mkNode('star'));}
@@ -2241,6 +2366,12 @@ function renderMonth(){
     frag.appendChild(c);
   }
   grid.appendChild(frag);
+  // busy months run too many concurrent animations to stay at 60fps, so drop the
+  // decorative extras once past a threshold. Measured: this is where frames start
+  // being missed. Quiet months keep everything.
+  // only count markers that actually animate - the plain both-off star doesn't
+  const markerCount=grid.querySelectorAll('.star.pstar,.mkF,.mkH,.mkD,.mkP').length;
+  grid.classList.toggle('lite',markerCount>7);
   applyHighlight();
   renderStat();
   const cur=computeToday();const[cy,cm]=cur.split('-').map(Number);
@@ -3293,6 +3424,8 @@ function updateScrim(){if(!sheet.classList.contains('on')&&!$('tsheet').classLis
 function openSheet(k){sheetKey=k;
   $('sh-date').textContent=fmtLong(k);
   $('sh-state').textContent=stateWords(k);
+  {const n=anniversaryOf(k),el=$('sh-anni');
+   if(el){el.style.display=n?'':'none';if(n)el.textContent='\u2726 '+anniversaryLabel(n);}}
   const nb=noteObj(k);
   $('sh-note').value=nb?nb.text:'';
   noteBy=(nb&&nb.by)||deviceOwner||'shaad';
