@@ -828,9 +828,12 @@
   .jgrid button:active{transform:scale(.94)}
   .jgrid button.cur{background:var(--accent);color:var(--ink);border-color:transparent}
   .jgrid button.now{box-shadow:0 0 0 2px var(--accent) inset}
-  #stat-met{cursor:pointer;transition:border-color .18s,background .18s}
-  #stat-met:active{transform:scale(.995)}
-  #stat-met.cycling{border-color:#1ee0ff;background:rgba(30,224,255,.08)}
+  .stat.s-met,.stat.s-off,.stat.s-work{cursor:pointer;-webkit-tap-highlight-color:transparent;
+    transition:border-color .18s,background .18s,transform .1s}
+  .stat.s-met:active,.stat.s-off:active,.stat.s-work:active{transform:scale(.985)}
+  .stat.s-met.cycling{border-color:#1ee0ff;background:rgba(30,224,255,.08)}
+  .stat.s-off.cycling{border-color:#4fd991;background:rgba(79,217,145,.08)}
+  .stat.s-work.cycling{border-color:#f0736f;background:rgba(240,115,111,.08)}
   .lchip{cursor:pointer;transition:transform .12s,border-color .18s,background .18s}
   .lchip:active{transform:scale(.95)}
   .lchip.picked{border-color:currentColor;background:rgba(255,255,255,.07);
@@ -2369,14 +2372,29 @@ function renderStat(){
       ? 'Showing <b>days you\u2019re seeing each other</b> <span class="dim">tap to clear</span>'
       : 'Saw each other \u00b7 <b>'+metTot+' '+tw(metTot)+'</b>'
         +(planAhead?' \u00b7 <span class="dim">'+planAhead+' planned</span>':' <span class="dim">in '+MON[viewM]+'</span>'));
-  $('stat-met').classList.toggle('cycling',metCycle>0);
+  document.querySelector('.stat.s-met').classList.toggle('cycling',metCycle>0);
   if(isCur){
-    $('stat-off').innerHTML='Both off together \u00b7 <b>'+offTot+' '+dw(offTot)+'</b> \u00b7 <span class="dim">'+offLeft+' left</span>';
-    $('stat-work').innerHTML='Both working \u00b7 <b>'+workTot+' '+dw(workTot)+'</b> \u00b7 <span class="dim">'+workLeft+' left</span>';
+    $('stat-off').innerHTML = offCycle===1
+      ? 'Showing <b>all days you\u2019re both off</b> <span class="dim">tap for what\u2019s left</span>'
+      : offCycle===2
+      ? 'Showing the <b>'+offLeft+' left</b> <span class="dim">tap to clear</span>'
+      : 'Both off together \u00b7 <b>'+offTot+' '+dw(offTot)+'</b> \u00b7 <span class="dim">'+offLeft+' left</span>';
+    $('stat-work').innerHTML = workCycle===1
+      ? 'Showing <b>all days you\u2019re both working</b> <span class="dim">tap for what\u2019s left</span>'
+      : workCycle===2
+      ? 'Showing the <b>'+workLeft+' left</b> <span class="dim">tap to clear</span>'
+      : 'Both working \u00b7 <b>'+workTot+' '+dw(workTot)+'</b> \u00b7 <span class="dim">'+workLeft+' left</span>';
   }else{
-    $('stat-off').innerHTML='Both off together \u00b7 <b>'+offTot+' '+dw(offTot)+'</b> <span class="dim">in '+MON[viewM]+'</span>';
-    $('stat-work').innerHTML='Both working \u00b7 <b>'+workTot+' '+dw(workTot)+'</b> <span class="dim">in '+MON[viewM]+'</span>';
+    $('stat-off').innerHTML = offCycle===1
+      ? 'Showing <b>days you\u2019re both off</b> <span class="dim">tap to clear</span>'
+      : 'Both off together \u00b7 <b>'+offTot+' '+dw(offTot)+'</b> <span class="dim">in '+MON[viewM]+'</span>';
+    $('stat-work').innerHTML = workCycle===1
+      ? 'Showing <b>days you\u2019re both working</b> <span class="dim">tap to clear</span>'
+      : 'Both working \u00b7 <b>'+workTot+' '+dw(workTot)+'</b> <span class="dim">in '+MON[viewM]+'</span>';
   }
+  const box=(c)=>document.querySelector('.stat.'+c);
+  if(box('s-off'))box('s-off').classList.toggle('cycling',offCycle>0);
+  if(box('s-work'))box('s-work').classList.toggle('cycling',workCycle>0);
 }
 function renderMonth(){
   $('mtitle').textContent=MON[viewM]+' '+viewY;
@@ -2394,7 +2412,7 @@ function renderMonth(){
     const o=overrides[k];
     const c=document.createElement('div');
     const anni=anniversaryOf(k);
-    c.className='cell '+cls+(k===todayKey?' today':'')+((o&&o.special)||anni?' special':'')+(o&&o.met?' met':'')+(o&&o.plan&&!o.met?' plan':'')+(o&&o.gym?' gym':'')+(o&&o.busyS?' busyS':'')+(o&&o.busyF?' busyF':'')+(o&&o.holS?' holS':'')+(o&&o.holF?' holF':'');
+    c.className='cell '+cls+(k===todayKey?' today':'')+((o&&o.special)||anni?' special':'')+((cls==='bo'||cls==='bw')&&k>=todayKey?(cls==='bo'?' boLeft':' bwLeft'):'')+(o&&o.met?' met':'')+(o&&o.plan&&!o.met?' plan':'')+(o&&o.gym?' gym':'')+(o&&o.busyS?' busyS':'')+(o&&o.busyF?' busyF':'')+(o&&o.holS?' holS':'')+(o&&o.holF?' holF':'');
     const num=document.createElement('span');num.className='num';num.textContent=d;c.appendChild(num);
     const planStar=!!(o&&o.plan&&!o.met);
     if(planStar){c.appendChild(mkNode('star'));}
@@ -2877,20 +2895,29 @@ function applyHighlight(){
   _hlChips.forEach(b=>b.classList.toggle('picked',hlSet.has(b.dataset.cls)));
 }
 function toggleHighlight(cls){
-  metCycle=0;                                  // legend chips take over from the met cycle
+  clearCycles();                               // legend chips take over from the stat bars
   if(hlSet.has(cls))hlSet.delete(cls);else hlSet.add(cls);
   applyHighlight();
 }
-/* tapping the "saw each other" bar cycles: seen -> planned -> off */
-let metCycle=0;
-function cycleMet(){
-  metCycle=(metCycle+1)%3;
+/* tapping a stat bar cycles through its own days. Three states where a
+   "left" figure makes sense (the month you're in), two states otherwise. */
+let metCycle=0, offCycle=0, workCycle=0;
+function isCurMonth(){const[cy,cm]=computeToday().split('-').map(Number);return viewY===cy&&viewM===cm-1;}
+function clearCycles(){metCycle=0;offCycle=0;workCycle=0;}
+function cycleStat(which){
+  const cur=isCurMonth();
+  const steps=(which==='met')?3:(cur?3:2);
+  if(which==='met'){metCycle=(metCycle+1)%steps;offCycle=workCycle=0;}
+  else if(which==='off'){offCycle=(offCycle+1)%steps;metCycle=workCycle=0;}
+  else{workCycle=(workCycle+1)%steps;metCycle=offCycle=0;}
   hlSet.clear();
-  if(metCycle===1)hlSet.add('met');
-  else if(metCycle===2)hlSet.add('plan');
+  if(which==='met'){ if(metCycle===1)hlSet.add('met'); else if(metCycle===2)hlSet.add('plan'); }
+  if(which==='off'){ if(offCycle===1)hlSet.add('bo'); else if(offCycle===2)hlSet.add('boLeft'); }
+  if(which==='work'){ if(workCycle===1)hlSet.add('bw'); else if(workCycle===2)hlSet.add('bwLeft'); }
   applyHighlight();
   renderStat();
 }
+const cycleMet=()=>cycleStat('met');
 /* ---- jump to any month ---- */
 let jYear=null;
 function renderJump(){
@@ -3838,7 +3865,9 @@ $('rg-save').onclick=async()=>{
 };
 $('go-ranges').onclick=()=>{closeSettings();openRanges();};
 
-$('stat-met').onclick=cycleMet;
+document.querySelector('.stat.s-met').onclick=()=>cycleStat('met');
+document.querySelector('.stat.s-off').onclick=()=>cycleStat('off');
+document.querySelector('.stat.s-work').onclick=()=>cycleStat('work');
 document.querySelectorAll('.foldhead').forEach(b=>{
   b.onclick=()=>{const s=$(b.dataset.fold);if(s)s.classList.toggle('open');};
 });
