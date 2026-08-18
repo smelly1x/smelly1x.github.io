@@ -316,8 +316,16 @@
   .cell.bw{background:linear-gradient(160deg,#e0524f,#cf4340)}
   .cell.sh{background:linear-gradient(160deg,#7d4bd6,#5f34ab)}
   .cell.wf{background:linear-gradient(160deg,#f5b921,#d99406)}
-  .cell.today{border-color:#fff;box-shadow:0 0 0 2px #fff, 0 0 0 4px var(--bg), 0 0 16px 2px rgba(255,255,255,.45);
-    transform:scale(1.06);z-index:5;font-weight:800}
+  .cell.today{border-color:#fff;
+    box-shadow:0 0 0 2.5px #fff, 0 0 0 5px var(--bg),
+      0 0 14px 3px rgba(255,255,255,.85), 0 0 30px 8px rgba(180,124,255,.6);
+    transform:scale(1.08);z-index:6;font-weight:800;
+    animation:todayPulse 2.4s ease-in-out infinite}
+  @keyframes todayPulse{
+    0%,100%{box-shadow:0 0 0 2.5px #fff, 0 0 0 5px var(--bg),
+      0 0 14px 3px rgba(255,255,255,.8), 0 0 28px 7px rgba(180,124,255,.5)}
+    50%{box-shadow:0 0 0 2.5px #fff, 0 0 0 5px var(--bg),
+      0 0 20px 5px rgba(255,255,255,1), 0 0 42px 12px rgba(255,111,216,.7)}}
   .cell.today:active{transform:scale(.98)}
   .cell.special{background:linear-gradient(90deg,#7c4dff,#ff6fd8,#7c4dff,#ff6fd8,#7c4dff)!important;
     background-size:300% 100%!important;
