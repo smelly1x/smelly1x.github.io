@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <title>Shaad &amp; Fiaza</title>
 <!-- Shaad & Fiaza — shared shift schedule tracker -->
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Shaad & Fiaza">
@@ -320,12 +320,7 @@
     box-shadow:0 0 0 2.5px #fff, 0 0 0 5px var(--bg),
       0 0 14px 3px rgba(255,255,255,.85), 0 0 30px 8px rgba(180,124,255,.6);
     transform:scale(1.08);z-index:6;font-weight:800;
-    animation:todayPulse 2.4s ease-in-out infinite}
-  @keyframes todayPulse{
-    0%,100%{box-shadow:0 0 0 2.5px #fff, 0 0 0 5px var(--bg),
-      0 0 14px 3px rgba(255,255,255,.8), 0 0 28px 7px rgba(180,124,255,.5)}
-    50%{box-shadow:0 0 0 2.5px #fff, 0 0 0 5px var(--bg),
-      0 0 20px 5px rgba(255,255,255,1), 0 0 42px 12px rgba(255,111,216,.7)}}
+    animation:none}
   .cell.today:active{transform:scale(.98)}
   .cell.special{background:linear-gradient(90deg,#7c4dff,#ff6fd8,#7c4dff,#ff6fd8,#7c4dff)!important;
     background-size:300% 100%!important;
@@ -785,11 +780,11 @@
   .fld input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:11px 13px;font-size:15px}
   .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .days{display:flex;gap:5px;flex-wrap:wrap}
-  .dbtn{flex:1;min-width:40px;border:1px solid var(--border);background:var(--bg);color:var(--muted);font-size:12px;font-weight:700;padding:9px 0;border-radius:10px;cursor:pointer;transition:all .12s}
+  .dbtn{flex:1;min-width:40px;border:1px solid var(--border);background:var(--bg);color:var(--muted);font-size:12px;font-weight:700;padding:9px 0;border-radius:10px;cursor:pointer;transition:background-color .12s,border-color .12s,color .12s,transform .12s}
   .dbtn.on{background:var(--fiaza);color:var(--ink);border-color:var(--fiaza)}
   .ownpick,.byrow .toggle{}
   .ownpick{display:flex;gap:8px}
-  .ownpick button{flex:1;border:1px solid var(--border);background:var(--bg);color:var(--muted);font-size:13px;font-weight:700;padding:11px 0;border-radius:11px;cursor:pointer;transition:all .12s}
+  .ownpick button{flex:1;border:1px solid var(--border);background:var(--bg);color:var(--muted);font-size:13px;font-weight:700;padding:11px 0;border-radius:11px;cursor:pointer;transition:background-color .12s,border-color .12s,color .12s,transform .12s}
   .ownpick button.on{background:var(--accent);color:var(--ink);border-color:var(--accent)}
   .hint{font-size:12px;color:var(--muted);margin:-4px 0 10px;line-height:1.4}
   .evedit{display:flex;gap:8px;align-items:center;margin-bottom:8px}
@@ -990,6 +985,21 @@
   .h-status.on{display:block;color:var(--muted)}
   .h-status.ok{display:block;color:#37c07a;font-weight:600}
   .h-status.bad{display:block;color:#ff6b6b;font-weight:600}
+  .sl-top{display:flex;align-items:baseline;gap:10px;margin-top:9px}
+  .sl-score{font-size:34px;font-weight:800;color:#8f7bff;line-height:1}
+  .sl-band{font-size:13px;font-weight:700;color:var(--text)}
+  .sl-dur{margin-left:auto;font-size:15px;font-weight:700;color:var(--text)}
+  .sl-times{font-size:12px;color:var(--muted);margin-top:5px}
+  .sl-bar{display:flex;height:9px;border-radius:5px;overflow:hidden;margin-top:12px;background:var(--bg)}
+  .sl-bar i{display:block;height:100%}
+  .sl-legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:9px}
+  .sl-legend span{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--muted);font-weight:600}
+  .sl-legend i{width:8px;height:8px;border-radius:2px;display:inline-block}
+  .sl-parts{display:flex;gap:8px;margin-top:12px}
+  .sl-p{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:11px;
+    padding:9px 4px;text-align:center}
+  .sl-p span{display:block;font-size:10.5px;color:var(--muted);font-weight:600}
+  .sl-p b{display:block;font-size:16px;font-weight:800;color:var(--text);margin-top:2px}
   .nutcard .nut-row{display:flex;gap:8px;margin-top:11px}
   .nut-m{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
     background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:11px 4px}
@@ -1075,6 +1085,73 @@
     font-size:13px;font-weight:800;cursor:pointer}
   .hd-cmp.up{color:#37c07a}.hd-cmp.down{color:#ff7a7a}.hd-cmp.flat{color:var(--muted)}
   #view-health{display:none}
+
+  /* September refinement: the original palette, layout and marker artwork remain. */
+  :root{color-scheme:dark;--muted:#b0a4c3;--border:#3c304d;
+    --card-sh:0 8px 24px -18px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.04)}
+  body{padding-top:max(22px,env(safe-area-inset-top));padding-bottom:calc(36px + env(safe-area-inset-bottom))}
+  .topline{grid-template-columns:minmax(0,1fr) auto auto;gap:14px;margin-bottom:24px}
+  .brand{font-size:12px;font-weight:650;letter-spacing:.055em;white-space:normal;line-height:1.5;color:#d0c2e1}
+  .since{font-size:22px;padding:2px 0;min-width:64px;text-align:center;line-height:1.15;font-variant-numeric:tabular-nums}
+  .since::after{content:"days together";display:block;margin-top:5px;font-size:9px;letter-spacing:.02em;
+    font-weight:500;color:var(--muted);-webkit-text-fill-color:var(--muted)}
+  .tright{gap:4px}.gear,.nudgebtn{width:44px;height:44px;flex:none}
+  .nudgebtn{padding:0;opacity:.85;font-size:20px;border-radius:14px}
+  .gear{border-radius:14px;background:linear-gradient(155deg,#30253e,#231c30)}
+  .gear.due::after{width:8px;height:8px;top:1px;right:1px;box-shadow:none}
+  #events:empty{display:none}
+  .nav{margin-bottom:18px;gap:8px}
+  .nav .mtitle{font-size:25px;font-weight:750;letter-spacing:-.035em;text-align:center;line-height:1.12}
+  .month-year{display:block;font-size:12px;font-weight:500;letter-spacing:.12em;color:var(--muted);margin-top:6px}
+  .nav button{width:44px;height:44px;flex:none;background:rgba(255,255,255,.035);border-radius:14px;font-size:26px}
+  .dow{margin-bottom:10px}.dow span{font-size:11px;font-weight:600}
+  .grid,.dow{gap:7px}
+  .cell{border-radius:12px;padding:6px;font-size:14px;text-shadow:0 1px 2px rgba(0,0,0,.22)}
+  .cell.bo{background:linear-gradient(150deg,#32bf83,#208a60)}
+  .cell.bw{background:linear-gradient(150deg,#da5960,#b43847)}
+  .cell.sh{background:linear-gradient(150deg,#8957da,#6033a4)}
+  .cell.wf{background:linear-gradient(150deg,#f4c34e,#d69b20);color:#302006;text-shadow:none}
+  .cell.today{border-color:#fff;box-shadow:0 0 0 2px #f5eaff,0 0 0 4px var(--bg),0 0 16px -5px #c79aff;
+    transform:none;animation:none}
+  .cell.met.today{box-shadow:0 0 0 2px #fff,0 0 0 4px #1ee0ff}
+  .cell.special{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.3)}
+  .cell.today.special{animation:spHue 6s linear infinite}
+  .cell:focus-visible{outline:2px solid #fff;outline-offset:2px;z-index:7}
+  .legend{gap:7px;margin-top:18px}
+  .lchip{min-height:44px;justify-content:center;text-align:center;padding:10px 12px;font-size:12px;border-radius:12px;background:rgba(31,26,43,.75)}
+  .lchip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;flex:none;margin-right:8px}
+  .stats{gap:0;margin-top:18px;border:1px solid var(--border);border-radius:17px;overflow:hidden;
+    background:linear-gradient(145deg,#251e32,#1b1724);box-shadow:var(--card-sh)}
+  .stat{justify-content:center;text-align:center;border:0;border-radius:0;padding:15px 14px;background:transparent;box-shadow:none;min-height:48px}
+  .stat+.stat{border-top:1px solid rgba(176,164,195,.12)}
+  .stat .txt{font-size:12.5px;line-height:1.5;font-weight:500;font-variant-numeric:tabular-nums}
+  .stat .txt b{font-weight:750}
+  .stat.cycling{box-shadow:inset 3px 0 currentColor}
+  .stat.s-off{color:#4fd991}.stat.s-work{color:#f0736f}.stat.s-met{color:#5fd8f5}
+  .ev,.psec,.uprow,.wl-row{box-shadow:var(--card-sh)}
+  #go-health{margin-top:14px}
+  .phead{margin-bottom:18px}.phead h2{font-size:26px;letter-spacing:-.035em}
+  .phead .x,.sh-close{width:44px;height:44px}
+  .panel{padding-top:max(22px,env(safe-area-inset-top))}
+  .psec{border-radius:20px;padding:16px;background:linear-gradient(145deg,#261f33,#1e1928)}
+  .psec h4,.foldhead span{color:#c2b5d4;letter-spacing:.09em}
+  .foldhead{min-height:32px}.morebtn{line-height:1.4;min-height:46px}
+  .sheet{background:linear-gradient(165deg,#2a2138,#1e1929);max-height:92dvh;overflow-y:auto}
+  .sh-close{top:10px;right:10px}
+  input,textarea,select{font-size:16px!important}
+  .hint{line-height:1.55}.backbtn{min-height:44px}
+  .lock .card{padding:28px 22px;border:1px solid var(--border);border-radius:26px;
+    background:linear-gradient(155deg,rgba(47,35,66,.85),rgba(27,22,36,.9));box-shadow:0 24px 70px -35px #000}
+  .lock h1{letter-spacing:-.035em}.lock .mark{border-radius:19px}
+  .hero .big,.mc-num,.lt-n,.gp-big{font-variant-numeric:tabular-nums}
+  body.hidden-tab *,body.hidden-tab *::before,body.hidden-tab *::after{animation-play-state:paused!important}
+  body.panel-open .cell,body.panel-open .cell::before,body.panel-open .cell::after{animation-play-state:paused!important}
+  @media (max-width:350px){
+    .topline{gap:8px}.brand{font-size:11px;letter-spacing:.02em}.since{min-width:59px}
+    .grid,.dow{gap:6px}.cell{padding:5px;border-radius:10px}
+    .lchip{font-size:11px;padding:9px 8px}.lchip::before{margin-right:6px}
+    .stat{padding:13px 11px}.stat .txt{font-size:12px}
+  }
 </style>
 
 </head>
@@ -1678,6 +1755,7 @@ async function importHealthZip(file,onProgress){
     const n=e.name;
     // fitbit exports food logs as JSON (Global Export Data/food_logs-0.json)
     if(/food_log/i.test(n)&&/\.json$/i.test(n))return true;
+    if(/Global Export Data\/sleep-/i.test(n)&&/\.json$/i.test(n))return true;
     if(!/\.csv$/i.test(n))return false;
     return /steps_|distance_|\/calories_2|heart_rate_2|daily_resting_heart_rate|daily_respiratory_rate|daily_oxygen_saturation|daily_heart_rate_variability|sleep_score|Active Zone Minutes|weight\.csv|food_log|nutrition|Foods\//i.test(n);
   };
@@ -1692,7 +1770,28 @@ async function importHealthZip(file,onProgress){
     const n=e.name;
     const small=!/steps_|distance_|\/calories_2|heart_rate_2|Active Zone Minutes/i.test(n);
     const rows=small?csvRows(text):null;
-    if(/food_log/i.test(n)&&/\.json$/i.test(n)){
+    if(/Global Export Data\/sleep-/i.test(n)&&/\.json$/i.test(n)){
+      /* the full sleep log: stages, time in bed, efficiency, bed and wake times */
+      try{
+        const list=JSON.parse(text);
+        (Array.isArray(list)?list:[]).forEach(s=>{
+          const d=dayOf(s.dateOfSleep||s.endTime||'');
+          if(!d||s.mainSleep===false)return;
+          const lv=(s.levels&&s.levels.summary)||{};
+          const get=(k)=>lv[k]&&typeof lv[k].minutes==='number'?lv[k].minutes:undefined;
+          put(d,'asleep',+s.minutesAsleep);
+          put(d,'inBed',+s.timeInBed);
+          put(d,'eff',+s.efficiency);
+          put(d,'awakeMin',get('wake'));
+          put(d,'remMin',get('rem'));
+          put(d,'lightMin',get('light'));
+          if(get('deep')!==undefined)put(d,'deep',get('deep'));
+          if(s.startTime)D[d]=Object.assign(D[d]||{},{bed:String(s.startTime).slice(11,16)});
+          if(s.endTime)D[d]=Object.assign(D[d]||{},{wake:String(s.endTime).slice(11,16)});
+        });
+      }catch(err){}
+    }
+    else if(/food_log/i.test(n)&&/\.json$/i.test(n)){
       /* shape varies: entries usually carry a logDate/dateTime and either
          calories directly or nested under loggedFood/nutritionalValues.
          Written tolerantly so a slightly different export still works. */
@@ -1741,7 +1840,12 @@ async function importHealthZip(file,onProgress){
     else if(/sleep_score/i.test(n))rows.forEach(r=>{const d=dayOf(r.timestamp);
         put(d,'sleep',parseInt(r.overall_score)||0);
         if(r.deep_sleep_in_minutes)put(d,'deep',parseInt(r.deep_sleep_in_minutes));
-        if(r.resting_heart_rate)put(d,'srhr',parseInt(r.resting_heart_rate));});
+        if(r.resting_heart_rate)put(d,'srhr',parseInt(r.resting_heart_rate));
+        // the three parts fitbit scores separately - lets us say WHY it was what it was
+        if(r.duration_score)put(d,'sDur',parseInt(r.duration_score));
+        if(r.composition_score)put(d,'sComp',parseInt(r.composition_score));
+        if(r.revitalization_score)put(d,'sRev',parseInt(r.revitalization_score));
+        if(r.restlessness)put(d,'restless',Math.round(parseFloat(r.restlessness)*1000)/1000);});
     done++; if(onProgress)onProgress(done,files.length);
   }
   Object.keys(sums).forEach(k=>{const[d,f]=k.split('|');const v=sums[k];
@@ -1800,12 +1904,34 @@ function daySummary(k){
     else if(s<50)lead='Sleep score was '+s+', on the low side.';
     else if(s>=85)lead='Strong sleep score of '+s+'.';
     else lead='Sleep score was '+s+(sAvg?', about typical for you ('+Math.round(sAvg)+').':'.');
+    if(typeof H.asleep==='number'){
+      const hrs=Math.floor(H.asleep/60),mins=H.asleep%60;
+      lead+=' You slept '+hrs+'h '+String(mins).padStart(2,'0')+'m'
+        +(H.bed&&H.wake?' ('+H.bed+' to '+H.wake+')':'')+'.';
+    }
     if(typeof H.deep==='number'){
       const hrs=Math.floor(H.deep/60),mins=H.deep%60;
       const deepTxt=hrs?hrs+'h '+mins+'m':H.deep+' min';
-      lead+=' You got '+deepTxt+' of deep sleep'+(dAvg&&H.deep<dAvg*0.7?' \u2014 less than you normally do.':'.');
+      lead+=' '+deepTxt+' of that was deep sleep'+(dAvg&&H.deep<dAvg*0.7?' \u2014 less than you normally get.':'.');
     }
     out.push(lead);
+    // why the score landed where it did, the way the watch breaks it down
+    const parts=[['how long you slept',H.sDur],['sleep quality',H.sComp],['how restored you were',H.sRev]]
+      .filter(p=>typeof p[1]==='number');
+    if(parts.length){
+      const weak=parts.filter(p=>p[1]<70), strong=parts.filter(p=>p[1]>=85);
+      if(weak.length)out.push('What pulled it down: '+weak.map(p=>p[0]+' ('+p[1]+')').join(' and ')+'.');
+      else if(strong.length===parts.length)out.push('Every part of it scored well \u2014 length, quality and restoration.');
+    }
+    if(typeof H.eff==='number'&&typeof H.inBed==='number'){
+      const bh=Math.floor(H.inBed/60),bm=H.inBed%60;
+      // efficiency is the watch's own figure, not asleep/in-bed - keep them apart
+      // so the numbers don't look like they contradict each other
+      out.push('You were in bed '+bh+'h '+String(bm).padStart(2,'0')+'m'
+        +(typeof H.awakeMin==='number'&&H.awakeMin>0?', awake '+H.awakeMin+' min of it':'')
+        +'. Sleep efficiency '+H.eff+'%'
+        +(H.eff>=90?' \u2014 excellent.':H.eff>=80?' \u2014 decent.':' \u2014 a broken night.'));
+    }
   }
   if(typeof H.steps==='number'){
     let t='You walked '+H.steps.toLocaleString()+' steps';
@@ -2047,6 +2173,34 @@ function renderHealth(){
       box.appendChild(nut);
     }
 
+    // how you slept - stages, efficiency, and what pulled the score around
+    if(H.sleep!=null||H.asleep!=null){
+      const hm=m=>m==null?null:(Math.floor(m/60)+'h '+String(m%60).padStart(2,'0')+'m');
+      const band=s=>s>=90?'Excellent':s>=80?'Good':s>=60?'Fair':'Poor';
+      const sc=document.createElement('div');sc.className='hcard';
+      let inner='<div class="h-lbl">How you slept</div>';
+      if(H.sleep!=null)inner+='<div class="sl-top"><span class="sl-score">'+H.sleep+'</span>'
+        +'<span class="sl-band">'+band(H.sleep)+'</span>'
+        +(H.asleep!=null?'<span class="sl-dur">'+hm(H.asleep)+'</span>':'')+'</div>';
+      if(H.bed&&H.wake)inner+='<div class="sl-times">'+H.bed+' \u2192 '+H.wake
+        +(H.inBed!=null?' \u00b7 '+hm(H.inBed)+' in bed':'')
+        +(H.eff!=null?' \u00b7 '+H.eff+'% efficiency':'')+'</div>';
+      // stage bar
+      const st=[['Deep',H.deep,'#8f7bff'],['REM',H.remMin,'#6fd3ff'],
+                ['Light',H.lightMin,'#4a7bd0'],['Awake',H.awakeMin,'#ff8fa8']];
+      const tot=st.reduce((t,s)=>t+(s[1]||0),0);
+      if(tot>0){
+        inner+='<div class="sl-bar">'+st.map(s=>s[1]?'<i style="width:'+(s[1]/tot*100)+'%;background:'+s[2]+'"></i>':'').join('')+'</div>';
+        inner+='<div class="sl-legend">'+st.filter(s=>s[1]).map(s=>
+          '<span><i style="background:'+s[2]+'"></i>'+s[0]+' '+hm(s[1])+'</span>').join('')+'</div>';
+      }
+      // what moved the score
+      const parts=[['Duration',H.sDur],['Quality',H.sComp],['Restoration',H.sRev]].filter(p=>p[1]!=null);
+      if(parts.length)inner+='<div class="sl-parts">'+parts.map(p=>
+        '<div class="sl-p"><span>'+p[0]+'</span><b>'+p[1]+'</b></div>').join('')+'</div>';
+      sc.innerHTML=inner;box.appendChild(sc);
+    }
+
     const tiles=[['Steps',H.steps!=null?H.steps.toLocaleString():'\u2014','#37c07a'],
                  ['Sleep score',H.sleep!=null?H.sleep:'\u2014','#8f7bff'],
                  ['Resting HR',H.rhr!=null?H.rhr+' bpm':'\u2014','#ff5c7a'],
@@ -2156,7 +2310,12 @@ function renderHealth(){
     e.target.value='';
   };
 }
-function renderAllNow(){applyNames();renderSince();renderCountdown();renderNextSee();renderEvents();renderMonth();if(view==='up')renderUpcoming();if(view==='us')renderUs();if(view==='stats')renderStats();if(view==='special')renderSpecial();}
+// Cloud changes can arrive on any page. Rebuild the calendar only when visible;
+// remember the invalidation so returning to it always shows the newest data.
+let _calendarDirty=false;
+function renderAllNow(){applyNames();renderSince();renderCountdown();renderNextSee();renderEvents();
+  if(view==='cal')renderMonth();else _calendarDirty=true;
+  if(view==='up')renderUpcoming();if(view==='us')renderUs();if(view==='stats')renderStats();if(view==='special')renderSpecial();}
 /* perf: several firebase listeners can fire in the same tick (and every save
    echoes back), which used to run a full re-render 4-5 times over. Coalesce
    them into one render per frame - same end result, a fraction of the work. */
@@ -2492,7 +2651,8 @@ function renderStat(){
   if(box('s-work'))box('s-work').classList.toggle('cycling',workCycle>0);
 }
 function renderMonth(){
-  $('mtitle').textContent=MON[viewM]+' '+viewY;
+  _calendarDirty=false;
+  $('mtitle').innerHTML=MON[viewM]+' <span class="month-year">'+viewY+'</span>';
   const grid=$('grid');grid.innerHTML='';
   const frag=document.createDocumentFragment();
   const lead=(new Date(Date.UTC(viewY,viewM,1)).getUTCDay()+6)%7;
@@ -2511,7 +2671,6 @@ function renderMonth(){
     const num=document.createElement('span');num.className='num';num.textContent=d;c.appendChild(num);
     const planStar=!!(o&&o.plan&&!o.met);
     if(planStar){c.appendChild(mkNode('star'));}
-    else if(cls==='bo'){const st=document.createElement('span');st.className='star';st.textContent='\u2605';c.appendChild(st);}
     if(noteObj(k)){const nd=document.createElement('span');nd.className='ndot';c.appendChild(nd);}
     if(o&&o.gym){const gd=document.createElement('span');gd.className='gdot';c.appendChild(gd);}
     if(o&&o.per)c.appendChild(mkNode('drop'));
@@ -2531,6 +2690,13 @@ function renderMonth(){
     const ev=evMap.get(k);
     if(ev){const ed=document.createElement('span');ed.className='edot';ed.style.background=ev.color||'var(--accent)';c.appendChild(ed);}
     c.dataset.k=k;
+    c.setAttribute('role','button');c.tabIndex=0;
+    c.setAttribute('aria-label',fmtLong(k)+' '+viewY+'. '+stateWords(k)
+      +(o&&o.special?'. Special day':'')+(anni?'. '+anniversaryLabel(anni):'')
+      +(noteObj(k)?'. Has a note':'')+(o&&o.met?'. Saw each other':'')
+      +(o&&o.plan&&!o.met?'. Seeing each other':'')+(o&&o.gym?'. Gym':'')
+      +(o&&(o.holS||o.holF)?'. Holiday':'')+(payMap[k]?'. Payday':''));
+    if(k===todayKey)c.setAttribute('aria-current','date');
     frag.appendChild(c);
   }
   grid.appendChild(frag);
@@ -2596,6 +2762,12 @@ $('grid').addEventListener('click',e=>{
   if(measuring){ if(c&&c.dataset.k)gapTap(c.dataset.k); return; }
   if(marking){ if(c&&c.dataset.k)markDay(c.dataset.k,c); return; }
   if(c&&c.dataset.k&&!$('grid').classList.contains('dragging'))openSheet(c.dataset.k);
+});
+// Reuse the same delegated click path for keyboard activation.
+$('grid').addEventListener('keydown',e=>{
+  if((e.key==='Enter'||e.key===' ')&&e.target.matches('.cell[data-k]')){
+    e.preventDefault();if(!e.repeat)e.target.click();
+  }
 });
 /* ---- 1. burst of hearts from a cell ---- */
 function burstAt(el,glyph,colour,n){
@@ -3495,6 +3667,7 @@ function setView(v){view=v;
   $('view-mset').style.display=v==='mset'?'block':'none';
   $('view-health').style.display=v==='health'?'block':'none';
 
+  if(v==='cal'&&_calendarDirty)renderMonth();
   if(v==='up')renderUpcoming();
   if(v==='us')renderUs();
   if(v==='stats')renderStats();
@@ -4094,7 +4267,7 @@ $('saveSettings').onclick=async()=>{
 
 /* ---------- keep today fresh ---------- */
 function tick(){const t=computeToday();if(t!==todayKey){todayKey=t;markGearDue();renderAll();checkStarDay();}}
-setInterval(tick,60000);
+setInterval(()=>{if(!document.hidden)tick();},60000);
 setInterval(()=>{if(!document.hidden)paintPresence();},15000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick();});
 window.addEventListener('focus',tick);
