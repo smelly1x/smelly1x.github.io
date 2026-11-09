@@ -293,6 +293,25 @@
   /* perf: hold marker animations while the grid is being dragged - that's when
      jank is felt. Resumes the moment the gesture ends. */
   #grid.dragging .cell *,#grid.dragging .cell::before,#grid.dragging .cell::after{animation-play-state:paused!important}
+  /* calm mode: every marker keeps its signature motion (the star's twinkle,
+     the bolt's strike, the droplet's bob, the palm's sway, the flame's flicker)
+     and drops the stacked glow and spark layers around it. Same character,
+     roughly a third of the animation work, and far less busy to look at. */
+  #grid .cell .star *:not(.st-body),
+  #grid .cell .mkS  *:not(.bz-core),
+  #grid .cell .mkD  *:not(.dr-body),
+  #grid .cell .mkH  *:not(.plm-sway),
+  #grid .cell .mkF  *:not(.ck-flame),
+  #grid .cell .mkP  *:not(.py-body){animation:none!important}
+  /* layers that only exist to flicker would sit frozen on-screen, so hide them */
+  #grid .cell .tk1,#grid .cell .tk2,#grid .cell .tk3,#grid .cell .tk4,#grid .cell .tk5,#grid .cell .tk6,
+  #grid .cell .bz-arc,#grid .cell .bz-arc2,
+  #grid .cell .ck-e1,#grid .cell .ck-e2,#grid .cell .ck-e3,#grid .cell .ck-e4,#grid .cell .ck-e5,#grid .cell .ck-e6,
+  #grid .cell .ck-lick1,#grid .cell .ck-lick2,
+  #grid .cell .dr-d1,#grid .cell .dr-d2,#grid .cell .dr-d3,
+  #grid .cell .plm-l1,#grid .cell .plm-l2,#grid .cell .plm-l3,
+  #grid .cell .py-p1,#grid .cell .py-p2,#grid .cell .py-p3,#grid .cell .py-p4,#grid .cell .py-p5,
+  #grid .cell .py-k1,#grid .cell .py-k2{opacity:0!important}
   /* perf: a month with lots of markers can run 200+ concurrent animations, which
      drops frames. When it gets busy we keep every marker's main animation and
      only stand down the decorative extras (sparks, embers, drips, falling leaves).
@@ -1115,8 +1134,8 @@
   .cell.special{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.3)}
   .cell.today.special{animation:spHue 6s linear infinite}
   .cell:focus-visible{outline:2px solid #fff;outline-offset:2px;z-index:7}
-  .legend{gap:7px;margin-top:18px}
-  .lchip{min-height:44px;justify-content:center;text-align:center;padding:10px 12px;font-size:12px;border-radius:12px;background:rgba(31,26,43,.75)}
+  .legend{gap:6px;margin-top:16px}
+  .lchip{min-height:38px;justify-content:center;text-align:center;padding:7px 10px;font-size:12.5px;border-radius:999px;background:rgba(31,26,43,.6)}
   .lchip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;flex:none;margin-right:8px}
   .stats{gap:0;margin-top:18px;border:1px solid var(--border);border-radius:17px;overflow:hidden;
     background:linear-gradient(145deg,#251e32,#1b1724);box-shadow:var(--card-sh)}
@@ -1150,6 +1169,203 @@
     .lchip{font-size:11px;padding:9px 8px}.lchip::before{margin-right:6px}
     .stat{padding:13px 11px}.stat .txt{font-size:12px}
   }
+
+  /* ---- chat search ---- */
+  .cs-load{width:100%;background:var(--accent);color:#141019;border:none;border-radius:14px;padding:14px;
+    font-size:15px;font-weight:800;cursor:pointer;margin-top:4px}
+  .cs-status{font-size:13px;color:var(--muted);margin:10px 2px 0;min-height:1em}
+  .cs-how{margin-top:16px;font-size:13.5px;color:var(--muted);background:var(--surface);border:1px solid var(--border);
+    border-radius:14px;padding:12px 14px}
+  .cs-how b{color:var(--text)} .cs-how ol{margin:6px 0 0;padding-left:20px} .cs-how li{margin:3px 0}
+  .cs-note{margin-top:10px;font-size:12.5px;color:var(--muted);padding:0 2px}
+  .cs-meta{display:flex;align-items:baseline;gap:10px;font-size:12.5px;color:var(--muted);margin-bottom:8px}
+  .cs-meta b{color:var(--text)} .cs-grow{flex:1}
+  .cs-link{background:none;border:none;color:var(--muted);font-size:12.5px;font-weight:600;cursor:pointer;
+    text-decoration:underline;text-underline-offset:3px;padding:2px}
+  .cs-who{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+  .cs-who span{background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:4px 10px;font-size:12px;color:var(--muted)}
+  .cs-who span b{color:var(--text)}
+  .cs-also{font-size:12px;color:var(--muted);margin:-6px 2px 10px;line-height:1.5;min-height:0}
+  .cs-also b{color:var(--accent)}
+  .cs-head{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:6px 2px 8px}
+  .cs-msg{display:block;width:100%;text-align:left;background:var(--surface);border:1px solid var(--border);
+    border-radius:13px;padding:10px 12px;margin-bottom:7px;color:var(--text);cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .cs-msg:active{transform:scale(.99)}
+  .cs-msg .t{display:flex;justify-content:space-between;gap:8px;font-size:11.5px;color:var(--muted);margin-bottom:3px}
+  .cs-msg .t b{color:var(--text)}
+  .cs-msg .x2{font-size:14px;white-space:pre-wrap;word-break:break-word;line-height:1.45}
+  .cs-msg mark,.cs-bub mark{background:#f5c542;color:#1a1206;border-radius:3px;padding:0 2px}
+  .cs-empty{text-align:center;color:var(--muted);font-size:13.5px;padding:24px 8px;line-height:1.6}
+  .cs-more{display:block;margin:4px auto 0;background:var(--surface);border:1px solid var(--border);color:var(--text);
+    border-radius:999px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer}
+  .cs-back{background:none;border:none;color:var(--muted);font-size:14px;font-weight:700;cursor:pointer;padding:4px 0 10px}
+  .cs-day{text-align:center;font-size:11px;color:var(--muted);margin:12px 0 4px;font-weight:700}
+  .cs-bub{max-width:86%;border-radius:14px;padding:8px 11px;margin:5px 0;font-size:14px;white-space:pre-wrap;
+    word-break:break-word;border:1px solid var(--border);line-height:1.45}
+  .cs-bub small{display:block;font-size:10.5px;color:var(--muted);margin-bottom:2px}
+  .cs-bub.a{background:var(--surface);margin-right:auto}
+  .cs-bub.b{background:rgba(180,124,255,.16);margin-left:auto}
+  .cs-bub.f{outline:2px solid var(--accent);outline-offset:2px}
+
+  /* ---- WhatsApp look for the chat panel ---- */
+  #chatpanel{background:#111b21}
+  #chatpanel .phead h2{color:#e9edef}
+  #chatpanel .x{background:#202c33;border-color:#2a3942;color:#aebac1}
+  #chatpanel .cs-how,#chatpanel .cs-who span{background:#202c33;border-color:#2a3942;color:#8696a0}
+  #chatpanel .cs-how b,#chatpanel .cs-who span b,#chatpanel .cs-meta b{color:#e9edef}
+  #chatpanel .cs-meta,#chatpanel .cs-note,#chatpanel .cs-status,#chatpanel .cs-link,#chatpanel .cs-also{color:#8696a0}
+  #chatpanel .cs-also b{color:#00a884}
+  #chatpanel .cs-load{background:#00a884;color:#111b21}
+  #cs-q{background:#202c33!important;border:none!important;border-radius:999px!important;color:#e9edef!important;
+    padding:11px 16px!important;font-size:15px!important}
+  #cs-q::placeholder{color:#8696a0}
+  #chatpanel .cs-head{color:#00a884}
+  /* results read like WhatsApp's own search list */
+  .cs-msg{display:flex!important;gap:12px;align-items:flex-start;background:none!important;border:none!important;
+    border-bottom:1px solid #222d34!important;border-radius:0!important;padding:11px 2px!important;margin:0!important}
+  .cs-msg:active{background:#202c33!important;transform:none!important}
+  .cs-ava{flex:none;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:16px;color:#fff}
+  .cs-rbody{flex:1;min-width:0}
+  .cs-msg .t{color:#8696a0!important;font-size:12px!important}
+  .cs-msg .t b{color:#e9edef!important;font-size:15px;font-weight:600}
+  .cs-msg .x2{color:#8696a0!important;font-size:14px!important;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  #chatpanel mark{background:none!important;color:#00a884!important;font-weight:700;padding:0!important}
+  .cs-more{background:#202c33!important;border:none!important;color:#00a884!important;margin-top:12px!important}
+  #chatpanel .cs-empty{color:#8696a0}
+
+  /* the conversation itself */
+  #cs-ctx{position:fixed;inset:0;max-width:440px;margin:0 auto;z-index:30;display:flex;flex-direction:column;
+    background:#0b141a url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'><g fill='none' stroke='%23ffffff' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round' opacity='.055'><path d='M22 30c-4-7 5-12 8-5 3-7 12-2 8 5l-8 8z'/><path d='M120 18l3 7 7 1-5 5 1 7-6-4-6 4 1-7-5-5 7-1z'/><path d='M70 70a12 12 0 1 0 12 15 9 9 0 0 1-12-15z'/><path d='M140 92h18v14a7 7 0 0 1-7 7h-4a7 7 0 0 1-7-7z M158 96h4a3 3 0 0 1 0 6h-4'/><path d='M28 120h26a6 6 0 0 1 6 6v12a6 6 0 0 1-6 6H40l-8 7v-7h-4a6 6 0 0 1-6-6v-12a6 6 0 0 1 6-6z'/><path d='M104 140l6 10 6-10 M110 150v12'/><circle cx='110' cy='136' r='5'/><path d='M160 40c6 0 6 8 0 8s-6 8 0 8'/><path d='M60 10l4 4m0-4l-4 4'/><path d='M150 160l4 4m0-4l-4 4'/><path d='M8 80l4 4m0-4l-4 4'/></g></svg>") repeat;background-size:180px 180px}
+  .wa-top{flex:none;display:flex;align-items:center;gap:6px;background:#202c33;color:#e9edef;
+    padding:calc(8px + env(safe-area-inset-top,0px)) 10px 8px 4px;box-shadow:0 1px 3px rgba(0,0,0,.4)}
+  .wa-backbtn{background:none;border:none;color:#aebac1;padding:6px;display:flex;cursor:pointer}
+  .wa-av{width:38px;height:38px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
+    font-weight:700;color:#fff;font-size:16px}
+  .wa-who{display:flex;flex-direction:column;line-height:1.25;min-width:0;margin-left:4px}
+  .wa-who b{font-size:16.5px;font-weight:600;color:#e9edef;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .wa-who span{font-size:12.5px;color:#8696a0}
+  .wa-scroll{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:8px 14px calc(18px + env(safe-area-inset-bottom,0px))}
+  .wa-more{display:block;margin:6px auto 10px;background:rgba(32,44,51,.92);border:none;color:#00a884;
+    border-radius:999px;padding:7px 14px;font-size:12.5px;font-weight:700;cursor:pointer}
+  .wa-day{position:sticky;top:4px;z-index:2;text-align:center;margin:10px 0 6px}
+  .wa-day span{display:inline-block;background:#182229;color:#8696a0;font-size:12.5px;border-radius:7.5px;
+    padding:5px 12px;box-shadow:0 1px .5px rgba(11,20,26,.4)}
+  .wa-row{display:flex;margin-top:2px}
+  .wa-row.gap{margin-top:9px}
+  .wa-row.me{justify-content:flex-end}
+  .wa-b{position:relative;max-width:82%;padding:6px 8px 7px 9px;border-radius:7.5px;font-size:14.4px;line-height:19px;
+    color:#e9edef;white-space:pre-wrap;word-break:break-word;box-shadow:0 1px .5px rgba(11,20,26,.25)}
+  .wa-row.them .wa-b{background:#202c33}
+  .wa-row.me .wa-b{background:#005c4b}
+  .wa-row.them.tail .wa-b{border-top-left-radius:0}
+  .wa-row.me.tail .wa-b{border-top-right-radius:0}
+  .wa-row.them.tail .wa-b::before{content:"";position:absolute;top:0;left:-8px;width:8px;height:13px;
+    background:#202c33;clip-path:polygon(0 0,100% 0,100% 100%)}
+  .wa-row.me.tail .wa-b::before{content:"";position:absolute;top:0;right:-8px;width:8px;height:13px;
+    background:#005c4b;clip-path:polygon(0 0,100% 0,0 100%)}
+  .wa-meta{float:right;display:inline-flex;align-items:center;gap:3px;margin:6px 0 -6px 10px;
+    font-size:11px;line-height:15px;color:rgba(233,237,239,.6);white-space:nowrap}
+  .wa-row.them .wa-meta{color:#8696a0}
+  .wa-meta svg{display:block}
+  .wa-b mark{background:#f5c542!important;color:#111b21!important;border-radius:3px;padding:0 1px!important;font-weight:400!important}
+  .wa-row.hit .wa-b{animation:waFlash 1.6s ease-out 1}
+  @keyframes waFlash{0%,35%{box-shadow:0 0 0 2px #00a884,0 1px .5px rgba(11,20,26,.25)}100%{box-shadow:0 1px .5px rgba(11,20,26,.25)}}
+
+  /* confetti belongs to the calendar; hide it while any panel is open on top */
+  body.panel-open #day-confetti{opacity:0;transition:opacity .2s}
+  /* the word you searched for, inside the conversation: WhatsApp's yellow */
+  #chatpanel .wa-b mark{background:#f5c542!important;color:#111b21!important;font-weight:400!important;
+    border-radius:3px;padding:0 2px!important}
+  #cs-q:focus{outline:none!important;box-shadow:0 0 0 2px #00a884!important}
+
+  /* ---- tabs ---- */
+  .cs-tabs{display:flex;gap:4px;background:#202c33;border-radius:999px;padding:4px;margin:0 0 12px}
+  .cs-tabs button{flex:1;border:none;background:none;color:#8696a0;font-weight:700;font-size:14px;padding:8px;border-radius:999px;cursor:pointer}
+  .cs-tabs button.on{background:#00a884;color:#111b21}
+
+  /* ---- media inside the conversation ---- */
+  .wa-b.wa-mb{padding:3px!important}
+  .wa-media{position:relative;display:block;border-radius:6px;overflow:hidden;background:#182229;
+    width:min(260px,62vw);min-height:120px;cursor:pointer}
+  .wa-media img,.wa-media video{display:block;width:100%;height:auto;max-height:340px;object-fit:cover;border-radius:6px}
+  .wa-media.vid::after{content:"";position:absolute;inset:0;margin:auto;width:52px;height:52px;border-radius:50%;
+    background:rgba(11,20,26,.55) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5v14l11-7z' fill='white'/%3E%3C/svg%3E") center/26px no-repeat;pointer-events:none}
+  .wa-media .wa-meta{position:absolute;right:6px;bottom:5px;margin:0;float:none;color:#fff!important;
+    text-shadow:0 1px 2px rgba(0,0,0,.6);z-index:2}
+  .wa-media::before{content:"";position:absolute;left:0;right:0;bottom:0;height:34px;z-index:1;
+    background:linear-gradient(transparent,rgba(0,0,0,.45));pointer-events:none}
+  .wa-cap{padding:5px 6px 2px}
+  .wa-audio{padding:4px 2px 0}
+  .wa-audio audio{width:min(240px,58vw);height:36px;display:block}
+  .wa-ph{display:flex;align-items:center;gap:7px;color:#8696a0;font-style:italic}
+  .wa-ph svg{flex:none}
+
+  /* ---- the photos grid ---- */
+  .cs-month{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8696a0;font-weight:700;margin:14px 2px 8px}
+  .cs-month:first-child{margin-top:2px}
+  .cs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+  .cs-tile{position:relative;aspect-ratio:1;background:#202c33;border:none;padding:0;cursor:pointer;overflow:hidden;border-radius:3px}
+  .cs-tile img,.cs-tile video{width:100%;height:100%;object-fit:cover;display:block}
+  .cs-tile .vb{position:absolute;left:5px;bottom:4px;z-index:1;display:flex;align-items:center;gap:3px;color:#fff;
+    font-size:11px;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.7)}
+  .cs-pnote{color:#8696a0;font-size:13.5px;text-align:center;padding:30px 12px;line-height:1.6}
+  .cs-pnote b{color:#e9edef}
+  .cs-warn{background:#2a2a1a;border:1px solid #4a4520;color:#e9d98a;border-radius:12px;padding:10px 12px;font-size:12.5px;margin:0 0 12px;line-height:1.5}
+
+  /* ---- full-screen viewer ---- */
+  #cs-viewer{position:fixed;inset:0;max-width:440px;margin:0 auto;z-index:40;background:#000;display:flex;flex-direction:column}
+  .vw-top{flex:none;display:flex;align-items:center;gap:8px;padding:calc(8px + env(safe-area-inset-top,0px)) 10px 8px;
+    background:rgba(0,0,0,.75)}
+  .vw-x{background:none;border:none;color:#e9edef;padding:6px;display:flex;cursor:pointer}
+  .vw-who{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.25}
+  .vw-who b{color:#e9edef;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .vw-who span{color:#aebac1;font-size:12.5px}
+  .vw-chat{background:#00a884;color:#111b21;border:none;border-radius:999px;padding:7px 13px;font-weight:800;font-size:12.5px;cursor:pointer;flex:none}
+  .vw-stage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;touch-action:pan-y}
+  .vw-stage img,.vw-stage video{max-width:100%;max-height:100%;object-fit:contain;display:block}
+  .vw-cap{flex:none;color:#e9edef;font-size:14.5px;line-height:1.45;padding:10px 16px calc(14px + env(safe-area-inset-bottom,0px));
+    background:rgba(0,0,0,.75);white-space:pre-wrap;word-break:break-word}
+  .vw-cap:empty{display:none}
+  .vw-nav{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:56px;border:none;border-radius:8px;
+    background:rgba(32,44,51,.6);color:#e9edef;font-size:30px;line-height:1;cursor:pointer}
+  .vw-prev{left:6px}.vw-next{right:6px}
+  .vw-nav[disabled]{opacity:0;pointer-events:none}
+  .wa-media{height:220px}
+  .wa-media img,.wa-media video{height:100%!important;max-height:none!important;object-fit:cover}
+  .appcard.ac-chat{margin-bottom:10px;
+    background:linear-gradient(135deg,#0b8f72 0%,#00a884 45%,#25d366 100%);
+    box-shadow:0 12px 26px -12px rgba(0,168,132,.85)}
+
+  /* ---- the rest of WhatsApp's bubble types ---- */
+  .wa-del{font-style:italic;color:#8696a0!important;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .wa-del svg{flex:none}
+  .wa-callb{min-width:200px}
+  .wa-call{display:flex;align-items:center;gap:10px;padding:2px 2px 4px}
+  .wa-ci{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    background:rgba(255,255,255,.1);color:#e9edef;flex:none}
+  .wa-call.miss .wa-ci{color:#f15c6d}
+  .wa-ct{display:flex;flex-direction:column;line-height:1.3}
+  .wa-ct b{font-weight:500;font-size:14.5px}
+  .wa-ct i{font-style:normal;font-size:12.5px;color:rgba(233,237,239,.65)}
+  .wa-poll{min-width:220px}
+  .wa-poll>b{display:block;font-weight:600;margin-bottom:6px}
+  .wa-po{position:relative;display:flex;justify-content:space-between;gap:10px;padding:6px 8px;margin:4px 0;
+    border-radius:6px;background:rgba(255,255,255,.06);overflow:hidden;font-size:13.5px}
+  .wa-po i{position:absolute;left:0;top:0;bottom:0;background:rgba(0,168,132,.28);z-index:0}
+  .wa-po span,.wa-po em{position:relative;z-index:1;font-style:normal}
+  .wa-po em{color:rgba(233,237,239,.7)}
+  .wa-stkb{background:none!important;box-shadow:none!important;padding:0!important}
+  .wa-stkb::before{display:none!important}
+  .wa-stk{width:140px;height:140px}
+  .wa-stk img{width:100%;height:100%;object-fit:contain;display:block}
+  .wa-stkb .wa-meta{float:none;display:inline-flex;margin:2px 0 0;background:rgba(11,20,26,.65);border-radius:8px;padding:1px 7px;color:#aebac1!important}
+  .wa-row.me .wa-stkb{text-align:right}
+  .wa-gif{position:absolute;left:8px;top:8px;z-index:2;background:rgba(11,20,26,.65);color:#fff;font-size:11px;font-weight:800;
+    border-radius:5px;padding:2px 6px;letter-spacing:.05em}
+  .wa-media.gif video{width:100%;height:100%;object-fit:cover;display:block}
+  .cs-saving{font-size:12px;color:#00a884;margin:-6px 2px 10px;min-height:0}
+  .cs-saving:empty{display:none}
 </style>
 
 </head>
@@ -1440,6 +1656,65 @@
   <button class="reset" id="w-delete" style="margin-top:10px;display:none">Delete</button>
 </div>
 
+<div class="panel" id="chatpanel">
+  <div class="phead"><h2 id="cs-title">Our chat</h2><button class="x" id="closeChat">&#10005;</button></div>
+
+  <div id="cs-empty">
+    <button class="cs-load" id="cs-pick">Load your WhatsApp chat</button>
+    <input type="file" id="cs-file" accept=".txt,.zip,text/plain,application/zip" style="display:none">
+    <div class="cs-status" id="cs-status"></div>
+    <div class="cs-how">
+      <b>Getting the file out of WhatsApp</b>
+      <ol><li>Open the chat</li><li>Tap the name at the top, scroll down, tap <b>Export chat</b></li>
+      <li>Choose <b>Attach media</b> to get your photos too, or <b>Without media</b> for just the messages</li><li>Save it to Files, then load it here</li></ol>
+    </div>
+    <div class="cs-note">The chat stays on this phone. It doesn’t sync, so each of you loads your own export once.</div>
+  </div>
+
+  <div id="cs-main" style="display:none">
+    <div class="cs-meta"><span id="cs-count"></span><span class="cs-grow"></span>
+      <button class="cs-link" id="cs-replace">Load newer</button><button class="cs-link" id="cs-forget">Forget</button></div>
+    <div class="cs-who" id="cs-who"></div>
+    <div class="cs-saving" id="cs-saving"></div>
+    <div class="cs-tabs"><button class="on" id="cs-tabS">Search</button><button id="cs-tabP">Photos</button></div>
+    <div id="cs-tab-search">
+      <input class="nt-search" id="cs-q" type="search" autocomplete="off" enterkeyhint="search"
+        placeholder="Search, or ask “when did we last talk about food”">
+      <div class="cs-also" id="cs-also"></div>
+      <div id="cs-results"></div>
+    </div>
+    <div id="cs-tab-photos" style="display:none"><div id="cs-photos"></div></div>
+  </div>
+
+  <div id="cs-viewer" style="display:none">
+    <div class="vw-top">
+      <button class="vw-x" id="vw-close" aria-label="Close">
+        <svg viewBox="0 0 24 24" width="22" height="22"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+      <div class="vw-who"><b id="vw-name"></b><span id="vw-when"></span></div>
+      <button class="vw-chat" id="vw-chat">Show in chat</button>
+    </div>
+    <div class="vw-stage" id="vw-stage"></div>
+    <div class="vw-cap" id="vw-cap"></div>
+    <button class="vw-nav vw-prev" id="vw-prev" aria-label="Earlier">&lsaquo;</button>
+    <button class="vw-nav vw-next" id="vw-next" aria-label="Later">&rsaquo;</button>
+  </div>
+
+  <div id="cs-ctx" style="display:none">
+    <div class="wa-top">
+      <button class="wa-backbtn" id="cs-back" aria-label="Back to results">
+        <svg viewBox="0 0 24 24" width="24" height="24"><path d="M15.5 4.5 8 12l7.5 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="wa-av" id="wa-av"></div>
+      <div class="wa-who"><b id="wa-name"></b><span id="wa-sub"></span></div>
+    </div>
+    <div class="wa-scroll" id="wa-scroll">
+      <button class="wa-more" id="wa-earlier">Load earlier messages</button>
+      <div id="cs-ctx-body"></div>
+      <button class="wa-more" id="wa-later">Load later messages</button>
+    </div>
+  </div>
+</div>
+
 <div class="panel" id="notespanel">
   <div class="phead"><h2>All notes</h2><button class="x" id="closeNotes">&#10005;</button></div>
   <input class="nt-search" id="nt-search" placeholder="Search notes…">
@@ -1487,6 +1762,18 @@
     </div>
     <div class="fld ownset" id="fld-owner-set" style="display:none">This phone: <b id="owner-name"></b> <button class="linkbtn" id="owner-change">change</button></div>
   </div>
+
+  <button class="appcard ac-chat" id="go-chat-tile">
+    <span class="ac-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="26" height="26">
+        <path d="M12 3.5c-4.97 0-9 3.6-9 8.05 0 2.05.86 3.92 2.27 5.34L4.5 20.5l3.86-1.3c1.1.43 2.33.66 3.64.66 4.97 0 9-3.6 9-8.05S16.97 3.5 12 3.5z"
+              fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M8.2 10.4h7.6M8.2 13.4h5" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </span>
+    <span class="ac-txt"><b>Our chat</b></span>
+    <span class="ac-go">&rsaquo;</span>
+  </button>
 
   <button class="appcard" id="go-health">
     <span class="ac-icon" aria-hidden="true">
@@ -1719,15 +2006,15 @@ async function readEntry(zip,e){
 function csvScan(text,cols,fn){
   let i=text.indexOf('\n'); if(i<0)return;
   const hdr=text.slice(0,i).replace(/\r$/,'').split(',').map(s=>s.trim().replace(/^"|"$/g,''));
-  const idx=cols.map(c=>hdr.indexOf(c));
-  if(idx.some(x=>x<0))return;
+  const idx=cols.map(c=>hdr.indexOf(c.replace(/\?$/,'')));
+  if(idx.some((x,k)=>x<0&&!cols[k].endsWith('?')))return;
   let start=i+1;
   const n=text.length;
   while(start<n){
     let end=text.indexOf('\n',start); if(end<0)end=n;
     if(end>start){
       const line=text.charCodeAt(end-1)===13?text.slice(start,end-1):text.slice(start,end);
-      if(line){const parts=line.split(',');fn(idx.map(x=>parts[x]));}
+      if(line){const parts=line.split(',');fn(idx.map(x=>x<0?undefined:parts[x]));}
     }
     start=end+1;
   }
@@ -1748,108 +2035,139 @@ function csvRows(text){
 const dayOf=t=>(t||'').slice(0,10);
 
 async function importHealthZip(file,onProgress){
-  const zip=await unzip(file);
-  const want=e=>{
-    const n=e.name;
-    // fitbit exports food logs as JSON (Global Export Data/food_logs-0.json)
-    if(/food_log/i.test(n)&&/\.json$/i.test(n))return true;
-    if(/Global Export Data\/sleep-/i.test(n)&&/\.json$/i.test(n))return true;
-    if(!/\.csv$/i.test(n))return false;
-    return /steps_|distance_|\/calories_2|heart_rate_2|daily_resting_heart_rate|daily_respiratory_rate|daily_oxygen_saturation|daily_heart_rate_variability|sleep_score|Active Zone Minutes|weight\.csv|food_log|nutrition|Foods\//i.test(n);
+  /* Reads the zip a piece at a time: a Takeout is hundreds of megabytes, most of
+     it files we never touch, and loading the lot into memory can crash a phone. */
+  const zip=await zIndex(file);
+  const B=e=>e.base, P=e=>e.name;
+  const kind=e=>{
+    const b=B(e), p=P(e);
+    if(/food_log/i.test(b)&&/\.json$/i.test(b))return 'foodjson';
+    if(/Global Export Data\//i.test(p)&&/^sleep-.*\.json$/i.test(b))return 'sleepjson';
+    if(!/\.csv$/i.test(b))return null;
+    if(/^steps_\d/i.test(b))return 'steps';
+    if(/^distance_\d/i.test(b))return 'dist';
+    if(/^calories_\d/i.test(b))return 'cals';
+    if(/^heart_rate_\d/i.test(b))return 'hr';
+    if(/^active_zone_minutes_\d/i.test(b))return 'azm';
+    if(/Active Zone Minutes/i.test(p))return 'azmOld';
+    if(/^daily_resting_heart_rate/i.test(b))return 'rhr';
+    if(/^daily_respiratory_rate/i.test(b))return 'resp';
+    if(/^daily_oxygen_saturation/i.test(b))return 'spo2';
+    if(/^daily_heart_rate_variability/i.test(b))return 'hrv';
+    if(/^daily_readiness/i.test(b))return 'ready';
+    if(/^weight/i.test(b))return 'weight';
+    if(/^UserSleepScores_/i.test(b))return 'sScores';
+    if(/^UserSleeps_/i.test(b))return 'sSleeps';
+    if(/^UserSleepStages_/i.test(b))return 'sStages';
+    if(/sleep_score/i.test(b))return 'sleepOld';
+    if(/^nutrition_log/i.test(b)||/food_log|Foods\//i.test(p))return 'food';
+    return null;
   };
-  const files=zip.entries.filter(want);
+  const files=zip.entries.map(x=>({e:x,k:kind(x)})).filter(x=>x.k);
   const D={};
-  const put=(d,k,v)=>{if(!d||isNaN(v))return;(D[d]=D[d]||{})[k]=v;};
-  const sums={},hrAgg={};
+  const put=(d,k,v)=>{if(!d||v===undefined||v===null||(typeof v==='number'&&isNaN(v)))return;(D[d]=D[d]||{})[k]=v;};
+  const sums={}, hrAgg={}, bySrc={};                       // bySrc[day|field][source]=total
+  const addSrc=(d,f,src,v)=>{const k=d+'|'+f;const m=bySrc[k]||(bySrc[k]={});const s=src||'?';m[s]=(m[s]||0)+v;};
+  const sleeps={}, stages={}, scores={};
   let done=0;
-  for(const e of files){
+  for(const {e,k} of files){
     let text='';
-    try{ text=await readEntry(zip,e); }catch(err){ done++; continue; }
-    const n=e.name;
-    const small=!/steps_|distance_|\/calories_2|heart_rate_2|Active Zone Minutes/i.test(n);
-    const rows=small?csvRows(text):null;
-    if(/Global Export Data\/sleep-/i.test(n)&&/\.json$/i.test(n)){
-      /* the full sleep log: stages, time in bed, efficiency, bed and wake times */
+    try{text=await zText(zip,e);}catch(err){done++;if(onProgress)onProgress(done,files.length);continue;}
+    const rows=['rhr','resp','spo2','hrv','ready','weight','sScores','sSleeps','sStages','sleepOld','food'].includes(k)?csvRows(text):null;
+    if(k==='steps')csvScan(text,['timestamp','steps','data source?'],c=>{const d=c[0]&&c[0].slice(0,10);const v=+c[1];if(d&&!isNaN(v))addSrc(d,'steps',c[2],v);});
+    else if(k==='dist')csvScan(text,['timestamp','distance','data source?'],c=>{const d=c[0]&&c[0].slice(0,10);const v=+c[1];if(d&&!isNaN(v))addSrc(d,'dist',c[2],v);});
+    else if(k==='cals')csvScan(text,['timestamp','calories','data source?'],c=>{const d=c[0]&&c[0].slice(0,10);const v=+c[1];if(d&&!isNaN(v))addSrc(d,'cals',c[2],v);});
+    else if(k==='hr')csvScan(text,['timestamp','beats per minute'],c=>{
+        const d=c[0]&&c[0].slice(0,10);const v=+c[1];if(!d||isNaN(v)||v<=0)return;
+        let a=hrAgg[d];if(!a)a=hrAgg[d]={n:0,sum:0,min:1e9,max:0};
+        a.n++;a.sum+=v;if(v<a.min)a.min=v;if(v>a.max)a.max=v;});
+    else if(k==='azm')csvScan(text,['timestamp','total minutes'],c=>{const d=c[0]&&c[0].slice(0,10);const v=+c[1];if(d&&!isNaN(v))sums[d+'|azm']=(sums[d+'|azm']||0)+v;});
+    else if(k==='azmOld')csvScan(text,['date_time','total_minutes'],c=>{const d=c[0]&&c[0].slice(0,10);const v=+c[1];if(d&&!isNaN(v))sums[d+'|azm']=(sums[d+'|azm']||0)+v;});
+    else if(k==='rhr')rows.forEach(r=>put(dayOf(r.timestamp),'rhr',Math.round(+r['beats per minute'])));
+    else if(k==='resp')rows.forEach(r=>put(dayOf(r.timestamp),'resp',Math.round(+r['breaths per minute']*10)/10));
+    else if(k==='spo2')rows.forEach(r=>put(dayOf(r.timestamp),'spo2',Math.round(+r['average percentage']*10)/10));
+    else if(k==='hrv')rows.forEach(r=>put(dayOf(r.timestamp),'hrv',Math.round(+r['average heart rate variability milliseconds'])));
+    else if(k==='ready')rows.forEach(r=>{const v=parseInt(r.score);if(v>0)put(dayOf(r.timestamp),'ready',v);});
+    else if(k==='weight')rows.forEach(r=>{const g=+r['weight grams'];if(!isNaN(g)&&g>0)put(dayOf(r.timestamp),'kg',Math.round(g/100)/10);});
+    else if(k==='sSleeps')rows.forEach(r=>{if(r.sleep_id)sleeps[r.sleep_id]=r;});
+    else if(k==='sScores')rows.forEach(r=>{if(r.sleep_id)scores[r.sleep_id]=r;});
+    else if(k==='sStages')rows.forEach(r=>{
+        const id=r.sleep_id, a=Date.parse(r.sleep_stage_start), b=Date.parse(r.sleep_stage_end);
+        if(!id||isNaN(a)||isNaN(b))return;
+        const m=stages[id]||(stages[id]={});const t=(r.sleep_stage_type||'').toUpperCase();
+        m[t]=(m[t]||0)+Math.round((b-a)/60000);});
+    else if(k==='sleepOld')rows.forEach(r=>{const d=dayOf(r.timestamp);
+        put(d,'sleep',parseInt(r.overall_score)||0);
+        if(r.deep_sleep_in_minutes)put(d,'deep',parseInt(r.deep_sleep_in_minutes));
+        if(r.resting_heart_rate)put(d,'srhr',parseInt(r.resting_heart_rate));
+        if(r.duration_score)put(d,'sDur',parseInt(r.duration_score));
+        if(r.composition_score)put(d,'sComp',parseInt(r.composition_score));
+        if(r.revitalization_score)put(d,'sRev',parseInt(r.revitalization_score));
+        if(r.restlessness)put(d,'restless',Math.round(parseFloat(r.restlessness)*1000)/1000);});
+    else if(k==='sleepjson'){
       try{
-        const list=JSON.parse(text);
-        (Array.isArray(list)?list:[]).forEach(s=>{
+        (JSON.parse(text)||[]).forEach(s=>{
           const d=dayOf(s.dateOfSleep||s.endTime||'');
           if(!d||s.mainSleep===false)return;
           const lv=(s.levels&&s.levels.summary)||{};
-          const get=(k)=>lv[k]&&typeof lv[k].minutes==='number'?lv[k].minutes:undefined;
-          put(d,'asleep',+s.minutesAsleep);
-          put(d,'inBed',+s.timeInBed);
-          put(d,'eff',+s.efficiency);
-          put(d,'awakeMin',get('wake'));
-          put(d,'remMin',get('rem'));
-          put(d,'lightMin',get('light'));
+          const get=x=>lv[x]&&typeof lv[x].minutes==='number'?lv[x].minutes:undefined;
+          put(d,'asleep',+s.minutesAsleep);put(d,'inBed',+s.timeInBed);put(d,'eff',+s.efficiency);
+          put(d,'awakeMin',get('wake'));put(d,'remMin',get('rem'));put(d,'lightMin',get('light'));
           if(get('deep')!==undefined)put(d,'deep',get('deep'));
-          if(s.startTime)D[d]=Object.assign(D[d]||{},{bed:String(s.startTime).slice(11,16)});
-          if(s.endTime)D[d]=Object.assign(D[d]||{},{wake:String(s.endTime).slice(11,16)});
+          if(s.startTime)put(d,'bed',String(s.startTime).slice(11,16));
+          if(s.endTime)put(d,'wake',String(s.endTime).slice(11,16));
         });
       }catch(err){}
     }
-    else if(/food_log/i.test(n)&&/\.json$/i.test(n)){
-      /* shape varies: entries usually carry a logDate/dateTime and either
-         calories directly or nested under loggedFood/nutritionalValues.
-         Written tolerantly so a slightly different export still works. */
+    else if(k==='foodjson'){
       try{
         const data=JSON.parse(text);
         const list=Array.isArray(data)?data:(Array.isArray(data.foods)?data.foods:[]);
         const pick=(...v)=>{for(const x of v){const n=+x;if(x!==undefined&&x!==null&&x!==''&&!isNaN(n))return n;}return NaN;};
         list.forEach(it=>{
           if(!it||typeof it!=='object')return;
-          const d=dayOf(it.logDate||it.LogDate||it.date||it.Date||it.dateTime||it.DateTime||'');
-          if(!d)return;
-          const lf=it.loggedFood||it.LoggedFood||{};
-          const nv=it.nutritionalValues||it.NutritionalValues||lf.nutritionalValues||lf.NutritionalValues||{};
+          const d=dayOf(it.logDate||it.LogDate||it.date||it.Date||it.dateTime||it.DateTime||'');if(!d)return;
+          const lf=it.loggedFood||it.LoggedFood||{}, nv=it.nutritionalValues||it.NutritionalValues||lf.nutritionalValues||lf.NutritionalValues||{};
           const cal=pick(lf.calories,lf.Calories,nv.calories,nv.Calories,it.calories,it.Calories);
           const fat=pick(nv.fat,nv.Fat,lf.fat,lf.Fat,it.fat,it.Fat);
           const carb=pick(nv.carbs,nv.Carbs,nv.carbohydrates,nv.Carbohydrates,lf.carbs,lf.Carbs,it.carbs,it.Carbs);
           const pro=pick(nv.protein,nv.Protein,lf.protein,lf.Protein,it.protein,it.Protein);
-          if(!isNaN(cal)) sums[d+'|calin']=(sums[d+'|calin']||0)+cal;
-          if(!isNaN(fat)) sums[d+'|fat']  =(sums[d+'|fat']  ||0)+fat;
-          if(!isNaN(carb))sums[d+'|carb'] =(sums[d+'|carb'] ||0)+carb;
-          if(!isNaN(pro)) sums[d+'|pro']  =(sums[d+'|pro']  ||0)+pro;
+          if(!isNaN(cal))sums[d+'|calin']=(sums[d+'|calin']||0)+cal;
+          if(!isNaN(fat))sums[d+'|fat']=(sums[d+'|fat']||0)+fat;
+          if(!isNaN(carb))sums[d+'|carb']=(sums[d+'|carb']||0)+carb;
+          if(!isNaN(pro))sums[d+'|pro']=(sums[d+'|pro']||0)+pro;
         });
       }catch(err){}
     }
-    else if(/steps_/i.test(n))       csvScan(text,['timestamp','steps'],c=>{const d=c[0]&&c[0].slice(0,10);const v=+c[1];if(d&&!isNaN(v))sums[d+'|steps']=(sums[d+'|steps']||0)+v;});
-    else if(/distance_/i.test(n))csvScan(text,['timestamp','distance'],c=>{const d=c[0]&&c[0].slice(0,10);const v=+c[1];if(d&&!isNaN(v))sums[d+'|dist']=(sums[d+'|dist']||0)+v;});
-    else if(/\/calories_2/i.test(n))csvScan(text,['timestamp','calories'],c=>{const d=c[0]&&c[0].slice(0,10);const v=+c[1];if(d&&!isNaN(v))sums[d+'|cals']=(sums[d+'|cals']||0)+v;});
-    else if(/heart_rate_2/i.test(n))csvScan(text,['timestamp','beats per minute'],c=>{
-        const d=c[0]&&c[0].slice(0,10);const v=+c[1];
-        if(!d||isNaN(v))return;let a=hrAgg[d];if(!a)a=hrAgg[d]={n:0,sum:0,min:1e9,max:0};
-        a.n++;a.sum+=v;if(v<a.min)a.min=v;if(v>a.max)a.max=v;});
-    else if(/Active Zone Minutes/i.test(n))csvScan(text,['date_time','total_minutes'],c=>{const d=c[0]&&c[0].slice(0,10);const v=+c[1];if(d&&!isNaN(v))sums[d+'|azm']=(sums[d+'|azm']||0)+v;});
-    else if(/daily_resting_heart_rate/i.test(n))rows.forEach(r=>put(dayOf(r.timestamp),'rhr',Math.round(+r['beats per minute'])));
-    else if(/daily_respiratory_rate/i.test(n))rows.forEach(r=>put(dayOf(r.timestamp),'resp',Math.round(+r['breaths per minute']*10)/10));
-    else if(/daily_oxygen_saturation/i.test(n))rows.forEach(r=>put(dayOf(r.timestamp),'spo2',Math.round(+r['average percentage']*10)/10));
-    else if(/daily_heart_rate_variability/i.test(n))rows.forEach(r=>put(dayOf(r.timestamp),'hrv',Math.round(+r['average heart rate variability milliseconds'])));
-    else if(/weight\.csv/i.test(n))rows.forEach(r=>{const g=+r['weight grams'];if(!isNaN(g))put(dayOf(r.timestamp),'kg',Math.round(g/100)/10);});
-    else if(/food_log|nutrition|Foods\//i.test(n)){
-      // fitbit only exports this if meals were logged; sum calories per day
-      const cols=Object.keys(rows[0]||{});
-      const dcol=cols.find(c=>/date|logDate|timestamp/i.test(c));
+    else if(k==='food'&&rows.length){
+      const cols=Object.keys(rows[0]);
+      const dcol=cols.find(c=>/start time|logdate|^date|timestamp/i.test(c));
       const ccol=cols.find(c=>/^calories$/i.test(c))||cols.find(c=>/calorie/i.test(c));
-      if(dcol&&ccol)rows.forEach(r=>{const d=dayOf(r[dcol]);const v=+r[ccol];
-        if(d&&!isNaN(v))sums[d+'|calin']=(sums[d+'|calin']||0)+v;});
+      const ncol=cols.find(c=>/^nutrients$/i.test(c));
+      rows.forEach(r=>{
+        const d=dayOf(r[dcol]);if(!d)return;
+        let cal=ccol?+r[ccol]:NaN;
+        if(isNaN(cal)&&ncol){const m=/(?:ENERGY|CALORIES)\s*:\s*([\d.]+)/i.exec(r[ncol]||'');if(m)cal=+m[1];}
+        if(!isNaN(cal)&&cal>0)sums[d+'|calin']=(sums[d+'|calin']||0)+cal;
+        if(ncol){
+          const g=re=>{const m=re.exec(r[ncol]||'');return m?+m[1]:NaN;};
+          const pr=g(/PROTEIN\s*:\s*([\d.]+)/i), cb=g(/CARBOHYDRATES?\s*:\s*([\d.]+)/i), ft=g(/(?:TOTAL_)?FAT\s*:\s*([\d.]+)/i);
+          if(!isNaN(pr))sums[d+'|pro']=(sums[d+'|pro']||0)+pr;
+          if(!isNaN(cb))sums[d+'|carb']=(sums[d+'|carb']||0)+cb;
+          if(!isNaN(ft))sums[d+'|fat']=(sums[d+'|fat']||0)+ft;
+        }
+      });
     }
-    else if(/sleep_score/i.test(n))rows.forEach(r=>{const d=dayOf(r.timestamp);
-        put(d,'sleep',parseInt(r.overall_score)||0);
-        if(r.deep_sleep_in_minutes)put(d,'deep',parseInt(r.deep_sleep_in_minutes));
-        if(r.resting_heart_rate)put(d,'srhr',parseInt(r.resting_heart_rate));
-        // the three parts fitbit scores separately - lets us say WHY it was what it was
-        if(r.duration_score)put(d,'sDur',parseInt(r.duration_score));
-        if(r.composition_score)put(d,'sComp',parseInt(r.composition_score));
-        if(r.revitalization_score)put(d,'sRev',parseInt(r.revitalization_score));
-        if(r.restlessness)put(d,'restless',Math.round(parseFloat(r.restlessness)*1000)/1000);});
-    done++; if(onProgress)onProgress(done,files.length);
+    done++;if(onProgress)onProgress(done,files.length);
+    text='';
   }
-  Object.keys(sums).forEach(k=>{const[d,f]=k.split('|');const v=sums[k];
-    if(f==='steps')put(d,'steps',Math.round(v));
-    if(f==='dist')put(d,'km',Math.round(v/100)/10);
-    if(f==='cals')put(d,'cals',Math.round(v));
+
+  // phone and watch both count steps on the same walk: take the bigger source each day, never the sum
+  Object.keys(bySrc).forEach(key=>{const[d,f]=key.split('|');const best=Math.max(...Object.values(bySrc[key]));
+    if(f==='steps')put(d,'steps',Math.round(best));
+    if(f==='dist')put(d,'km',Math.round(best/100)/10);
+    if(f==='cals')put(d,'cals',Math.round(best));});
+  Object.keys(sums).forEach(key=>{const[d,f]=key.split('|');const v=sums[key];
     if(f==='azm')put(d,'azm',Math.round(v));
     if(f==='calin')put(d,'calIn',Math.round(v));
     if(f==='fat')put(d,'fat',Math.round(v));
@@ -1857,6 +2175,41 @@ async function importHealthZip(file,onProgress){
     if(f==='pro')put(d,'pro',Math.round(v));});
   Object.keys(hrAgg).forEach(d=>{const a=hrAgg[d];
     put(d,'hrAvg',Math.round(a.sum/a.n));put(d,'hrMin',Math.round(a.min));put(d,'hrMax',Math.round(a.max));});
+
+  /* new-style sleep: every night is exported twice (old and new sleep algorithm),
+     plus naps. Per wake-up day use the newest algorithm, then the longest sleep. */
+  const localOf=(ts,off)=>{const t=Date.parse(ts);if(isNaN(t))return null;
+    const m=/^([+-])(\d{2}):?(\d{2})$/.exec(off||'+00:00');const sh=m?(m[1]==='-'?-1:1)*(+m[2]*60+ +m[3]):0;
+    return new Date(t+sh*60000);};
+  const ver=r=>{const m=/v(\d+)/i.exec(r.algorithm_version||'');return m?+m[1]:0;};
+  const best={};
+  Object.values(sleeps).forEach(r=>{
+    const end=localOf(r.sleep_end,r.end_utc_offset);if(!end)return;
+    const d=end.toISOString().slice(0,10), cur=best[d];
+    const better=!cur||ver(r)>ver(cur)||(ver(r)===ver(cur)&&(+r.minutes_asleep||0)>(+cur.minutes_asleep||0));
+    if(better)best[d]=r;
+  });
+  Object.entries(best).forEach(([d,r])=>{
+    const asleep=+r.minutes_asleep, inBed=+r.minutes_in_sleep_period;
+    put(d,'asleep',asleep);put(d,'inBed',inBed);
+    if(inBed>0)put(d,'eff',Math.min(100,Math.round(asleep/inBed*100)));
+    const b=localOf(r.sleep_start,r.start_utc_offset), w=localOf(r.sleep_end,r.end_utc_offset);
+    if(b)put(d,'bed',b.toISOString().slice(11,16));if(w)put(d,'wake',w.toISOString().slice(11,16));
+    const st=stages[r.sleep_id]||{};
+    if(st.DEEP!==undefined)put(d,'deep',st.DEEP);
+    if(st.REM!==undefined)put(d,'remMin',st.REM);
+    if(st.LIGHT!==undefined||st.ASLEEP!==undefined)put(d,'lightMin',(st.LIGHT||0)+(st.ASLEEP||0));
+    if(st.AWAKE!==undefined||st.RESTLESS!==undefined)put(d,'awakeMin',(st.AWAKE||0)+(st.RESTLESS||0));
+    const s=scores[r.sleep_id];
+    if(s){
+      put(d,'sleep',Math.round(+s.overall_score));
+      if((D[d]||{}).deep===undefined&&+s.deep_sleep_minutes>=0)put(d,'deep',+s.deep_sleep_minutes);
+      if(+s.resting_heart_rate>0)put(d,'srhr',Math.round(+s.resting_heart_rate));
+      if(s.restlessness_normalized!=='')put(d,'restless',Math.round(+s.restlessness_normalized*1000)/1000);
+      [['duration_score','sDur'],['composition_score','sComp'],['revitalization_score','sRev']].forEach(([a,k2])=>{
+        const v=+s[a];if(v>=0)put(d,k2,Math.round(v));});
+    }
+  });
 
   // merge: newer import wins per field, existing days are kept
   let added=0,updated=0;
@@ -1868,8 +2221,6 @@ async function importHealthZip(file,onProgress){
   await saveHealth();
   return {days:Object.keys(D).length,added,updated,files:files.length};
 }
-
-
 
 /* ---- averages + per-day read-out ---- */
 function hAvg(field,n){
@@ -1893,6 +2244,11 @@ function daySummary(k){
   const out=[];
   const near=(v,a,pct)=>Math.abs(v-a)<=a*pct;
   const sAvg=hAvg('sleep'), stAvg=hAvg('steps'), rAvg=hAvg('rhr'), dAvg=hAvg('deep');
+  if(typeof H.ready==='number'){
+    const ra=hAvg('ready'), r=H.ready;
+    out.push('Readiness '+r+(ra?(r<=ra-8?', below your usual '+Math.round(ra)+'.':r>=ra+8?', above your usual '+Math.round(ra)+'.':', about your usual '+Math.round(ra)+'.'):'.')
+      +(typeof H.hrv==='number'?' Heart rate variability '+H.hrv+' ms.':''));
+  }
 
   if(typeof H.sleep==='number'){
     const s=H.sleep;
@@ -2023,6 +2379,8 @@ function healthDays(){
 let hRange=14;
 let hDayKey=null;                       // days shown in the charts
 const H_METRICS={
+  ready:{lbl:'Readiness', col:'#ffb547', unit:'', fmt:v=>Math.round(v)},
+  hrv:  {lbl:'Heart rate variability', col:'#c084fc', unit:' ms', fmt:v=>Math.round(v)},
   steps:{lbl:'Steps',   col:'#37c07a', unit:'',     fmt:v=>Math.round(v).toLocaleString()},
   sleep:{lbl:'Sleep score', col:'#8f7bff', unit:'', fmt:v=>Math.round(v)},
   rhr:  {lbl:'Resting heart rate', col:'#ff5c7a', unit:' bpm', fmt:v=>Math.round(v)},
@@ -2199,12 +2557,15 @@ function renderHealth(){
       sc.innerHTML=inner;box.appendChild(sc);
     }
 
-    const tiles=[['Steps',H.steps!=null?H.steps.toLocaleString():'\u2014','#37c07a'],
+    const tiles=[['Readiness',H.ready!=null?H.ready:'\u2014','#ffb547'],
                  ['Sleep score',H.sleep!=null?H.sleep:'\u2014','#8f7bff'],
+                 ['Steps',H.steps!=null?H.steps.toLocaleString():'\u2014','#37c07a'],
                  ['Resting HR',H.rhr!=null?H.rhr+' bpm':'\u2014','#ff5c7a'],
+                 ['HRV',H.hrv!=null?H.hrv+' ms':'\u2014','#c084fc'],
+                 ['Deep sleep',H.deep!=null?H.deep+'m':'\u2014','#6fd3ff'],
                  ['Calories',H.cals!=null?H.cals.toLocaleString():'\u2014','#ff7a45'],
                  ['Distance',H.km!=null?H.km+' km':'\u2014','#4db8ff'],
-                 ['Deep sleep',H.deep!=null?H.deep+'m':'\u2014','#6fd3ff'],
+                 ['Zone mins',H.azm!=null?H.azm:'\u2014','#ff9f68'],
 ];
     const grid=document.createElement('div');grid.className='hgrid';
     tiles.forEach(([lbl,val,col])=>{const t=document.createElement('div');t.className='htile';
@@ -2220,9 +2581,11 @@ function renderHealth(){
 
     // averages
     const avgWrap=document.createElement('div');avgWrap.className='hcard';
-    const mets=[['steps','Steps','#37c07a',v=>Math.round(v).toLocaleString()],
+    const mets=[['ready','Readiness','#ffb547',v=>Math.round(v)],
+                ['steps','Steps','#37c07a',v=>Math.round(v).toLocaleString()],
                 ['sleep','Sleep score','#8f7bff',v=>Math.round(v)],
                 ['rhr','Resting HR','#ff5c7a',v=>Math.round(v)+' bpm'],
+                ['hrv','HRV','#c084fc',v=>Math.round(v)+' ms'],
                 ['deep','Deep sleep','#6fd3ff',v=>Math.round(v)+' min'],
                 ['calIn','Calories eaten','#ffd166',v=>Math.round(v).toLocaleString()],
                 ['pro','Protein','#5ad1a0',v=>Math.round(v)+'g'],
@@ -2260,7 +2623,7 @@ function renderHealth(){
     const hint=document.createElement('div');hint.className='hc-hint';
     hint.textContent='Touch and drag a chart to read any day';box.appendChild(hint);
 
-    ['steps','sleep','rhr','calIn','pro','carb','fat','cals','km'].forEach(f=>{const c=chartCard(f);if(c)box.appendChild(c);});
+    ['ready','steps','sleep','rhr','hrv','calIn','pro','carb','fat','cals','km'].forEach(f=>{const c=chartCard(f);if(c)box.appendChild(c);});
 
     const lh=document.createElement('div');lh.className='h-day';lh.textContent='Day by day \u00b7 tap for detail';box.appendChild(lh);
     days.slice().reverse().slice(0,60).forEach(d=>{const x=health[d]||{};
@@ -2834,12 +3197,12 @@ function dayConfetti(){
     if(t++<TOTAL)dayCvAnim=requestAnimationFrame(f);
     else{ctx.clearRect(0,0,cv.width,cv.height);cv.remove();}})();
 }
+/* confetti only on our monthly anniversary (the 2nd), once per phone that day */
 async function checkStarDay(){
-  const o=overrides[todayKey];
-  if(!o||!o.plan)return;                       // not a starred day
-  const seen=await sget('starDaySeen');
-  if(seen===todayKey)return;                   // already celebrated today
-  await sset('starDaySeen',todayKey);
+  if(!anniversaryOf(todayKey))return;
+  const seen=await sget('anniConfettiSeen');
+  if(seen===todayKey)return;
+  await sset('anniConfettiSeen',todayKey);
   setTimeout(dayConfetti,700);
 }
 /* ---- presence: light a name while that person has the app open ---- */
@@ -3898,6 +4261,7 @@ function syncPanelFlag(){
     || $('healthday').classList.contains('on')
     || $('ranges').classList.contains('on')
     || $('notespanel').classList.contains('on')
+    || $('chatpanel').classList.contains('on')
     || $('ms').classList.contains('on')
     || $('env').classList.contains('on')
     || $('rsx').classList.contains('on');
@@ -4171,6 +4535,617 @@ $('gb-reset').onclick=()=>{gapA=gapB=null;paintGap();gapText();};
 $('gb-done').onclick=stopMeasuring;
 $('go-gap').onclick=()=>{closeSettings();setView('cal');startMeasuring();
   const b=$('gapbar');if(b)b.scrollIntoView({behavior:'smooth',block:'center'});};
+
+
+/* ================= search our chat =================
+   The WhatsApp export lives only on this phone (IndexedDB), never in Firebase:
+   it's megabytes of private chat and doesn't need syncing. It's read the first
+   time the panel opens, so it never slows the app down at start-up. */
+const CS={msgs:null,raw:null,shown:40,last:null,people:[],zip:null,byName:null,media:[],mediaKept:true,stored:null,saveRun:0};
+const CS_DB='shaad-fiaza-chat';
+function csIdb(){return new Promise((res,rej)=>{try{const r=indexedDB.open(CS_DB,2);
+  r.onupgradeneeded=()=>{const d=r.result;if(!d.objectStoreNames.contains('f'))d.createObjectStore('f');if(!d.objectStoreNames.contains('m'))d.createObjectStore('m');};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);}catch(e){rej(e);}});}
+async function csSave(v){try{const d=await csIdb();await new Promise((r,j)=>{const t=d.transaction('f','readwrite');t.objectStore('f').put(v,'chat');t.oncomplete=r;t.onerror=()=>j(t.error);});}catch(e){}}
+async function csLoadRaw(){try{const d=await csIdb();return await new Promise((r,j)=>{const t=d.transaction('f','readonly');const q=t.objectStore('f').get('chat');q.onsuccess=()=>r(q.result||null);q.onerror=()=>j(q.error);});}catch(e){return null;}}
+async function csPut(k,v){const d=await csIdb();await new Promise((r,j)=>{const t=d.transaction('f','readwrite');t.objectStore('f').put(v,k);t.oncomplete=r;t.onerror=()=>j(t.error);t.onabort=()=>j(t.error);});}
+async function csGet(k){try{const d=await csIdb();return await new Promise((r,j)=>{const t=d.transaction('f','readonly');const q=t.objectStore('f').get(k);q.onsuccess=()=>r(q.result||null);q.onerror=()=>j(q.error);});}catch(e){return null;}}
+async function csDel(k){try{const d=await csIdb();await new Promise((r,j)=>{const t=d.transaction('f','readwrite');t.objectStore('f').delete(k);t.oncomplete=r;t.onerror=()=>j(t.error);});}catch(e){}}
+async function csMPut(k,v){const d=await csIdb();await new Promise((r,j)=>{const t=d.transaction('m','readwrite');t.objectStore('m').put(v,k);t.oncomplete=r;t.onerror=()=>j(t.error);t.onabort=()=>j(t.error);});}
+async function csMPutMany(items){const d=await csIdb();await new Promise((r,j)=>{const t=d.transaction('m','readwrite');const s=t.objectStore('m');
+  items.forEach(([k,v])=>s.put(v,k));t.oncomplete=r;t.onerror=()=>j(t.error);t.onabort=()=>j(t.error);});}
+async function csMGet(k){const d=await csIdb();return await new Promise((r,j)=>{const t=d.transaction('m','readonly');const q=t.objectStore('m').get(k);q.onsuccess=()=>r(q.result||null);q.onerror=()=>j(q.error);});}
+async function csMClear(){try{const d=await csIdb();await new Promise((r,j)=>{const t=d.transaction('m','readwrite');t.objectStore('m').clear();t.oncomplete=r;t.onerror=()=>j(t.error);});}catch(e){}}
+async function csWipe(){try{const d=await csIdb();await new Promise((r,j)=>{const t=d.transaction('f','readwrite');t.objectStore('f').delete('chat');t.oncomplete=r;t.onerror=()=>j(t.error);});}catch(e){}}
+
+/* --- reading both iPhone and Android exports --- */
+const CS_IOS=/^\[(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4}),?\s+(\d{1,2})[:.](\d{2})(?:[:.](\d{2}))?\s*([ap]\.?\s?m\.?)?\]\s*([^:]{1,60}?):\s?([\s\S]*)$/i;
+const CS_AND=/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4}),?\s+(\d{1,2})[:.](\d{2})(?:[:.](\d{2}))?\s*([ap]\.?\s?m\.?)?\s*[-\u2013]\s*([^:]{1,60}?):\s?([\s\S]*)$/i;
+const CS_SYSLINE=/^(\[?\d{1,2}[\/.\-]\d{1,2}[\/.\-]\d{2,4},?\s+\d{1,2}[:.]\d{2})/;
+const CS_NOISE=/^(null|<this message was edited>)$/i;
+const CS_ANDFILE=/^([^\n<>]+?\.(?:jpe?g|png|gif|webp|heic|heif|mp4|mov|3gp|webm|m4v|opus|m4a|mp3|aac|ogg|wav|amr|pdf|vcf|docx?|xlsx?|pptx?|txt|zip))\s*\(file attached\)\s*/i;
+const CS_OMIT=/^(<media omitted>|image omitted|video omitted|audio omitted|sticker omitted|gif omitted|document omitted|contact card omitted)$/i;
+const CS_DEL=/^(you deleted this message|this message was deleted)\.?$/i;
+const CS_PIN=/^(you|[^\n]{1,40}) pinned a message\.?$/i;
+const CS_CALL=/^(missed )?(voice|video) call(?:,\s*(.+))?$/i;
+function csPoll(t){const L=t.split('\n').map(s=>s.trim()).filter(Boolean);
+  const opts=L.filter(l=>/^OPTION:/i.test(l)).map(l=>{const m=/^OPTION:\s*(.*?)\s*\((\d+)\s*votes?\)\s*$/i.exec(l);return m?{t:m[1],v:+m[2]}:{t:l.replace(/^OPTION:\s*/i,''),v:0};});
+  return {q:L[1]||'Poll',opts};}
+function csOmitKind(s){s=s.toLowerCase();return s.startsWith('image')?'image':s.startsWith('video')?'video':
+  s.startsWith('audio')?'audio':s.startsWith('sticker')?'sticker':s.startsWith('gif')?'gif':s.startsWith('document')?'file':s.startsWith('contact')?'contact':'media';}
+function csKind(n){const e=(n.split('.').pop()||'').toLowerCase();
+  if(/-STICKER-|^STK-/i.test(n))return 'sticker';
+  if(/-GIF-/i.test(n))return 'gif';
+  if(e==='vcf')return 'contact';
+  if(/^(jpe?g|png|gif|webp|heic|heif)$/.test(e))return 'image';
+  if(/^(mp4|mov|3gp|webm|m4v)$/.test(e))return 'video';
+  if(/^(opus|m4a|mp3|aac|ogg|wav|amr)$/.test(e))return 'audio';
+  return 'file';}
+function csMime(n){const e=(n.split('.').pop()||'').toLowerCase();
+  return ({jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',gif:'image/gif',webp:'image/webp',heic:'image/heic',heif:'image/heif',
+    mp4:'video/mp4',m4v:'video/mp4',mov:'video/quicktime','3gp':'video/3gpp',webm:'video/webm',
+    opus:'audio/ogg',ogg:'audio/ogg',m4a:'audio/mp4',mp3:'audio/mpeg',aac:'audio/aac',wav:'audio/wav',amr:'audio/amr',
+    pdf:'application/pdf'})[e]||'application/octet-stream';}
+
+/* ---- reading a zip a piece at a time, so a huge media export never sits in memory ---- */
+async function zIndex(blob){
+  const size=blob.size, tailLen=Math.min(size,65577);
+  const tail=new Uint8Array(await blob.slice(size-tailLen).arrayBuffer()), dv=new DataView(tail.buffer);
+  let e=-1;for(let i=tail.length-22;i>=0;i--){if(dv.getUint32(i,true)===0x06054b50){e=i;break;}}
+  if(e<0)throw new Error('That zip couldn\u2019t be read.');
+  let count=dv.getUint16(e+10,true), cdSize=dv.getUint32(e+12,true), cdOff=dv.getUint32(e+16,true);
+  if(count===0xffff||cdSize===0xffffffff||cdOff===0xffffffff){          // zip64
+    const L=e-20;
+    if(L>=0&&dv.getUint32(L,true)===0x07064b50){
+      const at=Number(dv.getBigUint64(L+8,true));
+      const z=new DataView(await blob.slice(at,at+56).arrayBuffer());
+      if(z.getUint32(0,true)===0x06064b50){count=Number(z.getBigUint64(32,true));cdSize=Number(z.getBigUint64(40,true));cdOff=Number(z.getBigUint64(48,true));}
+    }
+  }
+  const cd=new Uint8Array(await blob.slice(cdOff,cdOff+cdSize).arrayBuffer()), c=new DataView(cd.buffer);
+  const entries=[];let p=0;
+  for(let i=0;i<count&&p+46<=cd.length;i++){
+    if(c.getUint32(p,true)!==0x02014b50)break;
+    const method=c.getUint16(p+10,true);
+    let csize=c.getUint32(p+20,true), usize=c.getUint32(p+24,true), lho=c.getUint32(p+42,true);
+    const nl=c.getUint16(p+28,true), el=c.getUint16(p+30,true), cl=c.getUint16(p+32,true);
+    const name=new TextDecoder().decode(cd.subarray(p+46,p+46+nl));
+    for(let x=p+46+nl, end=x+el; x+4<=end;){
+      const id=c.getUint16(x,true), sz=c.getUint16(x+2,true);
+      if(id===1){let q=x+4;
+        if(usize===0xffffffff){usize=Number(c.getBigUint64(q,true));q+=8;}
+        if(csize===0xffffffff){csize=Number(c.getBigUint64(q,true));q+=8;}
+        if(lho===0xffffffff){lho=Number(c.getBigUint64(q,true));q+=8;}}
+      x+=4+sz;
+    }
+    if(!/(^|\/)__MACOSX\//.test(name)&&!name.endsWith('/'))entries.push({name,base:name.split('/').pop(),method,csize,usize,lho,data:null});
+    p+=46+nl+el+cl;
+  }
+  return {blob,entries};
+}
+async function zBlob(zip,e){
+  if(e.data==null){
+    const lh=new DataView(await zip.blob.slice(e.lho,e.lho+30).arrayBuffer());
+    if(lh.getUint32(0,true)!==0x04034b50)throw new Error('Damaged zip entry');
+    e.data=e.lho+30+lh.getUint16(26,true)+lh.getUint16(28,true);
+  }
+  const type=csMime(e.base), raw=zip.blob.slice(e.data,e.data+e.csize,type);
+  if(e.method===0)return raw;                        // stored as-is: just a pointer into the file
+  if(e.method===8&&typeof DecompressionStream!=='undefined'){
+    const b=await new Response(raw.stream().pipeThrough(new DecompressionStream('deflate-raw'))).blob();
+    return new Blob([b],{type});
+  }
+  throw new Error('Can\u2019t open that file on this phone');
+}
+async function zText(zip,e){return await (await zBlob(zip,e)).text();}
+
+const CS_SYSTEM=/(messages and calls are end-to-end encrypted|security code (with .* )?changed|changed (their|the) (phone number|group|subject)|disappearing messages|created group|added you|you were added|joined using this group|is a contact|tap to learn more)/i;
+function csParse(raw){
+  const lines=raw.replace(/[\u200e\u200f\u202a-\u202e]/g,'').replace(/[\u202f\u00a0]/g,' ').split(/\r?\n/);
+  const tmp=[];let aBig=0,bBig=0;
+  for(const line of lines){
+    const m=CS_IOS.exec(line)||CS_AND.exec(line);
+    if(m){const a=+m[1],b=+m[2];if(a>12)aBig++;if(b>12)bBig++;
+      tmp.push({a,b,y:+m[3],H:+m[4],M:+m[5],ap:(m[7]||'').toLowerCase(),who:m[8].trim(),text:m[9]});}
+    else if(CS_SYSLINE.test(line))continue;
+    else if(tmp.length&&line.length)tmp[tmp.length-1].text+='\n'+line;
+  }
+  const monthFirst=bBig>0&&aBig===0, out=[];
+  for(const x of tmp){
+    const day=monthFirst?x.b:x.a, mon=monthFirst?x.a:x.b, yr=x.y<100?2000+x.y:x.y;
+    let H=x.H; if(x.ap.startsWith('p')&&H<12)H+=12; if(x.ap.startsWith('a')&&H===12)H=0;
+    let text=x.text.trim(), media=null, omit=null, edited=false;
+    if(/<this message was edited>\s*$/i.test(text)){edited=true;text=text.replace(/\s*<this message was edited>\s*$/i,'').trim();}
+    const a1=/<attached:\s*([^>]+?)>/i.exec(text);                         // iPhone
+    if(a1){media=a1[1].trim();text=text.replace(a1[0],'').trim();}
+    else{
+      const a2=CS_ANDFILE.exec(text);                                     // Android
+      if(a2){media=a2[1].trim();text=text.slice(a2[0].length).trim();}
+      else{const o=CS_OMIT.exec(text);if(o){omit=csOmitKind(o[0]);text='';}}
+    }
+    if(!media&&!omit&&(!text||CS_NOISE.test(text)))continue;
+    if(CS_SYSTEM.test(text))continue;
+    const msg={t:Date.UTC(yr,mon-1,day,H,x.M),who:x.who,text};       // search is case-insensitive, no lowercase copy needed
+    if(edited)msg.ed=1;
+    if(media){msg.media=media;msg.mk=csKind(media);}
+    if(omit)msg.omit=omit;
+    if(!media&&!omit){
+      if(CS_DEL.test(text)){msg.del=1;}
+      else if(CS_PIN.test(text)){msg.sys=1;}
+      else{
+        const c=CS_CALL.exec(text);
+        if(c)msg.call={vid:/video/i.test(c[2]),miss:!!c[1],d:(c[3]||'').trim()};
+        else if(/^POLL:/i.test(text)){msg.poll=csPoll(text);}
+      }
+    }
+    out.push(msg);
+  }
+  out.sort((p,q)=>p.t-q.t);out.forEach((m,i)=>m.i=i);
+  return out;
+}
+
+/* --- the "contextual" bit: generic words pull in what you'd actually have typed --- */
+const CS_TOPICS={
+ food:{on:['food','eat','eating','ate','hungry','meal','meals','dinner','lunch','breakfast','khana','khaana','cook','cooking','cooked','takeaway','restaurant'],
+  w:['biryani','khana','nandos','dinner','takeaway','daal','chawal','curry','lunch','starving','hungry','breakfast','meal','meal deal','tesco','food','eat','eating','ate','khaana','cook','cooked','cooking','restaurant','pizza','burger','chicken','roti','snack','maccies','kfc','dessert','chai','samosa','kebab','grill','brunch','tea','coffee']},
+ love:{on:['love','loving','romantic','miss'],
+  w:['love you','luv','ily','miss you','jaan','jaanu','babe','baby','cutie','pyaar','mohabbat','my heart','proud of you']},
+ sleep:{on:['sleep','sleeping','tired','bed','night','rest'],
+  w:['sleep','sleeping','tired','sleepy','nap','bed','goodnight','gn','neend','awake','cant sleep','knackered','exhausted']},
+ work:{on:['work','job','shift','shifts','office','boss'],
+  w:['work','shift','shifts','boss','job','office','overtime','rota','manager','colleague','payday','annual leave','day off','clock in','clocked']},
+ family:{on:['family','parents','mum','dad','relatives'],
+  w:['mum','mom','ammi','dad','abbu','abu','sister','brother','bhai','baji','family','nani','dadi','nana','dada','cousin','aunty','uncle','khala','phuppo','chacha','mamu','twins']},
+ plans:{on:['plan','plans','date','dates','meet','meeting','going','out','weekend','trip'],
+  w:['plan','plans','date','go out','meet','see you','come over','weekend','saturday','sunday','tomorrow','cinema','trip','reservation','booked','pick you up']},
+ gifts:{on:['gift','gifts','present','presents','birthday','surprise'],
+  w:['gift','present','birthday','bday','surprise','buy you','perfume','flowers','ring','wishlist','order']},
+ money:{on:['money','cost','price','spend','spent','budget','savings','pay'],
+  w:['money','pay','paid','cost','price','expensive','cheap','save','saving','savings','bank','budget','afford','\u00a3','quid','grand']},
+ travel:{on:['travel','journey','trip','train','holiday'],
+  w:['train','travel','journey','flight','holiday','trip','uber','bus','drive','driving','mk','london','station','euston','delayed','tube']},
+ health:{on:['ill','sick','health','pain','doctor','unwell','poorly'],
+  w:['ill','sick','poorly','headache','doctor','gp','hospital','pain','cramps','medicine','flu','cold','fever','migraine','not well','unwell']},
+ wedding:{on:['wedding','nikkah','nikah','shaadi','marriage','married'],
+  w:['wedding','nikkah','nikah','shaadi','walima','mehndi','mendi','venue','dress','rishta','imam','married','marriage','guests','invite']},
+ upset:{on:['argue','argued','argument','fight','fought','upset','sorry','angry','annoyed'],
+  w:['sorry','upset','angry','annoyed','argue','argument','fight','mad','hurt','forgive','my bad','fed up','not talking','dont speak']},
+ deen:{on:['pray','prayer','prayers','deen','religion','islam','mosque'],
+  w:['pray','prayer','namaz','salah','jummah','masjid','mosque','quran','inshallah','mashallah','alhamdulillah','ramadan','eid','dua','fajr','isha']},
+ weather:{on:['weather','rain','cold','hot','snow'],
+  w:['rain','raining','cold','freezing','hot','sunny','snow','weather','windy','boiling']}
+};
+const CS_STOP=new Set(('when did we last first time talk talked talking about mention mentioned say said says '+
+  'the a an of to in on at for and or is was were be been it that this what whats where who how why do does '+
+  'i me my you your we us our he she her him they them there any some about with from have has had '+
+  'ever recently latest last most can could would should tell show find search message messages chat').split(' '));
+function csPlan(q){
+  const lc=q.toLowerCase().replace(/[^\p{L}\p{N}\u00a3' ]+/gu,' ').trim();
+  const words=lc.split(/\s+/).filter(Boolean);
+  const oldestFirst=/\b(first|earliest|oldest)\b/.test(lc);
+  let sender=null;
+  for(const p of CS.people){const n=p.toLowerCase().split(/\s+/)[0];if(n.length>1&&words.includes(n)){sender=p;}}
+  const content=words.filter(w=>!CS_STOP.has(w)&&!(sender&&w===sender.toLowerCase().split(/\s+/)[0]));
+  // a plain phrase with no filler words is searched as typed
+  const isQuestion=content.length!==words.length;
+  const direct=isQuestion?content:[lc];
+  const extra=new Set(), topics=[];
+  for(const w of content){for(const [k,t] of Object.entries(CS_TOPICS)){if(t.on.includes(w)){topics.push(k);t.w.forEach(x=>extra.add(x));}}}
+  direct.forEach(d=>extra.delete(d));
+  return {direct:direct.filter(Boolean),extra:[...extra],topics:[...new Set(topics)],sender,oldestFirst};
+}
+function csRx(terms,flags){
+  const alt=terms.map(t=>t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).sort((a,b)=>b.length-a.length).join('|');
+  return new RegExp('(^|[^\\p{L}\\p{N}])('+alt+')(?:s|es|ed|ing|z)?(?![\\p{L}\\p{N}])',flags);
+}
+function csHighlight(text,rx){
+  if(!rx)return esc(text);
+  let out='',last=0,m;rx.lastIndex=0;
+  while((m=rx.exec(text))){
+    const s=m.index+m[1].length, e=s+m[2].length;
+    out+=esc(text.slice(last,s))+'<mark>'+esc(text.slice(s,e))+'</mark>';last=e;
+    if(rx.lastIndex===m.index)rx.lastIndex++;
+  }
+  return out+esc(text.slice(last));
+}
+const csDate=t=>new Date(t).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'});
+const csTime=t=>new Date(t).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',timeZone:'UTC'});
+const csDay=t=>new Date(t).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'UTC'});
+
+function csSearch(){
+  const q=$('cs-q').value.trim(), box=$('cs-results'), also=$('cs-also');
+  box.innerHTML='';also.innerHTML='';
+  if(q.length<2||!CS.msgs)return;
+  const plan=csPlan(q);
+  const all=[...plan.direct,...plan.extra];
+  if(!all.length){box.innerHTML='<div class="cs-empty">Try a word or two \u2014 like \u201cbiryani\u201d or \u201cwhen did we last talk about work\u201d.</div>';return;}
+  const rxT=csRx(all,'iu'), rxD=plan.direct.length?csRx(plan.direct,'iu'):null;
+  const hits=[];
+  for(let i=CS.msgs.length-1;i>=0;i--){
+    const m=CS.msgs[i];
+    if(plan.sender&&m.who!==plan.sender)continue;
+    if(m.del||m.sys||!m.text)continue;
+    if(rxT.test(m.text))hits.push(m);
+  }
+  if(plan.oldestFirst)hits.reverse();
+  if(plan.extra.length){
+    also.innerHTML='Also searching for <b>'+esc(plan.extra.slice(0,10).join(', '))+'</b>'+(plan.extra.length>10?' and '+(plan.extra.length-10)+' more':'');
+  }
+  if(!hits.length){box.innerHTML='<div class="cs-empty">Nothing found for that.</div>';return;}
+  const head=document.createElement('div');head.className='cs-head';
+  head.textContent=hits.length.toLocaleString('en-GB')+' message'+(hits.length===1?'':'s')+' \u00b7 '+(plan.oldestFirst?'oldest':'newest')+' first'+(plan.sender?' \u00b7 from '+plan.sender:'');
+  box.appendChild(head);
+  const rxH=csRx(all,'giu');
+  hits.slice(0,CS.shown).forEach(m=>{
+    const b=document.createElement('button');b.className='cs-msg';
+    const body=(m.call?(m.call.vid?'\ud83d\udcf9 ':'\ud83d\udcde '):m.poll?'\ud83d\udcca ':m.media?(m.mk==='video'||m.mk==='gif'?'\ud83c\udfa5 ':m.mk==='audio'?'\ud83c\udfa4 ':'\ud83d\udcf7 '):'')+(m.poll?m.poll.q:(m.text.length>420?m.text.slice(0,420)+'\u2026':m.text));
+    b.innerHTML=csAvatar(m.who,'cs-ava')
+      +'<div class="cs-rbody"><div class="t"><b>'+esc(m.who)+'</b><span>'+csDate(m.t)+'</span></div>'
+      +'<div class="x2">'+csHighlight(body,rxH)+'</div></div>';
+    b.onclick=()=>csContext(m.i,rxH);
+    box.appendChild(b);
+  });
+  if(hits.length>CS.shown){
+    const more=document.createElement('button');more.className='cs-more';
+    more.textContent='Show more ('+(hits.length-CS.shown).toLocaleString('en-GB')+' left)';
+    more.onclick=()=>{CS.shown+=40;csSearch();};
+    box.appendChild(more);
+  }
+}
+function csMine(who){
+  const mine=deviceOwner==='fiaza'?S.fiazaName:S.shaadName;
+  return !!mine&&who.toLowerCase().startsWith(String(mine).toLowerCase().split(/\s+/)[0]);
+}
+const CS_AV=['#e5677e','#21a9b6','#7f66ff','#e19a4c','#4fa96f','#c86ad6'];
+function csColour(name){let n=0;for(const c of String(name))n=(n*31+c.charCodeAt(0))>>>0;return CS_AV[n%CS_AV.length];}
+function csAvatar(name,cls){
+  const ini=(String(name).trim().match(/\p{L}/u)||['?'])[0].toUpperCase();
+  return '<div class="'+cls+'" style="background:'+csColour(name)+'">'+esc(ini)+'</div>';
+}
+const WA_TICKS='<svg viewBox="0 0 16 11" width="16" height="11"><path d="M11.07.65 4.6 7.1 2.22 4.73 1.15 5.8 4.6 9.25l7.53-7.53z M15.07.65 8.6 7.1l-.9-.9-1.07 1.07L8.6 9.25l7.53-7.53z" fill="#53bdeb"/></svg>';
+let csWin={from:0,to:0,focus:0,rx:null};
+function csDayLabel(t){
+  const d=new Date(t), now=new Date();
+  const k=x=>x.getUTCFullYear()+'-'+x.getUTCMonth()+'-'+x.getUTCDate();
+  const today=new Date(Date.UTC(now.getFullYear(),now.getMonth(),now.getDate()));
+  const yest=new Date(today.getTime()-86400000);
+  if(k(d)===k(today))return 'Today';
+  if(k(d)===k(yest))return 'Yesterday';
+  return d.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'});
+}
+/* object URLs live in three groups so each view can let go of its own */
+const CS_URLS={ctx:new Map(),grid:new Map(),viewer:new Map()};
+const CS_EPOCH={ctx:0,grid:0,viewer:0};
+async function csMediaBlob(d){
+  if(d.e&&CS.zip)return await zBlob(CS.zip,d.e);
+  const b=await csMGet(d.base);if(!b)throw new Error('missing');return b;
+}
+async function csUrl(g,key,d){const m=CS_URLS[g];if(m.has(key))return m.get(key);
+  const ep=CS_EPOCH[g], b=await csMediaBlob(d);
+  if(ep!==CS_EPOCH[g])throw new Error('stale');            // that view was closed while this was loading
+  if(m.has(key))return m.get(key);
+  const u=URL.createObjectURL(b);m.set(key,u);return u;}
+function csRelease(g){CS_EPOCH[g]++;CS_URLS[g].forEach(u=>URL.revokeObjectURL(u));CS_URLS[g].clear();}
+function csReleaseOne(g,key){const u=CS_URLS[g].get(key);if(u){URL.revokeObjectURL(u);CS_URLS[g].delete(key);}}
+function csReleaseAll(){Object.keys(CS_URLS).forEach(csRelease);}
+function csEntry(m){return (m&&m.media&&CS.byName)?CS.byName.get(m.media.split('/').pop().toLowerCase())||null:null;}
+function csBuildMedia(){
+  CS.byName=new Map();
+  if(CS.zip)CS.zip.entries.forEach(x=>CS.byName.set(x.base.toLowerCase(),{base:x.base,e:x}));
+  else if(CS.stored)CS.stored.forEach(b=>CS.byName.set(b.toLowerCase(),{base:b}));
+  CS.media=[];
+  for(let i=CS.msgs.length-1;i>=0;i--){const m=CS.msgs[i];
+    if((m.mk==='image'||m.mk==='video')&&csEntry(m))CS.media.push(i);}
+}
+const CS_PH={image:['Photo','<path d="M4 7h3l2-2h6l2 2h3v12H4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.4" fill="none" stroke="currentColor" stroke-width="1.7"/>'],
+  video:['Video','<rect x="3" y="6" width="13" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M16 10l5-3v10l-5-3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>'],
+  audio:['Voice message','<rect x="9" y="3" width="6" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>'],
+  sticker:['Sticker','<path d="M5 4h10l4 4v12H5z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>'],
+  gif:['GIF','<rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/>'],
+  file:['Document','<path d="M6 3h8l4 4v14H6z M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>'],
+  media:['Media','<rect x="4" y="5" width="16" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/>']};
+CS_PH.contact=['Contact','<circle cx="12" cy="9" r="3.6" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M5 20c.8-3.6 3.6-5.4 7-5.4s6.2 1.8 7 5.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>'];
+const csPretty=n=>String(n||'').replace(/^-?\d{4,}-/,'').replace(/\.[a-z0-9]{2,4}$/i,'');
+function csPlaceholder(kind,name){
+  const p=CS_PH[kind]||CS_PH.media;
+  const label=kind==='file'&&name?csPretty(name)+(/\.[a-z0-9]+$/i.exec(name)||[''])[0]
+             :kind==='contact'&&name?'Contact: '+csPretty(name):p[0];
+  return '<span class="wa-ph"><svg viewBox="0 0 24 24" width="18" height="18">'+p[1]+'</svg>'+esc(label)+'</span>';
+}
+const WA_PHONE='<path d="M6.6 3.5h2.6l1.4 4-1.9 1.3a11 11 0 0 0 6.5 6.5l1.3-1.9 4 1.4v2.6a2 2 0 0 1-2.2 2A16 16 0 0 1 4.6 5.7a2 2 0 0 1 2-2.2z" fill="currentColor"/>';
+const WA_VCAM='<rect x="3" y="6.5" width="12.5" height="11" rx="2.2" fill="currentColor"/><path d="M16.5 10.5 21 8v8l-4.5-2.5z" fill="currentColor"/>';
+const WA_BAN='<circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M6 6l12 12" stroke="currentColor" stroke-width="1.8"/>';
+function csBubble(m,k,mine){
+  const meta='<span class="wa-meta">'+(m.ed?'Edited ':'')+csTime(m.t)+(mine?WA_TICKS:'')+'</span>';
+  if(m.del)return '<div class="wa-b wa-del"><svg viewBox="0 0 24 24" width="15" height="15">'+WA_BAN+'</svg>'+esc(m.text.replace(/\.$/,''))+meta+'</div>';
+  if(m.sys)return '<div class="wa-b wa-del">'+esc(m.text)+meta+'</div>';
+  if(m.call){
+    const c=m.call, lbl=(c.miss?'Missed ':'')+(c.vid?'video':'voice')+' call';
+    const sub=c.miss?'Tap to call back':c.d;
+    return '<div class="wa-b wa-callb"><div class="wa-call'+(c.miss?' miss':'')+'"><span class="wa-ci"><svg viewBox="0 0 24 24" width="18" height="18">'
+      +(c.vid?WA_VCAM:WA_PHONE)+'</svg></span><span class="wa-ct"><b>'+esc(lbl.charAt(0).toUpperCase()+lbl.slice(1))+'</b>'
+      +(sub?'<i>'+esc(sub)+'</i>':'')+'</span></div>'+meta+'</div>';
+  }
+  if(m.poll){
+    const tot=m.poll.opts.reduce((n,o)=>n+o.v,0)||1;
+    return '<div class="wa-b wa-poll"><b>'+esc(m.poll.q)+'</b>'+m.poll.opts.map(o=>
+      '<div class="wa-po"><span>'+esc(o.t)+'</span><em>'+o.v+'</em><i style="width:'+Math.round(o.v/tot*100)+'%"></i></div>').join('')+meta+'</div>';
+  }
+  const cap=m.text?(k===csWin.focus?csHighlight(m.text,csWin.rx):esc(m.text)):'';
+  const entry=csEntry(m);
+  if(entry&&(m.mk==='image'||m.mk==='video')){
+    return '<div class="wa-b wa-mb"><div class="wa-media '+(m.mk==='video'?'vid':'img')+'" data-i="'+k+'">'+(cap?'':meta)+'</div>'
+      +(cap?'<div class="wa-cap">'+cap+meta+'</div>':'')+'</div>';
+  }
+  if(entry&&m.mk==='sticker'){
+    return '<div class="wa-b wa-stkb"><div class="wa-stk" data-i="'+k+'"></div>'+meta+'</div>';
+  }
+  if(entry&&m.mk==='gif'){
+    return '<div class="wa-b wa-mb"><div class="wa-media gif" data-i="'+k+'"><span class="wa-gif">GIF</span>'+(cap?'':meta)+'</div>'
+      +(cap?'<div class="wa-cap">'+cap+meta+'</div>':'')+'</div>';
+  }
+  if(entry&&m.mk==='audio'){
+    return '<div class="wa-b"><div class="wa-audio" data-i="'+k+'"></div>'+(cap?'<div class="wa-cap">'+cap+'</div>':'')+meta+'</div>';
+  }
+  if(m.media||m.omit){
+    return '<div class="wa-b">'+csPlaceholder(m.media?(m.mk||'media'):m.omit,m.media)+(cap?'\n'+cap:'')+meta+'</div>';
+  }
+  return '<div class="wa-b">'+cap+meta+'</div>';
+}
+let csCtxObs=null;
+function csObserveCtx(){
+  if(csCtxObs)csCtxObs.disconnect();
+  if(!CS.zip&&!CS.stored)return;
+  csCtxObs=new IntersectionObserver(async ents=>{
+    for(const en of ents){
+      if(!en.isIntersecting)continue;
+      const el=en.target;csCtxObs.unobserve(el);
+      const k=+el.dataset.i, m=CS.msgs[k], entry=csEntry(m);if(!entry)continue;
+      try{
+        const u=await csUrl('ctx',k,entry);
+        if(el.classList.contains('wa-stk')){
+          const img=new Image();img.decoding='async';img.alt='Sticker';img.src=u;el.appendChild(img);
+        }else if(m.mk==='gif'){
+          const v=document.createElement('video');v.muted=true;v.loop=true;v.autoplay=true;v.playsInline=true;v.src=u;el.prepend(v);
+        }else if(el.classList.contains('wa-audio')){
+          const a=document.createElement('audio');a.controls=true;a.preload='metadata';a.src=u;el.appendChild(a);
+        }else if(m.mk==='video'){
+          const v=document.createElement('video');v.muted=true;v.playsInline=true;v.preload='metadata';v.src=u+'#t=0.1';el.prepend(v);
+        }else{
+          const img=new Image();img.decoding='async';img.alt='';img.src=u;el.prepend(img);
+        }
+      }catch(err){el.outerHTML=csPlaceholder(m.mk,m.media);}
+    }
+  },{root:$('wa-scroll'),rootMargin:'500px 0px'});
+  document.querySelectorAll('#cs-ctx-body .wa-media[data-i],#cs-ctx-body .wa-audio[data-i],#cs-ctx-body .wa-stk[data-i]').forEach(el=>csCtxObs.observe(el));
+}
+function csRenderWin(keepAnchor){
+  const box=$('cs-ctx-body'), sc=$('wa-scroll');
+  const before=keepAnchor?sc.scrollHeight-sc.scrollTop:0;
+  let html='',lastDay='',prevWho=null,prevT=0;
+  for(let k=csWin.from;k<csWin.to;k++){
+    const m=CS.msgs[k], day=csDayLabel(m.t), mine=csMine(m.who);
+    if(day!==lastDay){html+='<div class="wa-day"><span>'+esc(day)+'</span></div>';lastDay=day;prevWho=null;}
+    const newRun=m.who!==prevWho||(m.t-prevT)>3600000;
+    html+='<div class="wa-row '+(mine?'me':'them')+(newRun?' tail gap':'')+(k===csWin.focus?' hit" id="cs-focus':'')+'">'
+      +csBubble(m,k,mine)+'</div>';
+    prevWho=m.who;prevT=m.t;
+  }
+  box.innerHTML=html;
+  $('wa-earlier').style.display=csWin.from>0?'':'none';
+  $('wa-later').style.display=csWin.to<CS.msgs.length?'':'none';
+  if(keepAnchor)sc.scrollTop=sc.scrollHeight-before;
+  csObserveCtx();
+}
+$('cs-ctx-body').addEventListener('click',e=>{
+  const t=e.target.closest('.wa-media[data-i]');if(!t)return;
+  const pos=CS.media.indexOf(+t.dataset.i);if(pos>=0)csOpenViewer(pos);
+});
+
+/* ---------- photos grid ---------- */
+let csGridObs=null;
+function csRenderPhotos(){
+  const box=$('cs-photos');
+  if(csGridObs)csGridObs.disconnect();
+  csRelease('grid');
+  if(!CS.zip&&!CS.stored){box.innerHTML='<div class="cs-pnote">No photos in this export.<br>Export the chat again and choose <b>Attach media</b>.</div>';return;}
+  if(!CS.media.length){box.innerHTML='<div class="cs-pnote">There aren\u2019t any photos or videos in this export.</div>';return;}
+  let html=CS.mediaKept?'':'<div class="cs-warn">'+(CS.shortNote?esc(CS.shortNote):'Not all of these fit on this phone, so some only show until you close the app. Load the export again to see them later.')+'</div>';
+  let month='';
+  CS.media.forEach((k,pos)=>{
+    const m=CS.msgs[k], mo=new Date(m.t).toLocaleDateString('en-GB',{month:'long',year:'numeric',timeZone:'UTC'});
+    if(mo!==month){html+=(month?'</div>':'')+'<div class="cs-month">'+esc(mo)+'</div><div class="cs-grid">';month=mo;}
+    html+='<button class="cs-tile" data-p="'+pos+'" aria-label="'+(m.mk==='video'?'Video':'Photo')+' from '+esc(m.who)+', '+csDate(m.t)+'">'
+      +(m.mk==='video'?'<span class="vb"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M8 5v14l11-7z" fill="white"/></svg></span>':'')+'</button>';
+  });
+  box.innerHTML=html+'</div>';
+  csGridObs=new IntersectionObserver(async ents=>{
+    for(const en of ents){
+      const el=en.target, pos=+el.dataset.p, k=CS.media[pos], m=CS.msgs[k];
+      if(en.isIntersecting){
+        if(el.dataset.l)continue;el.dataset.l='1';
+        try{
+          const u=await csUrl('grid',k,csEntry(m));
+          if(!el.dataset.l)return;                 // scrolled away while loading
+          const node=m.mk==='video'?Object.assign(document.createElement('video'),{muted:true,playsInline:true,preload:'metadata',src:u+'#t=0.1'})
+                                   :Object.assign(new Image(),{decoding:'async',alt:'',src:u});
+          el.prepend(node);
+        }catch(err){}
+      }else if(el.dataset.l){
+        // far off screen: let go of it so memory stays flat however many photos there are
+        delete el.dataset.l;el.querySelectorAll('img,video').forEach(n=>n.remove());csReleaseOne('grid',k);
+      }
+    }
+  },{root:$('chatpanel'),rootMargin:'700px 0px'});
+  box.querySelectorAll('.cs-tile').forEach(el=>csGridObs.observe(el));
+}
+$('cs-photos').addEventListener('click',e=>{const t=e.target.closest('.cs-tile');if(t)csOpenViewer(+t.dataset.p);});
+function csTab(t){
+  $('cs-tabS').classList.toggle('on',t==='s');$('cs-tabP').classList.toggle('on',t==='p');
+  $('cs-tab-search').style.display=t==='s'?'':'none';$('cs-tab-photos').style.display=t==='p'?'':'none';
+  if(t==='p')csRenderPhotos();else{if(csGridObs)csGridObs.disconnect();csRelease('grid');$('cs-photos').innerHTML='';}
+}
+$('cs-tabS').onclick=()=>csTab('s');
+$('cs-tabP').onclick=()=>csTab('p');
+
+/* ---------- full-screen viewer ---------- */
+let csVw={pos:0};
+async function csOpenViewer(pos){csVw.pos=pos;$('cs-viewer').style.display='flex';await csVwShow();}
+async function csVwShow(){
+  const k=CS.media[csVw.pos], m=CS.msgs[k], stage=$('vw-stage');
+  stage.innerHTML='';csRelease('viewer');
+  $('vw-name').textContent=m.who;
+  $('vw-when').textContent=csDate(m.t)+' at '+csTime(m.t);
+  $('vw-cap').textContent=m.text||'';
+  $('vw-prev').disabled=csVw.pos>=CS.media.length-1;$('vw-next').disabled=csVw.pos<=0;   // list is newest first
+  try{
+    const u=await csUrl('viewer',k,csEntry(m));
+    if(CS.media[csVw.pos]!==k)return;
+    const el=m.mk==='video'?Object.assign(document.createElement('video'),{controls:true,playsInline:true,autoplay:true,src:u})
+                           :Object.assign(new Image(),{alt:'',src:u});
+    stage.appendChild(el);
+  }catch(err){stage.innerHTML='<div class="cs-pnote">Couldn\u2019t open this one on this phone.</div>';}
+}
+function csCloseViewer(){$('cs-viewer').style.display='none';$('vw-stage').innerHTML='';csRelease('viewer');}
+function csVwGo(d){const n=csVw.pos+d;if(n<0||n>=CS.media.length)return;csVw.pos=n;csVwShow();}
+$('vw-close').onclick=csCloseViewer;
+$('vw-prev').onclick=()=>csVwGo(1);      // earlier
+$('vw-next').onclick=()=>csVwGo(-1);     // later
+$('vw-chat').onclick=()=>{const k=CS.media[csVw.pos];csCloseViewer();csContext(k,null);};
+(function(){let x0=null,y0=0;const st=$('vw-stage');
+  st.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY;},{passive:true});
+  st.addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;x0=null;
+    if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy))csVwGo(dx<0?-1:1);},{passive:true});})();   // swipe left = later
+document.addEventListener('keydown',e=>{
+  if($('cs-viewer').style.display==='none')return;
+  if(e.key==='Escape')csCloseViewer();else if(e.key==='ArrowLeft')csVwGo(1);else if(e.key==='ArrowRight')csVwGo(-1);
+});
+function csContext(i,rx){
+  csRelease('ctx');
+  csWin={from:Math.max(0,i-25),to:Math.min(CS.msgs.length,i+26),focus:i,rx};
+  const me=deviceOwner==='fiaza'?S.fiazaName:S.shaadName;
+  const other=CS.people.find(p=>!csMine(p))||CS.people[0]||'Chat';
+  $('wa-av').outerHTML=csAvatar(other,'wa-av').replace('class="wa-av"','class="wa-av" id="wa-av"');
+  $('wa-name').textContent=other;
+  $('wa-sub').textContent=csDay(CS.msgs[i].t);
+  csRenderWin(false);
+  $('cs-ctx').style.display='';
+  requestAnimationFrame(()=>{const f=$('cs-focus');if(f)f.scrollIntoView({block:'center'});});
+}
+$('wa-earlier').onclick=()=>{csWin.from=Math.max(0,csWin.from-40);csRenderWin(true);};
+$('wa-later').onclick=()=>{csWin.to=Math.min(CS.msgs.length,csWin.to+40);csRenderWin(false);};
+$('cs-back').onclick=()=>{$('cs-ctx').style.display='none';csRelease('ctx');};
+
+function csShowMain(){
+  const counts={};CS.msgs.forEach(m=>counts[m.who]=(counts[m.who]||0)+1);
+  CS.people=Object.keys(counts).sort((a,b)=>counts[b]-counts[a]);
+  $('cs-count').innerHTML='<b>'+CS.msgs.length.toLocaleString('en-GB')+'</b> messages \u00b7 '
+    +csDate(CS.msgs[0].t)+' \u2013 '+csDate(CS.msgs[CS.msgs.length-1].t);
+  $('cs-who').innerHTML=CS.people.slice(0,4).map(p=>'<span><b>'+esc(p)+'</b> '+counts[p].toLocaleString('en-GB')+'</span>').join('');
+  $('cs-empty').style.display='none';$('cs-ctx').style.display='none';$('cs-main').style.display='';
+  $('cs-results').innerHTML='';$('cs-also').innerHTML='';
+  csBuildMedia();
+  $('cs-tabP').textContent=CS.media.length?'Photos ('+CS.media.length.toLocaleString('en-GB')+')':'Photos';
+  csTab('s');
+}
+async function csReadFile(f){
+  const st=$('cs-status');st.textContent='Reading '+f.name+'\u2026';
+  try{
+    const head=new Uint8Array(await f.slice(0,4).arrayBuffer());
+    let raw, zip=null;
+    if(head[0]===0x50&&head[1]===0x4b){
+      zip=await zIndex(f);
+      const txts=zip.entries.filter(x=>/\.txt$/i.test(x.base));
+      const pick=txts.find(x=>/_chat\.txt$/i.test(x.base))||txts[0];
+      if(!pick)throw new Error('There\u2019s no chat inside that zip.');
+      raw=await zText(zip,pick);
+    }else raw=await f.text();
+    const msgs=csParse(raw);
+    if(msgs.length<3){st.textContent='That doesn\u2019t look like a WhatsApp export \u2014 no messages in it.';return;}
+    const hasMedia=!!zip&&zip.entries.some(x=>csKind(x.base)!=='file');
+    CS.saveRun++;                                          // stop any save still running from an older export
+    CS.msgs=msgs;CS.raw=raw;CS.shown=40;CS.zip=hasMedia?zip:null;CS.mediaKept=true;CS.stored=null;CS.shortNote='';
+    try{await csPut('chat',raw);}catch(e){}
+    await csDel('zip');await csDel('mindex');await csDel('mtotal');await csMClear();
+    st.textContent='';$('cs-q').value='';
+    csShowMain();
+    if(hasMedia)csSaveMedia();
+  }catch(err){st.textContent=(err&&err.message)||'Couldn\u2019t read that file.';}
+}
+/* Copies each photo/video/voice note into the phone's storage one at a time,
+   newest photos first, so a full phone keeps what fits instead of nothing. */
+async function csSaveMedia(){
+  const run=CS.saveRun, line=$('cs-saving');CS.saving=true;
+  try{if(navigator.storage&&navigator.storage.persist)await navigator.storage.persist();}catch(e){}
+  const rank={image:0,video:1,audio:2,gif:3,sticker:4,contact:5,file:6};
+  const seen=new Set(), list=[];
+  for(let i=CS.msgs.length-1;i>=0;i--){const m=CS.msgs[i];const d=csEntry(m);
+    if(d&&d.e&&!seen.has(d.base)){seen.add(d.base);list.push({d,r:rank[m.mk]??9});}}
+  list.sort((a,b)=>a.r-b.r);
+  try{await csPut('mtotal',list.length);}catch(e){}
+  const kept=[];let full=false;
+  // a batch per save is far quicker than one save per file; if a batch won't fit, retry it file by file
+  for(let n=0;n<list.length&&!full;){
+    if(run!==CS.saveRun){CS.saving=false;return;}          // a newer export was loaded
+    const batch=[];let bytes=0;
+    while(n<list.length&&batch.length<24&&bytes<24e6){const it=list[n++];batch.push(it);bytes+=it.d.e.csize||0;}
+    if(line)line.textContent='Saving to this phone \u00b7 '+n+' of '+list.length+' \u00b7 keep the app open';
+    const items=[];
+    for(const it of batch){try{items.push([it.d.base,await zBlob(CS.zip,it.d.e)]);}catch(e){}}
+    try{await csMPutMany(items);items.forEach(([k])=>kept.push(k));}
+    catch(e){
+      for(const [k,v] of items){
+        try{await csMPut(k,v);kept.push(k);}catch(e2){if(e2&&e2.name==='QuotaExceededError'){full=true;break;}}
+      }
+    }
+    try{await csPut('mindex',kept.slice());}catch(e){}       // progress survives the app being closed
+  }
+  CS.saving=false;
+  if(run!==CS.saveRun)return;
+  try{await csPut('mindex',kept);}catch(e){}
+  CS.mediaKept=!full&&kept.length===list.length;
+  if(line)line.textContent=full?'Phone storage is full \u2014 kept '+kept.length+' of '+list.length+'. The rest show until you close the app.':'';
+  if($('cs-tab-photos').style.display!=='none'&&!CS.mediaKept)csRenderPhotos();
+}
+async function openChat(){
+  clearTimeout(csDropT);
+  $('chatpanel').classList.add('on');syncPanelFlag();
+  if(!CS.msgs){
+    const raw=await csLoadRaw();
+    if(raw){try{CS.msgs=csParse(raw);CS.raw=raw;}catch(e){CS.msgs=null;}}
+    if(CS.msgs){
+      const zb=await csGet('zip');                       // an export saved by the older version of this
+      if(zb){try{CS.zip=await zIndex(zb);}catch(e){CS.zip=null;}}
+      else{const mi=await csGet('mindex');CS.stored=Array.isArray(mi)&&mi.length?mi:null;
+        const tot=+(await csGet('mtotal'))||0, have=CS.stored?CS.stored.length:0;
+        CS.mediaKept=!(tot&&have<tot);
+        CS.shortNote=(tot&&have<tot)?'Saved '+have+' of '+tot+' photos and files. Load the export again and keep the app open until it finishes to get the rest.':'';}
+    }
+  }
+  if(CS.msgs&&CS.msgs.length){csShowMain();if(CS.shortNote&&!CS.saving)$('cs-saving').textContent=CS.shortNote;}
+  else{$('cs-empty').style.display='';$('cs-main').style.display='none';$('cs-ctx').style.display='none';}
+}
+let csDropT=null;
+function closeChat(){
+  clearTimeout(csDropT);
+  csDropT=setTimeout(()=>{                       // quick to pop back in, but don't hold a big chat in memory all day
+    if($('chatpanel').classList.contains('on')||CS.saving)return;
+    CS.msgs=null;CS.raw=null;CS.zip=null;CS.byName=null;CS.media=[];CS.stored=null;
+    $('cs-results').innerHTML='';$('cs-photos').innerHTML='';$('cs-ctx-body').innerHTML='';
+  },120000);
+  csCloseViewer();$('cs-ctx').style.display='none';csReleaseAll();$('chatpanel').classList.remove('on');syncPanelFlag();}
+$('closeChat').onclick=closeChat;
+$('go-chat-tile').onclick=()=>{closeSettings();openChat();};
+$('cs-pick').onclick=()=>$('cs-file').click();
+$('cs-replace').onclick=()=>$('cs-file').click();
+$('cs-file').addEventListener('change',e=>{const f=e.target.files[0];if(f){if($('cs-main').style.display!=='none'){$('cs-empty').style.display='';}csReadFile(f);}e.target.value='';});
+$('cs-forget').onclick=async()=>{
+  if(!confirm('Remove the chat from this phone?'))return;
+  CS.saveRun++;await csWipe();await csDel('zip');await csDel('mindex');await csDel('mtotal');await csMClear();CS.msgs=null;CS.raw=null;CS.zip=null;CS.stored=null;CS.media=[];if($('cs-saving'))$('cs-saving').textContent='';
+  $('cs-main').style.display='none';$('cs-empty').style.display='';$('cs-status').textContent='';
+};
+let csT=null;
+$('cs-q').addEventListener('input',()=>{CS.shown=40;clearTimeout(csT);csT=setTimeout(csSearch,120);});
+$('cs-q').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();csSearch();}});
 
 document.querySelectorAll('.foldhead,.subhead').forEach(b=>{
   b.onclick=()=>{const s=$(b.dataset.fold);if(s)s.classList.toggle('open');};
