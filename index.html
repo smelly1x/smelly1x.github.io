@@ -6,6 +6,7 @@
 <!-- Shaad & Fiaza — shared shift schedule tracker -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Shaad & Fiaza">
 <meta name="theme-color" content="#141019">
@@ -1235,19 +1236,7 @@
   #chatpanel .cs-empty{color:#8696a0}
 
   /* the conversation itself */
-  #cs-ctx{position:fixed;inset:0;max-width:440px;margin:0 auto;z-index:30;display:flex;flex-direction:column;
-    background:#0b141a url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'><g fill='none' stroke='%23ffffff' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round' opacity='.055'><path d='M22 30c-4-7 5-12 8-5 3-7 12-2 8 5l-8 8z'/><path d='M120 18l3 7 7 1-5 5 1 7-6-4-6 4 1-7-5-5 7-1z'/><path d='M70 70a12 12 0 1 0 12 15 9 9 0 0 1-12-15z'/><path d='M140 92h18v14a7 7 0 0 1-7 7h-4a7 7 0 0 1-7-7z M158 96h4a3 3 0 0 1 0 6h-4'/><path d='M28 120h26a6 6 0 0 1 6 6v12a6 6 0 0 1-6 6H40l-8 7v-7h-4a6 6 0 0 1-6-6v-12a6 6 0 0 1 6-6z'/><path d='M104 140l6 10 6-10 M110 150v12'/><circle cx='110' cy='136' r='5'/><path d='M160 40c6 0 6 8 0 8s-6 8 0 8'/><path d='M60 10l4 4m0-4l-4 4'/><path d='M150 160l4 4m0-4l-4 4'/><path d='M8 80l4 4m0-4l-4 4'/></g></svg>") repeat;background-size:180px 180px}
-  .wa-top{flex:none;display:flex;align-items:center;gap:6px;background:#202c33;color:#e9edef;
-    padding:calc(8px + env(safe-area-inset-top,0px)) 10px 8px 4px;box-shadow:0 1px 3px rgba(0,0,0,.4)}
-  .wa-backbtn{background:none;border:none;color:#aebac1;padding:6px;display:flex;cursor:pointer}
-  .wa-av{width:38px;height:38px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
-    font-weight:700;color:#fff;font-size:16px}
-  .wa-who{display:flex;flex-direction:column;line-height:1.25;min-width:0;margin-left:4px}
-  .wa-who b{font-size:16.5px;font-weight:600;color:#e9edef;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .wa-who span{font-size:12.5px;color:#8696a0}
-  .wa-scroll{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:8px 14px calc(18px + env(safe-area-inset-bottom,0px))}
-  .wa-more{display:block;margin:6px auto 10px;background:rgba(32,44,51,.92);border:none;color:#00a884;
-    border-radius:999px;padding:7px 14px;font-size:12.5px;font-weight:700;cursor:pointer}
+  .wa-chat{background:#0b141a url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'><g fill='none' stroke='%23ffffff' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round' opacity='.055'><path d='M22 30c-4-7 5-12 8-5 3-7 12-2 8 5l-8 8z'/><path d='M120 18l3 7 7 1-5 5 1 7-6-4-6 4 1-7-5-5 7-1z'/><path d='M70 70a12 12 0 1 0 12 15 9 9 0 0 1-12-15z'/><path d='M140 92h18v14a7 7 0 0 1-7 7h-4a7 7 0 0 1-7-7z M158 96h4a3 3 0 0 1 0 6h-4'/><path d='M28 120h26a6 6 0 0 1 6 6v12a6 6 0 0 1-6 6H40l-8 7v-7h-4a6 6 0 0 1-6-6v-12a6 6 0 0 1 6-6z'/><path d='M104 140l6 10 6-10 M110 150v12'/><circle cx='110' cy='136' r='5'/><path d='M160 40c6 0 6 8 0 8s-6 8 0 8'/><path d='M60 10l4 4m0-4l-4 4'/><path d='M150 160l4 4m0-4l-4 4'/><path d='M8 80l4 4m0-4l-4 4'/></g></svg>") repeat;background-size:180px 180px}
   .wa-day{position:sticky;top:4px;z-index:2;text-align:center;margin:10px 0 6px}
   .wa-day span{display:inline-block;background:#182229;color:#8696a0;font-size:12.5px;border-radius:7.5px;
     padding:5px 12px;box-shadow:0 1px .5px rgba(11,20,26,.4)}
@@ -1366,6 +1355,54 @@
   .wa-media.gif video{width:100%;height:100%;object-fit:cover;display:block}
   .cs-saving{font-size:12px;color:#00a884;margin:-6px 2px 10px;min-height:0}
   .cs-saving:empty{display:none}
+
+  /* ---- chat tab: fills the screen below the header, scrolls like WhatsApp ---- */
+  #chatpanel.chatmode{display:flex;flex-direction:column;overflow:hidden;padding-bottom:0}
+  #chatpanel.chatmode>.phead{flex:none}
+  #chatpanel.chatmode #cs-main{flex:1;min-height:0;display:flex!important;flex-direction:column}
+  #chatpanel.chatmode #cs-main>*{flex:none}
+  #chatpanel.chatmode #cs-tab-chat{flex:1!important;min-height:0;display:flex!important;flex-direction:column;position:relative;margin:0 -16px}
+  .wa-chat{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+    padding:6px 14px calc(16px + env(safe-area-inset-bottom,0px));border-top:1px solid #222d34}
+  .wa-down{position:absolute;right:14px;bottom:calc(18px + env(safe-area-inset-bottom,0px));width:42px;height:42px;
+    border-radius:50%;border:none;background:#202c33;color:#aebac1;box-shadow:0 2px 8px rgba(0,0,0,.45);
+    display:none;align-items:center;justify-content:center;cursor:pointer;z-index:5}
+  .wa-down.on{display:flex}
+  .wa-top-load{text-align:center;color:#8696a0;font-size:12px;padding:8px 0 4px}
+
+  /* ---- WhatsApp's type: Apple's system font on iPhone (SF Pro Text), Roboto on Android,
+          Segoe UI on Windows - the same stack WhatsApp itself falls back through.
+          Sized like WhatsApp on a phone, not WhatsApp Web. ---- */
+  #chatpanel{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI","Helvetica Neue",Helvetica,Roboto,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+  #chatpanel .wa-b{font-size:16.5px;line-height:21.5px;letter-spacing:-.15px}
+  #chatpanel .wa-meta{font-size:11.5px;letter-spacing:0}
+  #chatpanel .wa-day span{font-size:12.5px;font-weight:500}
+  #chatpanel .wa-ct b{font-size:16px}
+  #chatpanel .wa-ct i{font-size:13px}
+  #chatpanel .wa-po{font-size:15px}
+  #chatpanel .wa-ph{font-size:16px}
+  #chatpanel .cs-msg .t b{font-size:16.5px}
+  #chatpanel .cs-msg .x2{font-size:15px;line-height:20px}
+  #cs-q{font-size:16px!important}               /* iPhone zooms in on any box under 16px */
+
+  /* ---- notifications row ---- */
+  .nf-sec{padding:12px 14px!important}
+  .nf-row{display:flex;align-items:center;gap:12px}
+  .nf-ic{flex:none;width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+    background:rgba(180,124,255,.16);color:#c9a3ff}
+  .nf-txt{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.3}
+  .nf-txt b{font-size:14px;color:var(--text)}
+  .nf-txt span{font-size:12px;color:var(--muted);margin-top:2px}
+  .nf-btn{flex:none;background:var(--accent);color:#141019;border:none;border-radius:999px;padding:8px 14px;
+    font-weight:800;font-size:13px;cursor:pointer}
+  .nf-btn.on{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
+  .nf-btn:disabled{opacity:.45;cursor:default}
+  #nf-banner{position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top,0px));transform:translate(-50%,-140%);
+    max-width:min(420px,92vw);background:#221a33;color:#f3eefc;border:1px solid #3b2e52;border-radius:14px;
+    padding:11px 15px;font-size:14px;font-weight:600;box-shadow:0 10px 28px rgba(0,0,0,.45);z-index:200;
+    transition:transform .3s cubic-bezier(.2,.85,.2,1);pointer-events:none}
+  #nf-banner.on{transform:translate(-50%,0)}
 </style>
 
 </head>
@@ -1676,8 +1713,13 @@
       <button class="cs-link" id="cs-replace">Load newer</button><button class="cs-link" id="cs-forget">Forget</button></div>
     <div class="cs-who" id="cs-who"></div>
     <div class="cs-saving" id="cs-saving"></div>
-    <div class="cs-tabs"><button class="on" id="cs-tabS">Search</button><button id="cs-tabP">Photos</button></div>
-    <div id="cs-tab-search">
+    <div class="cs-tabs"><button class="on" id="cs-tabC">Chat</button><button id="cs-tabS">Search</button><button id="cs-tabP">Photos</button></div>
+    <div id="cs-tab-chat">
+      <div class="wa-chat" id="wa-scroll"><div id="cs-ctx-body"></div></div>
+      <button class="wa-down" id="wa-down" aria-label="Jump to the latest message">
+        <svg viewBox="0 0 24 24" width="22" height="22"><path d="M6 9.5l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+    <div id="cs-tab-search" style="display:none">
       <input class="nt-search" id="cs-q" type="search" autocomplete="off" enterkeyhint="search"
         placeholder="Search, or ask “when did we last talk about food”">
       <div class="cs-also" id="cs-also"></div>
@@ -1699,20 +1741,6 @@
     <button class="vw-nav vw-next" id="vw-next" aria-label="Later">&rsaquo;</button>
   </div>
 
-  <div id="cs-ctx" style="display:none">
-    <div class="wa-top">
-      <button class="wa-backbtn" id="cs-back" aria-label="Back to results">
-        <svg viewBox="0 0 24 24" width="24" height="24"><path d="M15.5 4.5 8 12l7.5 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <div class="wa-av" id="wa-av"></div>
-      <div class="wa-who"><b id="wa-name"></b><span id="wa-sub"></span></div>
-    </div>
-    <div class="wa-scroll" id="wa-scroll">
-      <button class="wa-more" id="wa-earlier">Load earlier messages</button>
-      <div id="cs-ctx-body"></div>
-      <button class="wa-more" id="wa-later">Load later messages</button>
-    </div>
-  </div>
 </div>
 
 <div class="panel" id="notespanel">
@@ -1786,6 +1814,14 @@
     <span class="ac-go">&rsaquo;</span>
   </button>
 
+
+  <div class="psec nf-sec" id="sec-notify">
+    <div class="nf-row">
+      <span class="nf-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 3.5a6 6 0 0 0-6 6v3.4L4.5 16v1h15v-1L18 12.9V9.5a6 6 0 0 0-6-6zM9.8 19a2.3 2.3 0 0 0 4.4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>
+      <div class="nf-txt"><b id="nf-head">Notifications</b><span id="nf-status">Off on this phone</span></div>
+      <button class="nf-btn" id="nf-btn">Turn on</button>
+    </div>
+  </div>
   <div class="psec fold" id="sec-more">
     <button class="foldhead" data-fold="sec-more"><span>More</span><i class="foldchev">&rsaquo;</i></button>
     <div class="foldbody">
@@ -1877,6 +1913,203 @@ let overrides={};   // {key:{shaad?,fiaza?,note?}}  note = {text,by?}
 let events=[];      // [{name,date}]
 let wishes=[];      // [{text,tag,done}]
 let deviceOwner=null; // 'shaad' | 'fiaza' | null  (per device, not synced)
+
+/* =================== notifications ===================
+   This phone notices its OWN changes, waits a few seconds so a burst of edits
+   becomes one message, then drops a note in shared/notify. A small Firebase
+   function picks that up and pushes it to the other person's phone(s).
+   - never notifies yourself
+   - never fires for a restore or for the other phone's changes syncing in
+   - period changes are left out on purpose: notifications show on the lock screen */
+const VAPID_KEY='BJGMHFF96U43QJBS_JECPGNm-LmJPN9CIOjdcs8BFe_2BJicAzWx9EKlhZH5kA-u2SyqrXNt76BSI_Vts7FscBM';
+const NF_WAIT=12000;
+var NF={snapO:null,snapE:null,snapW:null,pend:{days:{},list:[]},t:null,muted:false};
+function nfClone(o){return JSON.parse(JSON.stringify(o===undefined?null:o));}
+function nfReset(){NF.snapO=nfClone(overrides||{});NF.snapE=nfClone(events||[]);NF.snapW=nfClone(wishes||[]);}
+function nfName(w){return w==='shaad'?S.shaadName:S.fiazaName;}
+function nfSchedule(){clearTimeout(NF.t);NF.t=setTimeout(nfFlush,NF_WAIT);}
+
+function nfTrackDays(){
+  const prev=NF.snapO||{}, cur=overrides||{};
+  if(!NF.muted&&deviceOwner){
+    new Set([...Object.keys(prev),...Object.keys(cur)]).forEach(k=>{
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(k))return;
+      const a=JSON.stringify(prev[k]||{}), b=JSON.stringify(cur[k]||{});
+      if(a===b)return;
+      if(!NF.pend.days[k])NF.pend.days[k]={before:JSON.parse(a)};
+      NF.pend.days[k].after=JSON.parse(b);
+    });
+    if(Object.keys(NF.pend.days).length)nfSchedule();
+  }
+  NF.snapO=nfClone(cur);
+}
+function nfTrackList(which){
+  const cur=which==='E'?(events||[]):(wishes||[]), prev=(which==='E'?NF.snapE:NF.snapW)||[];
+  if(!NF.muted&&deviceOwner){
+    const key=which==='E'?(x=>(x.name||'')+'|'+(x.date||'')):(x=>x.text||'');
+    const pk=new Map(prev.map(x=>[key(x),x])), ck=new Map(cur.map(x=>[key(x),x]));
+    const fmt=d=>{try{return new Date(keyToUTC(d)).toLocaleDateString('en-GB',{day:'numeric',month:'short',timeZone:'UTC'});}catch(e){return d;}};
+    ck.forEach((x,k)=>{if(!pk.has(k))NF.pend.list.push(which==='E'?'Added a countdown: '+x.name+(x.date?' ('+fmt(x.date)+')':''):'Added to things to do: '+x.text);
+      else if(which==='W'&&!!x.done!==!!pk.get(k).done&&x.done)NF.pend.list.push('Ticked off: '+x.text);});
+    pk.forEach((x,k)=>{if(!ck.has(k))NF.pend.list.push(which==='E'?'Removed the countdown: '+x.name:'Removed from things to do: '+x.text);});
+    if(NF.pend.list.length)nfSchedule();
+  }
+  if(which==='E')NF.snapE=nfClone(cur);else NF.snapW=nfClone(cur);
+}
+function nfDayPhrase(b,a){
+  const out=[];
+  ['shaad','fiaza'].forEach(w=>{if((b[w]||'')!==(a[w]||''))
+    out.push(a[w]==='working'?nfName(w)+' working':a[w]==='off'?nfName(w)+' off':nfName(w)+' back to usual shift');});
+  const flag=(f,on,off)=>{if(!!b[f]!==!!a[f]){const s=a[f]?on:off;if(s)out.push(s);}};
+  flag('special','special day','no longer a special day');
+  flag('plan','seeing each other','no longer seeing each other');
+  flag('met','saw each other','');
+  flag('holS',nfName('shaad')+' away',nfName('shaad')+' not away any more');
+  flag('holF',nfName('fiaza')+' away',nfName('fiaza')+' not away any more');
+  flag('busyS',nfName('shaad')+' busy','');
+  flag('busyF',nfName('fiaza')+' busy','');
+  flag('gym','gym','');
+  const nb=(b.note&&b.note.text)||'', na=(a.note&&a.note.text)||'';
+  if(nb!==na){if(na)out.push((nb?'edited the note':'added a note')+': \u201c'+na.replace(/\s+/g,' ').slice(0,60)+(na.length>60?'\u2026':'')+'\u201d');
+    else out.push('removed the note');}
+  return out.join(', ');
+}
+function nfRange(a,b){
+  const d=k=>new Date(keyToUTC(k));
+  const day=x=>d(x).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'});
+  if(a===b)return day(a);
+  const A=d(a),B=d(b),mon=x=>x.toLocaleDateString('en-GB',{month:'short',timeZone:'UTC'});
+  return A.getUTCMonth()===B.getUTCMonth()?A.getUTCDate()+'\u2013'+B.getUTCDate()+' '+mon(B):A.getUTCDate()+' '+mon(A)+' \u2013 '+B.getUTCDate()+' '+mon(B);
+}
+function nfBuild(P){
+  const items=Object.keys(P.days).sort().map(k=>({k,p:nfDayPhrase(P.days[k].before||{},P.days[k].after||{})})).filter(x=>x.p);
+  const groups=[];
+  items.forEach(it=>{const g=groups[groups.length-1];
+    if(g&&g.p===it.p&&Math.round((keyToUTC(it.k)-keyToUTC(g.to))/DAY)===1){g.to=it.k;}
+    else groups.push({from:it.k,to:it.k,p:it.p});});
+  const lines=groups.map(g=>nfRange(g.from,g.to)+': '+g.p).concat(P.list);
+  if(!lines.length)return null;
+  const body=lines.length<=3?lines.join('\n'):lines.slice(0,2).join('\n')+'\n+ '+(lines.length-2)+' more changes';
+  return {title:nfName(deviceOwner),body,day:groups.length===1?groups[0].from:''};
+}
+function nfFlush(){
+  clearTimeout(NF.t);NF.t=null;
+  const P=NF.pend;NF.pend={days:{},list:[]};
+  if(!deviceOwner)return;
+  const msg=nfBuild(P);if(!msg)return;
+  msg.by=deviceOwner;msg.to=deviceOwner==='shaad'?'fiaza':'shaad';
+  msg.link=location.origin+location.pathname+(msg.day?'#d='+msg.day:'');
+  nfSend(msg);
+}
+function nfSend(msg){
+  if(fbReady&&DB){
+    try{DB.ref('shared/notify').push(Object.assign({},msg,{at:firebase.database.ServerValue.TIMESTAMP}));return;}catch(e){}
+  }
+  // offline: hold on to it and send when we're back
+  try{const q=JSON.parse(localStorage.getItem('nfQueue')||'[]');q.push(msg);localStorage.setItem('nfQueue',JSON.stringify(q.slice(-20)));}catch(e){}
+}
+function nfOnline(){
+  try{const q=JSON.parse(localStorage.getItem('nfQueue')||'[]');localStorage.removeItem('nfQueue');q.forEach(nfSend);}catch(e){}
+  nfRefreshToken();
+}
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&NF.t)nfFlush();});
+window.addEventListener('pagehide',()=>{if(NF.t)nfFlush();});
+
+/* tapping a notification opens the app on that day */
+function nfOpenFromLink(){
+  const m=/#d=(\d{4}-\d{2}-\d{2})/.exec(location.hash||'');if(!m)return;
+  try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}
+  const [y,mo]=m[1].split('-').map(Number);
+  setTimeout(()=>{try{viewY=y;viewM=mo-1;setView('cal');renderMonth();openSheet(m[1]);}catch(e){}},500);
+}
+window.addEventListener('hashchange',nfOpenFromLink);
+
+/* ---- turning it on for this phone ---- */
+const NF_IOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const nfStandalone=()=>!!(navigator.standalone||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches));
+let nfSdk=null;
+function nfLoadSdk(){
+  if(nfSdk)return nfSdk;
+  nfSdk=new Promise((res,rej)=>{
+    if(typeof firebase!=='undefined'&&firebase.messaging)return res();
+    const s=document.createElement('script');s.src='https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js';
+    s.onload=()=>res();s.onerror=()=>{nfSdk=null;rej(new Error('sdk'));};document.head.appendChild(s);
+  });
+  return nfSdk;
+}
+function nfHash(s){let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return 'd'+h.toString(36)+s.length.toString(36);}
+async function nfGetToken(){
+  await nfLoadSdk();
+  const reg=await navigator.serviceWorker.register('firebase-messaging-sw.js');
+  await navigator.serviceWorker.ready;
+  return await firebase.messaging().getToken({vapidKey:VAPID_KEY,serviceWorkerRegistration:reg});
+}
+async function nfSaveToken(tok){
+  const key=nfHash(tok);
+  await DB.ref('shared/push/'+deviceOwner+'/'+key).set({t:tok,at:Date.now(),d:NF_IOS?'iPhone':'other'});
+  try{localStorage.setItem('nfKey',key);localStorage.setItem('nfOwner',deviceOwner);}catch(e){}
+}
+function nfStatus(){
+  const st=$('nf-status'), btn=$('nf-btn'), other=deviceOwner?nfName(deviceOwner==='shaad'?'fiaza':'shaad'):'',
+        on=localStorage.getItem('nfKey')&&typeof Notification!=='undefined'&&Notification.permission==='granted';
+  $('nf-head').textContent=other?'Tell me when '+other+' changes something':'Notifications';
+  btn.disabled=false;btn.textContent=on?'Turn off':'Turn on';btn.classList.toggle('on',!!on);
+  if(VAPID_KEY.includes('REPLACE')){st.textContent='Not set up yet \u2014 needs the key from Firebase';btn.disabled=true;return;}
+  if(!deviceOwner){st.textContent='Pick whose phone this is first (More \u203a Device)';btn.disabled=true;return;}
+  if(NF_IOS&&!nfStandalone()){st.textContent='Add the app to your Home Screen, then open it from the icon';btn.disabled=true;return;}
+  if(!('serviceWorker' in navigator)||typeof Notification==='undefined'){st.textContent='This phone can\u2019t do notifications here';btn.disabled=true;return;}
+  if(Notification.permission==='denied'){st.textContent='Blocked \u2014 allow it in your phone\u2019s Settings \u203a Notifications';btn.disabled=true;return;}
+  st.textContent=on?'On for this phone':'Off on this phone';
+}
+async function nfEnable(){
+  const st=$('nf-status'), btn=$('nf-btn');
+  btn.disabled=true;st.textContent='Asking your phone\u2026';
+  try{
+    const p=await Notification.requestPermission();
+    if(p!=='granted'){nfStatus();return;}
+    if(!(fbReady&&DB)){st.textContent='Not connected \u2014 try again in a moment';btn.disabled=false;return;}
+    st.textContent='Setting up\u2026';
+    const tok=await nfGetToken();
+    if(!tok)throw new Error('no token');
+    await nfSaveToken(tok);
+    nfForeground();
+  }catch(e){
+    st.textContent='Couldn\u2019t turn on: '+((e&&e.message)||'unknown error').slice(0,80);btn.disabled=false;return;
+  }
+  nfStatus();
+}
+async function nfDisable(){
+  const key=localStorage.getItem('nfKey'), owner=localStorage.getItem('nfOwner')||deviceOwner;
+  try{if(key&&fbReady&&DB)await DB.ref('shared/push/'+owner+'/'+key).remove();}catch(e){}
+  try{await nfLoadSdk();await firebase.messaging().deleteToken();}catch(e){}
+  try{localStorage.removeItem('nfKey');localStorage.removeItem('nfOwner');}catch(e){}
+  nfStatus();
+}
+$('nf-btn').onclick=()=>{localStorage.getItem('nfKey')?nfDisable():nfEnable();};
+// tokens can change over time: refresh quietly whenever the app opens with it switched on
+async function nfRefreshToken(){
+  try{
+    if(!localStorage.getItem('nfKey')||!deviceOwner||typeof Notification==='undefined'||Notification.permission!=='granted')return;
+    if(VAPID_KEY.includes('REPLACE'))return;
+    const tok=await nfGetToken();if(!tok)return;
+    const key=nfHash(tok), old=localStorage.getItem('nfKey'), owner=localStorage.getItem('nfOwner');
+    if(old&&(old!==key||owner!==deviceOwner)){try{await DB.ref('shared/push/'+(owner||deviceOwner)+'/'+old).remove();}catch(e){}}
+    await nfSaveToken(tok);nfForeground();
+  }catch(e){}
+}
+/* with the app open, show a small banner instead (the data has already synced) */
+let nfFg=false;
+function nfForeground(){
+  if(nfFg)return;nfFg=true;
+  try{firebase.messaging().onMessage(p=>{const n=(p&&p.notification)||{};nfBanner((n.title||'')+(n.body?': '+n.body.split('\n')[0]:''));});}catch(e){}
+}
+function nfBanner(t){
+  let b=$('nf-banner');
+  if(!b){b=document.createElement('div');b.id='nf-banner';document.body.appendChild(b);}
+  b.textContent=t;b.classList.add('on');clearTimeout(b._t);b._t=setTimeout(()=>b.classList.remove('on'),4500);
+}
+function nfBoot(){try{nfStatus();}catch(e){}}
+
 let money={rateS:0,hoursS:0,rateF:0,hoursF:0,goal:0,entries:[],
   ratesS:[],   // [{from:'YYYY-MM', rate:n}] — overrides rateS from that month on
   ratesF:[]};
@@ -1911,6 +2144,7 @@ async function loadAll(){
   if(money.paydayF===undefined)money.paydayF=25;
   money.actuals=money.actuals||{};bumpEarn();
   try{deviceOwner=localStorage.getItem('deviceOwner')||null;}catch(e){}
+  nfReset();
 }
 
 let DB=null, fbReady=false;
@@ -1942,16 +2176,17 @@ function initFirebase(){
           try{DB.ref('shared/overrides').set(overrides);}catch(e){}
           return;
         }
-        overrides=remote||{};migrateOverrides();bumpEarn();renderAll();
+        overrides=remote||{};migrateOverrides();NF.snapO=nfClone(overrides);bumpEarn();renderAll();
       });
-      DB.ref('shared/events').on('value',s=>{const v=s.val();events=Array.isArray(v)?v:Object.values(v||{});renderAll();});
+      DB.ref('shared/events').on('value',s=>{const v=s.val();events=Array.isArray(v)?v:Object.values(v||{});NF.snapE=nfClone(events);renderAll();});
       DB.ref('shared/health').on('value',s=>{
         const v=s.val();
         const haveLocal=Object.keys(health||{}).length>0;
         if((!v||!Object.keys(v).length)&&haveLocal){try{DB.ref('shared/health').set(health);}catch(e){}return;}
         health=v||{}; bumpHealth(); if(view==='health')renderHealth();
       });
-      DB.ref('shared/wishes').on('value',s=>{const v=s.val();wishes=Array.isArray(v)?v:Object.values(v||{});renderAll();});
+      DB.ref('shared/wishes').on('value',s=>{const v=s.val();wishes=Array.isArray(v)?v:Object.values(v||{});NF.snapW=nfClone(wishes);renderAll();});
+      nfOnline();
       DB.ref('shared/money').on('value',s=>{const v=s.val();
         if(v){money={...money,...v};money.entries=Array.isArray(v.entries)?v.entries:Object.values(v.entries||{});bumpEarn();
           if(view==='money')renderMoney();}});
@@ -2705,16 +2940,17 @@ async function saveOverrides(){
   }
   if(n>0)lastGoodOverrideCount=n;
   await sset('overrides',JSON.stringify(overrides));   // local is instant, keeps UI honest
+  nfTrackDays();
   queueFbWrite();
 }
-async function saveEvents(){await sset('events',JSON.stringify(events));if(fbReady&&DB){try{await DB.ref('shared/events').set(events);}catch(e){}}}
+async function saveEvents(){nfTrackList('E');await sset('events',JSON.stringify(events));if(fbReady&&DB){try{await DB.ref('shared/events').set(events);}catch(e){}}}
 async function saveMoney(){bumpEarn();await sset('money',JSON.stringify(money));
   if(fbReady&&DB){try{await DB.ref('shared/money').set(money);}catch(e){}}}
 async function saveHealth(){
   await sset('health',JSON.stringify(health));
   if(fbReady&&DB){try{await DB.ref('shared/health').set(health);}catch(e){}}
 }
-async function saveWishes(){await sset('wishes',JSON.stringify(wishes));if(fbReady&&DB){try{await DB.ref('shared/wishes').set(wishes);}catch(e){}}}
+async function saveWishes(){nfTrackList('W');await sset('wishes',JSON.stringify(wishes));if(fbReady&&DB){try{await DB.ref('shared/wishes').set(wishes);}catch(e){}}}
 
 /* ---------- engine ---------- */
 function shaadAuto(k){const cyc=(+S.shaadOn)+(+S.shaadOff);const n=mod(Math.round((keyToUTC(k)-keyToUTC(S.shaadStart))/DAY),cyc);return n<(+S.shaadOn)?'working':'off';}
@@ -4251,6 +4487,7 @@ function syncOwnerUI(){const set=!!deviceOwner;
 function openSettings(){
   showPhoneSec=false;tmpOwner=deviceOwner;syncOwnerPick();syncOwnerUI();updateBackupUI();renderNextSee();
   $('go-hundred').style.display=daysTogether()>=MILESTONE?'':'none';
+  try{nfStatus();}catch(e){}
   $('settings').classList.add('on');syncPanelFlag();
 }
 function closeSettings(){$('settings').classList.remove('on');syncPanelFlag();}
@@ -4645,7 +4882,7 @@ function csParse(raw){
   for(const line of lines){
     const m=CS_IOS.exec(line)||CS_AND.exec(line);
     if(m){const a=+m[1],b=+m[2];if(a>12)aBig++;if(b>12)bBig++;
-      tmp.push({a,b,y:+m[3],H:+m[4],M:+m[5],ap:(m[7]||'').toLowerCase(),who:m[8].trim(),text:m[9]});}
+      tmp.push({a,b,y:+m[3],H:+m[4],M:+m[5],S:+(m[6]||0),ap:(m[7]||'').toLowerCase(),who:m[8].trim(),text:m[9]});}
     else if(CS_SYSLINE.test(line))continue;
     else if(tmp.length&&line.length)tmp[tmp.length-1].text+='\n'+line;
   }
@@ -4664,7 +4901,7 @@ function csParse(raw){
     }
     if(!media&&!omit&&(!text||CS_NOISE.test(text)))continue;
     if(CS_SYSTEM.test(text))continue;
-    const msg={t:Date.UTC(yr,mon-1,day,H,x.M),who:x.who,text};       // search is case-insensitive, no lowercase copy needed
+    const msg={t:Date.UTC(yr,mon-1,day,H,x.M,x.S||0),who:x.who,text};       // search is case-insensitive, no lowercase copy needed
     if(edited)msg.ed=1;
     if(media){msg.media=media;msg.mk=csKind(media);}
     if(omit)msg.omit=omit;
@@ -4827,11 +5064,40 @@ async function csUrl(g,key,d){const m=CS_URLS[g];if(m.has(key))return m.get(key)
 function csRelease(g){CS_EPOCH[g]++;CS_URLS[g].forEach(u=>URL.revokeObjectURL(u));CS_URLS[g].clear();}
 function csReleaseOne(g,key){const u=CS_URLS[g].get(key);if(u){URL.revokeObjectURL(u);CS_URLS[g].delete(key);}}
 function csReleaseAll(){Object.keys(CS_URLS).forEach(csRelease);}
+const CS_TSNAME=/(PHOTO|VIDEO|AUDIO|STICKER|GIF)-(\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2})/i;
+const csSeq=n=>{const m=/^-?(\d+)-/.exec(n);return m?+m[1]:0;};
+function csNormStored(mi){return (Array.isArray(mi)?mi:[]).map(x=>typeof x==='string'?{b:x,s:0}:{b:x[0],s:+x[1]||0}).filter(x=>x.b);}
 function csEntry(m){return (m&&m.media&&CS.byName)?CS.byName.get(m.media.split('/').pop().toLowerCase())||null:null;}
 function csBuildMedia(){
   CS.byName=new Map();
+  // everything saved from earlier exports, then this export's own files on top
+  if(CS.stored)CS.stored.forEach(x=>CS.byName.set(x.b.toLowerCase(),{base:x.b}));
+  if(CS.alias)Object.entries(CS.alias).forEach(([n,b])=>{if(!CS.byName.has(n))CS.byName.set(n,{base:b});});
   if(CS.zip)CS.zip.entries.forEach(x=>CS.byName.set(x.base.toLowerCase(),{base:x.base,e:x}));
-  else if(CS.stored)CS.stored.forEach(b=>CS.byName.set(b.toLowerCase(),{base:b}));
+  /* a newer export marks older photos "omitted"; if we saved that photo from an
+     earlier export, hook it back up by its type and the second it was sent */
+  if(CS.stored&&CS.stored.length){
+    const used=new Set();CS.msgs.forEach(m=>{if(m.media)used.add(m.media.split('/').pop().toLowerCase());});
+    // a photo this export renamed is still the same photo: its saved copy is spoken for
+    if(CS.zip){
+      const bySig=new Map();
+      CS.stored.forEach(x=>{const t=CS_TSNAME.exec(x.b);if(t&&x.s)bySig.set(t[1].toUpperCase()+'|'+t[2]+'|'+x.s,x.b.toLowerCase());});
+      CS.zip.entries.forEach(e=>{const t=CS_TSNAME.exec(e.base);if(!t)return;const s=bySig.get(t[1].toUpperCase()+'|'+t[2]+'|'+e.usize);if(s)used.add(s);});
+    }
+    if(CS.alias)Object.values(CS.alias).forEach(b=>used.add(String(b).toLowerCase()));
+    const pool=new Map();
+    CS.stored.slice().sort((a,b)=>csSeq(a.b)-csSeq(b.b)).forEach(x=>{
+      if(used.has(x.b.toLowerCase()))return;
+      const t=CS_TSNAME.exec(x.b);if(!t)return;
+      const key=t[1].toUpperCase()+'|'+t[2];(pool.get(key)||pool.set(key,[]).get(key)).push(x.b);});
+    const K={image:'PHOTO',video:'VIDEO',audio:'AUDIO',sticker:'STICKER',gif:'GIF'};
+    for(const m of CS.msgs){
+      if(!m.omit||m.media||!K[m.omit])continue;
+      const key=K[m.omit]+'|'+new Date(m.t).toISOString().slice(0,19).replace(/[T:]/g,'-');
+      const list=pool.get(key);
+      if(list&&list.length){const b=list.shift();m.media=b;m.mk=csKind(b);delete m.omit;}
+    }
+  }
   CS.media=[];
   for(let i=CS.msgs.length-1;i>=0;i--){const m=CS.msgs[i];
     if((m.mk==='image'||m.mk==='video')&&csEntry(m))CS.media.push(i);}
@@ -4894,7 +5160,7 @@ function csBubble(m,k,mine){
 let csCtxObs=null;
 function csObserveCtx(){
   if(csCtxObs)csCtxObs.disconnect();
-  if(!CS.zip&&!CS.stored)return;
+  if(!CS.zip&&!(CS.stored&&CS.stored.length))return;
   csCtxObs=new IntersectionObserver(async ents=>{
     for(const en of ents){
       if(!en.isIntersecting)continue;
@@ -4918,24 +5184,65 @@ function csObserveCtx(){
   },{root:$('wa-scroll'),rootMargin:'500px 0px'});
   document.querySelectorAll('#cs-ctx-body .wa-media[data-i],#cs-ctx-body .wa-audio[data-i],#cs-ctx-body .wa-stk[data-i]').forEach(el=>csCtxObs.observe(el));
 }
-function csRenderWin(keepAnchor){
-  const box=$('cs-ctx-body'), sc=$('wa-scroll');
-  const before=keepAnchor?sc.scrollHeight-sc.scrollTop:0;
-  let html='',lastDay='',prevWho=null,prevT=0;
+function csRenderWin(){
+  const box=$('cs-ctx-body');
+  let html=csWin.from>0?'<div class="wa-top-load">Loading earlier messages\u2026</div>':'';
+  let lastDay='',prevWho=null,prevT=0;
   for(let k=csWin.from;k<csWin.to;k++){
     const m=CS.msgs[k], day=csDayLabel(m.t), mine=csMine(m.who);
     if(day!==lastDay){html+='<div class="wa-day"><span>'+esc(day)+'</span></div>';lastDay=day;prevWho=null;}
     const newRun=m.who!==prevWho||(m.t-prevT)>3600000;
-    html+='<div class="wa-row '+(mine?'me':'them')+(newRun?' tail gap':'')+(k===csWin.focus?' hit" id="cs-focus':'')+'">'
+    html+='<div class="wa-row '+(mine?'me':'them')+(newRun?' tail gap':'')+(k===csWin.focus?' hit" id="cs-focus':'')+'" data-k="'+k+'">'
       +csBubble(m,k,mine)+'</div>';
     prevWho=m.who;prevT=m.t;
   }
   box.innerHTML=html;
-  $('wa-earlier').style.display=csWin.from>0?'':'none';
-  $('wa-later').style.display=csWin.to<CS.msgs.length?'':'none';
-  if(keepAnchor)sc.scrollTop=sc.scrollHeight-before;
+  // let go of photos that have scrolled out of the window, so memory stays flat however far you scroll
+  CS_URLS.ctx.forEach((u,key)=>{if(key<csWin.from||key>=csWin.to)csReleaseOne('ctx',key);});
   csObserveCtx();
 }
+const CS_WIN_MAX=420, CS_STEP=60;
+function csAnchor(){
+  const sc=$('wa-scroll'), top=sc.getBoundingClientRect().top;
+  for(const r of sc.querySelectorAll('.wa-row')){const b=r.getBoundingClientRect();if(b.bottom>top+2)return {k:+r.dataset.k,off:b.top-top};}
+  return null;
+}
+function csRestore(a){
+  if(!a)return;const sc=$('wa-scroll');const r=sc.querySelector('.wa-row[data-k="'+a.k+'"]');if(!r)return;
+  sc.scrollTop+=(r.getBoundingClientRect().top-sc.getBoundingClientRect().top)-a.off;
+}
+let csScrollBusy=false, csAtBottom=false;
+function csOnScroll(){
+  csScrollBusy=false;
+  if(!CS.msgs||$('cs-tab-chat').style.display==='none')return;
+  const sc=$('wa-scroll'), N=CS.msgs.length, below=sc.scrollHeight-sc.scrollTop-sc.clientHeight;
+  csAtBottom=csWin.to>=N&&below<40;
+  if(sc.scrollTop<500&&csWin.from>0){
+    const a=csAnchor();
+    csWin.from=Math.max(0,csWin.from-CS_STEP);
+    if(csWin.to-csWin.from>CS_WIN_MAX)csWin.to=csWin.from+CS_WIN_MAX;
+    csRenderWin();csRestore(a);
+  }else if(below<500&&csWin.to<N){
+    const a=csAnchor();
+    csWin.to=Math.min(N,csWin.to+CS_STEP);
+    if(csWin.to-csWin.from>CS_WIN_MAX)csWin.from=csWin.to-CS_WIN_MAX;
+    csRenderWin();csRestore(a);
+  }
+  $('wa-down').classList.toggle('on',csWin.to<N||below>800);
+}
+$('wa-scroll').addEventListener('scroll',()=>{if(csScrollBusy)return;csScrollBusy=true;requestAnimationFrame(csOnScroll);},{passive:true});
+if(window.ResizeObserver)new ResizeObserver(()=>{const sc=$('wa-scroll');if(csAtBottom)sc.scrollTop=sc.scrollHeight;}).observe($('wa-scroll'));
+/* open on the newest message, like WhatsApp */
+function csOpenLatest(){
+  const N=CS.msgs.length;
+  csRelease('ctx');
+  csWin={from:Math.max(0,N-80),to:N,focus:-1,rx:null};
+  csRenderWin();
+  const sc=$('wa-scroll');sc.scrollTop=sc.scrollHeight;
+  csAtBottom=true;
+  requestAnimationFrame(()=>{sc.scrollTop=sc.scrollHeight;$('wa-down').classList.remove('on');});
+}
+$('wa-down').onclick=csOpenLatest;
 $('cs-ctx-body').addEventListener('click',e=>{
   const t=e.target.closest('.wa-media[data-i]');if(!t)return;
   const pos=CS.media.indexOf(+t.dataset.i);if(pos>=0)csOpenViewer(pos);
@@ -4947,7 +5254,7 @@ function csRenderPhotos(){
   const box=$('cs-photos');
   if(csGridObs)csGridObs.disconnect();
   csRelease('grid');
-  if(!CS.zip&&!CS.stored){box.innerHTML='<div class="cs-pnote">No photos in this export.<br>Export the chat again and choose <b>Attach media</b>.</div>';return;}
+  if(!CS.zip&&!(CS.stored&&CS.stored.length)){box.innerHTML='<div class="cs-pnote">No photos in this export.<br>Export the chat again and choose <b>Attach media</b>.</div>';return;}
   if(!CS.media.length){box.innerHTML='<div class="cs-pnote">There aren\u2019t any photos or videos in this export.</div>';return;}
   let html=CS.mediaKept?'':'<div class="cs-warn">'+(CS.shortNote?esc(CS.shortNote):'Not all of these fit on this phone, so some only show until you close the app. Load the export again to see them later.')+'</div>';
   let month='';
@@ -4979,11 +5286,16 @@ function csRenderPhotos(){
   box.querySelectorAll('.cs-tile').forEach(el=>csGridObs.observe(el));
 }
 $('cs-photos').addEventListener('click',e=>{const t=e.target.closest('.cs-tile');if(t)csOpenViewer(+t.dataset.p);});
-function csTab(t){
-  $('cs-tabS').classList.toggle('on',t==='s');$('cs-tabP').classList.toggle('on',t==='p');
+function csTab(t,keep){
+  $('cs-tabC').classList.toggle('on',t==='c');$('cs-tabS').classList.toggle('on',t==='s');$('cs-tabP').classList.toggle('on',t==='p');
+  $('cs-tab-chat').style.display=t==='c'?'':'none';
   $('cs-tab-search').style.display=t==='s'?'':'none';$('cs-tab-photos').style.display=t==='p'?'':'none';
+  $('chatpanel').classList.toggle('chatmode',t==='c');
+  if(t==='c'){if(!keep&&!$('cs-ctx-body').children.length)csOpenLatest();}
   if(t==='p')csRenderPhotos();else{if(csGridObs)csGridObs.disconnect();csRelease('grid');$('cs-photos').innerHTML='';}
+  if(t!=='c')$('chatpanel').scrollTop=0;
 }
+$('cs-tabC').onclick=()=>csTab('c');
 $('cs-tabS').onclick=()=>csTab('s');
 $('cs-tabP').onclick=()=>csTab('p');
 
@@ -5020,20 +5332,14 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Escape')csCloseViewer();else if(e.key==='ArrowLeft')csVwGo(1);else if(e.key==='ArrowRight')csVwGo(-1);
 });
 function csContext(i,rx){
+  csTab('c',true);
+  csAtBottom=false;
   csRelease('ctx');
-  csWin={from:Math.max(0,i-25),to:Math.min(CS.msgs.length,i+26),focus:i,rx};
-  const me=deviceOwner==='fiaza'?S.fiazaName:S.shaadName;
-  const other=CS.people.find(p=>!csMine(p))||CS.people[0]||'Chat';
-  $('wa-av').outerHTML=csAvatar(other,'wa-av').replace('class="wa-av"','class="wa-av" id="wa-av"');
-  $('wa-name').textContent=other;
-  $('wa-sub').textContent=csDay(CS.msgs[i].t);
-  csRenderWin(false);
-  $('cs-ctx').style.display='';
-  requestAnimationFrame(()=>{const f=$('cs-focus');if(f)f.scrollIntoView({block:'center'});});
+  csWin={from:Math.max(0,i-40),to:Math.min(CS.msgs.length,i+41),focus:i,rx};
+  csRenderWin();
+  requestAnimationFrame(()=>{const f=$('cs-focus');if(f)f.scrollIntoView({block:'center'});
+    $('wa-down').classList.add('on');});
 }
-$('wa-earlier').onclick=()=>{csWin.from=Math.max(0,csWin.from-40);csRenderWin(true);};
-$('wa-later').onclick=()=>{csWin.to=Math.min(CS.msgs.length,csWin.to+40);csRenderWin(false);};
-$('cs-back').onclick=()=>{$('cs-ctx').style.display='none';csRelease('ctx');};
 
 function csShowMain(){
   const counts={};CS.msgs.forEach(m=>counts[m.who]=(counts[m.who]||0)+1);
@@ -5041,14 +5347,15 @@ function csShowMain(){
   $('cs-count').innerHTML='<b>'+CS.msgs.length.toLocaleString('en-GB')+'</b> messages \u00b7 '
     +csDate(CS.msgs[0].t)+' \u2013 '+csDate(CS.msgs[CS.msgs.length-1].t);
   $('cs-who').innerHTML=CS.people.slice(0,4).map(p=>'<span><b>'+esc(p)+'</b> '+counts[p].toLocaleString('en-GB')+'</span>').join('');
-  $('cs-empty').style.display='none';$('cs-ctx').style.display='none';$('cs-main').style.display='';
+  $('cs-empty').style.display='none';$('cs-main').style.display='';
+  csRelease('ctx');$('cs-ctx-body').innerHTML='';
   $('cs-results').innerHTML='';$('cs-also').innerHTML='';
   csBuildMedia();
   $('cs-tabP').textContent=CS.media.length?'Photos ('+CS.media.length.toLocaleString('en-GB')+')':'Photos';
-  csTab('s');
+  csTab('c');
 }
 async function csReadFile(f){
-  const st=$('cs-status');st.textContent='Reading '+f.name+'\u2026';
+  const st=$('cs-main').style.display!=='none'?$('cs-saving'):$('cs-status');st.textContent='Reading '+f.name+'\u2026';
   try{
     const head=new Uint8Array(await f.slice(0,4).arrayBuffer());
     let raw, zip=null;
@@ -5063,9 +5370,14 @@ async function csReadFile(f){
     if(msgs.length<3){st.textContent='That doesn\u2019t look like a WhatsApp export \u2014 no messages in it.';return;}
     const hasMedia=!!zip&&zip.entries.some(x=>csKind(x.base)!=='file');
     CS.saveRun++;                                          // stop any save still running from an older export
-    CS.msgs=msgs;CS.raw=raw;CS.shown=40;CS.zip=hasMedia?zip:null;CS.mediaKept=true;CS.stored=null;CS.shortNote='';
+    // same two people as before? keep the photos already saved. A different chat starts clean.
+    const whoNow=[...new Set(msgs.map(m=>m.who))].sort().join('|'), whoWas=await csGet('mwho');
+    if(whoWas&&whoWas!==whoNow){await csDel('mindex');await csDel('malias');await csDel('msave');await csMClear();}
+    try{await csPut('mwho',whoNow);}catch(e){}
+    await csDel('zip');await csDel('mtotal');
+    CS.stored=csNormStored(await csGet('mindex'));CS.alias=(await csGet('malias'))||{};
+    CS.msgs=msgs;CS.raw=raw;CS.shown=40;CS.zip=hasMedia?zip:null;CS.mediaKept=true;CS.shortNote='';
     try{await csPut('chat',raw);}catch(e){}
-    await csDel('zip');await csDel('mindex');await csDel('mtotal');await csMClear();
     st.textContent='';$('cs-q').value='';
     csShowMain();
     if(hasMedia)csSaveMedia();
@@ -5076,34 +5388,45 @@ async function csReadFile(f){
 async function csSaveMedia(){
   const run=CS.saveRun, line=$('cs-saving');CS.saving=true;
   try{if(navigator.storage&&navigator.storage.persist)await navigator.storage.persist();}catch(e){}
+  const stored=CS.stored||[], have=new Set(stored.map(x=>x.b.toLowerCase()));
+  const sig=(n,s)=>{const t=CS_TSNAME.exec(n);return t&&s?t[1].toUpperCase()+'|'+t[2]+'|'+s:null;};
+  const haveSig=new Map();stored.forEach(x=>{const k=sig(x.b,x.s);if(k)haveSig.set(k,x.b);});
+  const alias=Object.assign({},CS.alias||{});
   const rank={image:0,video:1,audio:2,gif:3,sticker:4,contact:5,file:6};
   const seen=new Set(), list=[];
   for(let i=CS.msgs.length-1;i>=0;i--){const m=CS.msgs[i];const d=csEntry(m);
-    if(d&&d.e&&!seen.has(d.base)){seen.add(d.base);list.push({d,r:rank[m.mk]??9});}}
+    if(!d||!d.e||seen.has(d.base.toLowerCase()))continue;
+    seen.add(d.base.toLowerCase());
+    if(have.has(d.base.toLowerCase()))continue;                          // already on the phone
+    const dup=haveSig.get(sig(d.base,d.e.usize));
+    if(dup){alias[d.base.toLowerCase()]=dup;continue;}                   // same photo, new name: point at the saved one
+    list.push({d,r:rank[m.mk]??9});}
   list.sort((a,b)=>a.r-b.r);
-  try{await csPut('mtotal',list.length);}catch(e){}
-  const kept=[];let full=false;
-  // a batch per save is far quicker than one save per file; if a batch won't fit, retry it file by file
+  try{await csPut('malias',alias);CS.alias=alias;}catch(e){}
+  try{await csPut('msave',{todo:list.length,done:0});}catch(e){}
+  const kept=stored.slice();let full=false, done=0;
   for(let n=0;n<list.length&&!full;){
     if(run!==CS.saveRun){CS.saving=false;return;}          // a newer export was loaded
     const batch=[];let bytes=0;
     while(n<list.length&&batch.length<24&&bytes<24e6){const it=list[n++];batch.push(it);bytes+=it.d.e.csize||0;}
     if(line)line.textContent='Saving to this phone \u00b7 '+n+' of '+list.length+' \u00b7 keep the app open';
     const items=[];
-    for(const it of batch){try{items.push([it.d.base,await zBlob(CS.zip,it.d.e)]);}catch(e){}}
-    try{await csMPutMany(items);items.forEach(([k])=>kept.push(k));}
+    for(const it of batch){try{const b=await zBlob(CS.zip,it.d.e);items.push([it.d.base,b,b.size]);}catch(e){}}
+    try{await csMPutMany(items.map(x=>[x[0],x[1]]));items.forEach(x=>{kept.push({b:x[0],s:x[2]});done++;});}
     catch(e){
-      for(const [k,v] of items){
-        try{await csMPut(k,v);kept.push(k);}catch(e2){if(e2&&e2.name==='QuotaExceededError'){full=true;break;}}
+      for(const x of items){
+        try{await csMPut(x[0],x[1]);kept.push({b:x[0],s:x[2]});done++;}
+        catch(e2){if(e2&&e2.name==='QuotaExceededError'){full=true;break;}}
       }
     }
-    try{await csPut('mindex',kept.slice());}catch(e){}       // progress survives the app being closed
+    try{await csPut('mindex',kept.map(x=>[x.b,x.s]));await csPut('msave',{todo:list.length,done});}catch(e){}
   }
   CS.saving=false;
   if(run!==CS.saveRun)return;
-  try{await csPut('mindex',kept);}catch(e){}
-  CS.mediaKept=!full&&kept.length===list.length;
-  if(line)line.textContent=full?'Phone storage is full \u2014 kept '+kept.length+' of '+list.length+'. The rest show until you close the app.':'';
+  CS.stored=kept;
+  try{await csPut('mindex',kept.map(x=>[x.b,x.s]));if(!full)await csDel('msave');}catch(e){}
+  CS.mediaKept=!full;
+  if(line)line.textContent=full?'Phone storage is full \u2014 saved '+done+' of '+list.length+' new files. The rest show until you close the app.':'';
   if($('cs-tab-photos').style.display!=='none'&&!CS.mediaKept)csRenderPhotos();
 }
 async function openChat(){
@@ -5115,14 +5438,15 @@ async function openChat(){
     if(CS.msgs){
       const zb=await csGet('zip');                       // an export saved by the older version of this
       if(zb){try{CS.zip=await zIndex(zb);}catch(e){CS.zip=null;}}
-      else{const mi=await csGet('mindex');CS.stored=Array.isArray(mi)&&mi.length?mi:null;
-        const tot=+(await csGet('mtotal'))||0, have=CS.stored?CS.stored.length:0;
-        CS.mediaKept=!(tot&&have<tot);
-        CS.shortNote=(tot&&have<tot)?'Saved '+have+' of '+tot+' photos and files. Load the export again and keep the app open until it finishes to get the rest.':'';}
+      else{const st=csNormStored(await csGet('mindex'));CS.stored=st.length?st:null;CS.alias=(await csGet('malias'))||{};
+        const ms=await csGet('msave'), tot=+(await csGet('mtotal'))||0;
+        const short=(ms&&ms.done<ms.todo)||(!ms&&tot&&st.length<tot);
+        CS.mediaKept=!short;
+        CS.shortNote=short?'Not every photo finished saving last time. Load the export again and keep the app open until it finishes \u2014 it only adds what\u2019s missing.':'';}
     }
   }
   if(CS.msgs&&CS.msgs.length){csShowMain();if(CS.shortNote&&!CS.saving)$('cs-saving').textContent=CS.shortNote;}
-  else{$('cs-empty').style.display='';$('cs-main').style.display='none';$('cs-ctx').style.display='none';}
+  else{$('cs-empty').style.display='';$('cs-main').style.display='none';$('chatpanel').classList.remove('chatmode');}
 }
 let csDropT=null;
 function closeChat(){
@@ -5132,16 +5456,16 @@ function closeChat(){
     CS.msgs=null;CS.raw=null;CS.zip=null;CS.byName=null;CS.media=[];CS.stored=null;
     $('cs-results').innerHTML='';$('cs-photos').innerHTML='';$('cs-ctx-body').innerHTML='';
   },120000);
-  csCloseViewer();$('cs-ctx').style.display='none';csReleaseAll();$('chatpanel').classList.remove('on');syncPanelFlag();}
+  csCloseViewer();csReleaseAll();$('cs-ctx-body').innerHTML='';$('chatpanel').classList.remove('on');syncPanelFlag();}
 $('closeChat').onclick=closeChat;
 $('go-chat-tile').onclick=()=>{closeSettings();openChat();};
 $('cs-pick').onclick=()=>$('cs-file').click();
 $('cs-replace').onclick=()=>$('cs-file').click();
-$('cs-file').addEventListener('change',e=>{const f=e.target.files[0];if(f){if($('cs-main').style.display!=='none'){$('cs-empty').style.display='';}csReadFile(f);}e.target.value='';});
+$('cs-file').addEventListener('change',e=>{const f=e.target.files[0];if(f)csReadFile(f);e.target.value='';});
 $('cs-forget').onclick=async()=>{
   if(!confirm('Remove the chat from this phone?'))return;
-  CS.saveRun++;await csWipe();await csDel('zip');await csDel('mindex');await csDel('mtotal');await csMClear();CS.msgs=null;CS.raw=null;CS.zip=null;CS.stored=null;CS.media=[];if($('cs-saving'))$('cs-saving').textContent='';
-  $('cs-main').style.display='none';$('cs-empty').style.display='';$('cs-status').textContent='';
+  CS.saveRun++;await csWipe();await csDel('zip');await csDel('mindex');await csDel('mtotal');await csDel('malias');await csDel('msave');await csDel('mwho');await csMClear();CS.alias={};CS.msgs=null;CS.raw=null;CS.zip=null;CS.stored=null;CS.media=[];if($('cs-saving'))$('cs-saving').textContent='';
+  $('cs-main').style.display='none';$('cs-empty').style.display='';$('cs-status').textContent='';$('chatpanel').classList.remove('chatmode');
 };
 let csT=null;
 $('cs-q').addEventListener('input',()=>{CS.shown=40;clearTimeout(csT);csT=setTimeout(csSearch,120);});
@@ -5220,8 +5544,10 @@ $('bk-yes').onclick=async()=>{if(!pendingImport)return;const d=pendingImport;
     opens={shaad:{count:+((d.opens.shaad||{}).count)||0,last:+((d.opens.shaad||{}).last)||0},
            fiaza:{count:+((d.opens.fiaza||{}).count)||0,last:+((d.opens.fiaza||{}).last)||0}};
     if(fbReady&&DB){try{DB.ref('shared/opens').set(opens);}catch(e){}}}
+  NF.muted=true;
   await saveSettingsStore();await saveOverrides();await saveEvents();await saveWishes();
   await saveHealth();await saveMoney();
+  NF.muted=false;nfReset();
   applyNames();renderAll();$('bk-confirm').style.display='none';pendingImport=null;$('bk-last').textContent='Restored from backup just now';
 };
 $('saveSettings').onclick=async()=>{
@@ -5270,8 +5596,11 @@ function initIcon(){
       background_color:'#141019',theme_color:'#141019',start_url:'.',scope:'.',
       icons:[{src:url,sizes:'512x512',type:'image/png',purpose:'any'},
              {src:murl,sizes:'512x512',type:'image/png',purpose:'maskable'}]};
-    const mb=new Blob([JSON.stringify(manifest)],{type:'application/json'});
-    const ml=document.createElement('link');ml.rel='manifest';ml.href=URL.createObjectURL(mb);document.head.appendChild(ml);
+    // the real manifest.webmanifest file is linked in <head>; this generated one is only a fallback
+    if(!document.querySelector('link[rel="manifest"]')){
+      const mb=new Blob([JSON.stringify(manifest)],{type:'application/json'});
+      const ml=document.createElement('link');ml.rel='manifest';ml.href=URL.createObjectURL(mb);document.head.appendChild(ml);
+    }
   }catch(e){}
 }
 
@@ -5536,6 +5865,8 @@ $('lock-input').addEventListener('keydown',e=>{if(e.key==='Enter')tryUnlock();})
   try{if(localStorage.getItem('unlocked')==='1')$('lock').classList.add('hide');}catch(e){}
   markGearDue();
   initFirebase();
+  nfOpenFromLink();
+  nfBoot();
 })();
 </script>
 </body>
