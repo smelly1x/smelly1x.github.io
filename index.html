@@ -1403,6 +1403,70 @@
     padding:11px 15px;font-size:14px;font-weight:600;box-shadow:0 10px 28px rgba(0,0,0,.45);z-index:200;
     transition:transform .3s cubic-bezier(.2,.85,.2,1);pointer-events:none}
   #nf-banner.on{transform:translate(-50%,0)}
+
+  /* ---- dates: search box row, day card, day list ---- */
+  .cs-qrow{display:flex;gap:8px;align-items:center}
+  .cs-qrow #cs-q{flex:1;min-width:0;margin:0!important}
+  .cs-cal{position:relative;flex:none;width:44px;height:44px;border-radius:50%;background:#202c33;color:#aebac1;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden}
+  .cs-cal input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:16px;border:0;padding:0}
+  .cs-qrow+.cs-also{margin-top:8px}
+  .cs-card{background:#202c33;border-radius:16px;padding:14px 15px 12px;margin:2px 0 14px;color:#e9edef}
+  .cc-k{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#00a884;font-weight:800}
+  .cc-big{font-size:22px;font-weight:700;margin:4px 0 6px;letter-spacing:-.01em}
+  .cc-row{font-size:13.5px;color:#aebac1;margin:3px 0;line-height:1.45}
+  .cc-topics b{color:#e9edef;font-weight:600}
+  .cc-open{display:block;width:100%;margin-top:12px;background:#00a884;color:#111b21;border:none;border-radius:999px;
+    padding:11px;font-weight:800;font-size:14.5px;cursor:pointer}
+  .cc-nav{display:flex;justify-content:space-between;gap:8px;margin-top:10px}
+  .cc-nav:empty{display:none}
+  .cc-nav-b{background:#111b21;border:1px solid #2a3942;color:#aebac1;border-radius:999px;padding:7px 12px;font-size:13px;font-weight:600;cursor:pointer}
+  .cc-nav-b:only-child:last-child{margin-left:auto}
+  .cc-days{display:flex;flex-direction:column}
+  .cc-day{display:flex;align-items:center;gap:10px;background:none;border:none;border-bottom:1px solid #222d34;
+    padding:10px 2px;color:#e9edef;cursor:pointer;text-align:left;font-size:14.5px}
+  .cc-day:active{background:#202c33}
+  .cd-d{flex:none;width:96px}
+  .cd-bar{flex:1;height:8px;border-radius:4px;background:#182229;overflow:hidden}
+  .cd-bar i{display:block;height:100%;border-radius:4px;background:#00a884}
+  .cd-n{flex:none;min-width:48px;text-align:right;color:#8696a0;font-size:13px;font-variant-numeric:tabular-nums}
+
+  /* ---- stats cards ---- */
+  .st-card .cc-big{margin-bottom:2px}
+  .cc-verdict{color:#e9edef!important;font-weight:700;font-size:15px!important;margin-top:6px!important}
+  .cs-vs{margin:8px 0 6px}
+  .vs-names{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:5px}
+  .vs-names b{color:#e9edef;font-weight:700}
+  .vs-bar{display:flex;height:10px;border-radius:5px;overflow:hidden;background:#182229}
+  .vs-bar i{display:block;height:100%}
+  .vs-pct{display:flex;justify-content:space-between;font-size:11.5px;color:#8696a0;margin-top:3px}
+  .st-row{display:flex;justify-content:space-between;gap:12px;font-size:13.5px;color:#aebac1;padding:5px 0;border-top:1px solid #2a3942}
+  .st-row b{color:#e9edef;font-weight:600;text-align:right}
+  .st-sub{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:#8696a0;font-weight:700;margin:14px 0 2px;display:flex;gap:12px;flex-wrap:wrap}
+  .st-link{background:none;border:none;color:#00a884;font:inherit;letter-spacing:inherit;text-transform:inherit;padding:0;cursor:pointer}
+  .st-note{font-size:12px;color:#8696a0;margin-top:10px;line-height:1.45}
+  .st-months{display:flex;align-items:flex-end;gap:5px;height:72px;margin:10px 0 2px}
+  .stm{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;height:100%}
+  .stm i{display:block;width:100%;max-width:26px;background:#00a884;border-radius:3px 3px 0 0}
+  .stm span{font-size:10.5px;color:#8696a0}
+  .st-hours{display:flex;align-items:flex-end;gap:2px;height:70px;margin:8px 0 2px}
+  .sth{flex:1;position:relative;display:flex;flex-direction:column;justify-content:flex-end;height:100%}
+  .sth i{display:block;background:#00a884;border-radius:2px 2px 0 0}
+  .sth span{position:absolute;bottom:-15px;left:0;font-size:10px;color:#8696a0}
+  .st-hours+.st-row{margin-top:16px}
+  .cc-snip{display:block;width:100%;text-align:left;background:#111b21;border:none;border-radius:10px;padding:9px 11px;margin-top:8px;color:#e9edef;cursor:pointer}
+  .sn-h{display:block;font-size:11.5px;color:#00a884;font-weight:700;margin-bottom:3px}
+  .sn-t{display:block;font-size:14px;line-height:1.4;color:#d1d7db;word-break:break-word}
+  .st-words{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+  .sw{background:#111b21;border:1px solid #2a3942;color:#e9edef;border-radius:999px;padding:6px 11px;font-size:13.5px;cursor:pointer}
+  .sw span{color:#8696a0;font-size:12px;margin-left:3px}
+  .sw-q{background:#202c33;border-color:#2a3942;color:#d1d7db}
+  .st-emo{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:10px}
+  .se{display:flex;align-items:center;gap:8px;background:#111b21;border-radius:10px;padding:7px 9px}
+  .se-e{font-size:22px;line-height:1}
+  .se-n{font-weight:700;font-size:14px}
+  .se-w{margin-left:auto;font-size:11.5px}
+  .se-w i{font-style:normal}
 </style>
 
 </head>
@@ -1720,8 +1784,14 @@
         <svg viewBox="0 0 24 24" width="22" height="22"><path d="M6 9.5l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     </div>
     <div id="cs-tab-search" style="display:none">
-      <input class="nt-search" id="cs-q" type="search" autocomplete="off" enterkeyhint="search"
-        placeholder="Search, or ask “when did we last talk about food”">
+      <div class="cs-qrow">
+        <input class="nt-search" id="cs-q" type="search" autocomplete="off" enterkeyhint="search"
+          placeholder="Search, or ask anything — “who calls the most”">
+        <label class="cs-cal" aria-label="Pick a date">
+          <svg viewBox="0 0 24 24" width="21" height="21"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 9.5h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <input type="date" id="cs-date" tabindex="-1">
+        </label>
+      </div>
       <div class="cs-also" id="cs-also"></div>
       <div id="cs-results"></div>
     </div>
@@ -4942,7 +5012,8 @@ const CS_TOPICS={
   w:['train','travel','journey','flight','holiday','trip','uber','bus','drive','driving','mk','london','station','euston','delayed','tube']},
  health:{on:['ill','sick','health','pain','doctor','unwell','poorly'],
   w:['ill','sick','poorly','headache','doctor','gp','hospital','pain','cramps','medicine','flu','cold','fever','migraine','not well','unwell']},
- wedding:{on:['wedding','nikkah','nikah','shaadi','marriage','married'],
+ wedding:{core:['marriage','married','marry','wedding','nikkah','nikah','shaadi','walima','rishta','mehndi','husband','wife','in laws','inlaws','get married','getting married'],
+  on:['wedding','nikkah','nikah','shaadi','marriage','married','marry'],
   w:['wedding','nikkah','nikah','shaadi','walima','mehndi','mendi','venue','dress','rishta','imam','married','marriage','guests','invite']},
  upset:{on:['argue','argued','argument','fight','fought','upset','sorry','angry','annoyed'],
   w:['sorry','upset','angry','annoyed','argue','argument','fight','mad','hurt','forgive','my bad','fed up','not talking','dont speak']},
@@ -4954,7 +5025,8 @@ const CS_TOPICS={
 const CS_STOP=new Set(('when did we last first time talk talked talking about mention mentioned say said says '+
   'the a an of to in on at for and or is was were be been it that this what whats where who how why do does '+
   'i me my you your we us our he she her him they them there any some about with from have has had '+
-  'ever recently latest last most can could would should tell show find search message messages chat').split(' '));
+  'ever recently latest last most can could would should tell show find search message messages chat '+
+  'between until till ago during since talk talking chatting chat chatted said went happened happen day').split(' '));
 function csPlan(q){
   const lc=q.toLowerCase().replace(/[^\p{L}\p{N}\u00a3' ]+/gu,' ').trim();
   const words=lc.split(/\s+/).filter(Boolean);
@@ -4988,46 +5060,566 @@ const csDate=t=>new Date(t).toLocaleDateString('en-GB',{day:'numeric',month:'sho
 const csTime=t=>new Date(t).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',timeZone:'UTC'});
 const csDay=t=>new Date(t).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'UTC'});
 
+
+/* ---------- dates: "what were we talking about on May 2nd" ----------
+   Turns date phrases into a time range, and hands back the rest of the question.
+   Message times are wall-clock stored as UTC, so everything here works in UTC too. */
+const CS_DAY=86400000;
+const CS_MON3={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+const CS_WD={sunday:0,sun:0,monday:1,mon:1,tuesday:2,tue:2,tues:2,wednesday:3,wed:3,thursday:4,thu:4,thur:4,thurs:4,friday:5,fri:5,saturday:6,sat:6};
+const CS_MONRX='(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?|sept?(?:ember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)';
+const CS_WDRX='(monday|tuesday|wednesday|thursday|friday|saturday|sunday|mon|tues?|wed|thur?s?|fri|sat|sun)';
+function csTodayUTC(){const n=new Date();return Date.UTC(n.getFullYear(),n.getMonth(),n.getDate());}
+function csParseDate(q,ref){
+  if(ref==null)ref=csTodayUTC();
+  let s=' '+String(q).toLowerCase().replace(/[\u2019']/g,"'").replace(/,/g,' ')+' ';
+  const out=[], refY=new Date(ref).getUTCFullYear(), refM=new Date(ref).getUTCMonth();
+  const valid=(y,m,d)=>{if(m<0||m>11||d<1||d>31)return null;const t=Date.UTC(y,m,d),x=new Date(t);return x.getUTCMonth()===m&&x.getUTCDate()===d?t:null;};
+  const yr=y=>y<100?2000+y:y;
+  const recent=(m,d)=>{let t=valid(refY,m,d);if(t!==null&&t>ref)t=valid(refY-1,m,d);return t;};
+  const day=t=>t===null?null:{from:t,to:t+CS_DAY,kind:'day'};
+  const month=(y,m)=>({from:Date.UTC(y,m,1),to:Date.UTC(y,m+1,1),kind:'month'});
+  const recentMonth=(m,skipCurrent)=>{let y=refY;if(m>refM||(skipCurrent&&m===refM))y--;return month(y,m);};
+  const weekOf=t=>{const dow=(new Date(t).getUTCDay()+6)%7;const mon=t-dow*CS_DAY;return {from:mon,to:mon+7*CS_DAY,kind:'week'};};
+  const mon=w=>CS_MON3[w.slice(0,3)];
+  const take=(re,fn)=>{s=s.replace(re,(...a)=>{const r=fn(a);if(r){out.push(r);return ' ';}return a[0];});};
+
+  take(/\b(20\d{2})-(\d{1,2})-(\d{1,2})\b/g,a=>day(valid(+a[1],+a[2]-1,+a[3])));
+  take(/\b(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?\b/g,a=>day(a[3]?valid(yr(+a[3]),+a[2]-1,+a[1]):recent(+a[2]-1,+a[1])));
+  take(new RegExp('\\b(\\d{1,2})(?:st|nd|rd|th)?\\s+(?:of\\s+)?'+CS_MONRX+'(?:\\s+(\\d{4}))?\\b','g'),
+       a=>day(a[3]?valid(+a[3],mon(a[2]),+a[1]):recent(mon(a[2]),+a[1])));
+  // "may 2nd" - but not "i may 2...", where may is just may
+  take(new RegExp('(\\b(?:i|you|u|we|he|she|they|it|that|this)\\s+)?\\b'+CS_MONRX+'\\s+(\\d{1,2})(?:st|nd|rd|th)?(?:\\s+(\\d{4}))?\\b','g'),
+       a=>{if(a[1]&&a[2]==='may')return null;return day(a[4]?valid(+a[4],mon(a[2]),+a[3]):recent(mon(a[2]),+a[3]));});
+  take(new RegExp('\\b'+CS_MONRX+'\\s+(20\\d{2})\\b','g'),a=>month(+a[2],mon(a[1])));
+  take(new RegExp('\\b(in|during|of|throughout|through|last|this|over|across|back in)\\s+'+CS_MONRX+'\\b','g'),
+       a=>recentMonth(mon(a[2]),a[1]==='last'));
+  take(/\b(?:the\s+)?day\s+before\s+yesterday\b/g,()=>day(ref-2*CS_DAY));
+  take(/\byesterday\b/g,()=>day(ref-CS_DAY));
+  take(/\btoday\b/g,()=>day(ref));
+  take(/\b(\d{1,3}|a|one)\s+days?\s+ago\b/g,a=>day(ref-(/\d/.test(a[1])?+a[1]:1)*CS_DAY));
+  take(/\b(\d{1,2}|a|one)\s+weeks?\s+ago\b/g,a=>weekOf(ref-(/\d/.test(a[1])?+a[1]:1)*7*CS_DAY));
+  take(/\b(\d{1,2}|a|one)\s+months?\s+ago\b/g,a=>{const n=/\d/.test(a[1])?+a[1]:1;const d=new Date(Date.UTC(refY,refM-n,1));return month(d.getUTCFullYear(),d.getUTCMonth());});
+  take(/\blast\s+week\b/g,()=>weekOf(ref-7*CS_DAY));
+  take(/\bthis\s+week\b/g,()=>weekOf(ref));
+  take(/\blast\s+month\b/g,()=>{const d=new Date(Date.UTC(refY,refM-1,1));return month(d.getUTCFullYear(),d.getUTCMonth());});
+  take(/\bthis\s+month\b/g,()=>month(refY,refM));
+  take(/\b(last|this)\s+weekend\b/g,a=>{const dow=new Date(ref).getUTCDay();
+    let sat=ref-((dow+1)%7)*CS_DAY;if(a[1]==='last'&&(dow===6||dow===0))sat-=7*CS_DAY;return {from:sat,to:sat+2*CS_DAY,kind:'range'};});
+  take(new RegExp('\\b(last|on|this|past)\\s+'+CS_WDRX+'\\b','g'),a=>{
+    const want=CS_WD[a[2]];if(want==null)return null;const dow=new Date(ref).getUTCDay();
+    let back=(dow-want+7)%7;if(back===0&&a[1]==='last')back=7;return day(ref-back*CS_DAY);});
+  take(/\bthe\s+(\d{1,2})(?:st|nd|rd|th)\b/g,a=>{const d=+a[1];let t=valid(refY,refM,d);
+    if(t===null||t>ref){const p=new Date(Date.UTC(refY,refM-1,1));t=valid(p.getUTCFullYear(),p.getUTCMonth(),d);}return day(t);});
+  take(/\b(in|during|throughout)\s+(20\d{2})\b/g,a=>({from:Date.UTC(+a[2],0,1),to:Date.UTC(+a[2]+1,0,1),kind:'year'}));
+  take(/\b(last|this)\s+year\b/g,a=>{const y=a[1]==='last'?refY-1:refY;return {from:Date.UTC(y,0,1),to:Date.UTC(y+1,0,1),kind:'year'};});
+
+  if(!out.length)return null;
+  const days=out.filter(o=>o.kind==='day');
+  let r=days.length>=2?{from:Math.min(...days.map(o=>o.from)),to:Math.max(...days.map(o=>o.to)),kind:'range'}:out[0];
+  r.label=csRangeLabel(r);
+  r.rest=s.replace(/\b(between|from|until|till|ago|during|since)\b/g,' ').replace(/\s+/g,' ').trim();
+  return r;
+}
+// built by hand: browsers disagree on commas in formatted dates
+const CS_MN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const CS_WN=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const csShortM=m=>CS_MN[m].slice(0,3);
+function csRangeLabel(r){
+  const a=new Date(r.from), b=new Date(r.to-CS_DAY);
+  if(r.kind==='day')return CS_WN[a.getUTCDay()]+' '+a.getUTCDate()+' '+CS_MN[a.getUTCMonth()]+' '+a.getUTCFullYear();
+  if(r.kind==='month')return CS_MN[a.getUTCMonth()]+' '+a.getUTCFullYear();
+  if(r.kind==='year')return String(a.getUTCFullYear());
+  if(a.getUTCFullYear()===b.getUTCFullYear()&&a.getUTCMonth()===b.getUTCMonth())
+    return a.getUTCDate()+'\u2013'+b.getUTCDate()+' '+csShortM(b.getUTCMonth())+' '+b.getUTCFullYear();
+  return a.getUTCDate()+' '+csShortM(a.getUTCMonth())+' \u2013 '+b.getUTCDate()+' '+csShortM(b.getUTCMonth())+' '+b.getUTCFullYear();
+}
+function csLB(t){let lo=0,hi=CS.msgs.length;while(lo<hi){const m=(lo+hi)>>1;if(CS.msgs[m].t<t)lo=m+1;else hi=m;}return lo;}
+const csDayKey=t=>new Date(t).toISOString().slice(0,10);
+const csDay0=t=>t-(t%CS_DAY);
+const CS_TOPIC_LABEL={food:'food',sleep:'sleep',work:'work',family:'family',plans:'plans',gifts:'gifts',money:'money',
+  travel:'travel',health:'health',wedding:'the wedding',deen:'deen',weather:'the weather'};
+let csTopicRx=null;
+function csTopicsFor(idx){
+  if(!csTopicRx){csTopicRx={};Object.keys(CS_TOPIC_LABEL).forEach(k=>{csTopicRx[k]=csRx(CS_TOPICS[k].w,'iu');});}
+  const step=Math.max(1,Math.floor(idx.length/6000)), score={};
+  for(let n=0;n<idx.length;n+=step){const m=CS.msgs[idx[n]];if(!m.text||m.del||m.sys)continue;
+    for(const k in csTopicRx)if(csTopicRx[k].test(m.text))score[k]=(score[k]||0)+1;}
+  return Object.entries(score).filter(([,v])=>v>=2).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k])=>CS_TOPIC_LABEL[k]);
+}
+function csRow(m,rx){
+  const b=document.createElement('button');b.className='cs-msg';
+  const body=(m.call?(m.call.vid?'\ud83d\udcf9 ':'\ud83d\udcde '):m.poll?'\ud83d\udcca ':m.media?(m.mk==='video'||m.mk==='gif'?'\ud83c\udfa5 ':m.mk==='audio'?'\ud83c\udfa4 ':'\ud83d\udcf7 '):'')
+    +(m.poll?m.poll.q:m.omit?'':(m.text.length>420?m.text.slice(0,420)+'\u2026':m.text));
+  b.innerHTML=csAvatar(m.who,'cs-ava')
+    +'<div class="cs-rbody"><div class="t"><b>'+esc(m.who)+'</b><span>'+csDate(m.t)+' \u00b7 '+csTime(m.t)+'</span></div>'
+    +'<div class="x2">'+(rx?csHighlight(body,rx):esc(body))+'</div></div>';
+  b.onclick=()=>csContext(m.i,rx);
+  return b;
+}
+function csMore(box,left){
+  const more=document.createElement('button');more.className='cs-more';
+  more.textContent='Show more ('+left.toLocaleString('en-GB')+' left)';
+  more.onclick=()=>{CS.shown+=40;csSearch();};
+  box.appendChild(more);
+}
+
+/* ================= asking it things: stats, counts, first & last time =================
+   All worked out on the phone from the chat already loaded. Nothing leaves the phone. */
+const CS_PHRASES=[
+  ['love you','i love you','love u','i love u','luv you','luv u','ily','love ya','lv u','ilysm'],
+  ['miss you','i miss you','miss u','i miss u','missing you','miss ya'],
+  ['good morning','gm','good mornin','gud morning','morning babe','morning jaan'],
+  ['good night','goodnight','gn','night night','gnight','goodnite','good nite'],
+  ['sorry','im sorry',"i'm sorry",'sry','soz','apologies','my bad'],
+  ['thank you','thanks','thank u','thx','ty','tysm','thankyou'],
+  ['inshallah',"insha'allah",'insha allah','inshaallah','inshaa allah','isa'],
+  ['alhamdulillah','alhamdulilah','alhumdulillah','alhamdullilah','hamdulillah'],
+  ['mashallah',"masha'allah",'masha allah','mashaallah'],
+  ['subhanallah','subhan allah','subhanAllah','subhanallah'],
+  ['nikkah','nikah','nikaah','nikka'],
+  ['shaadi','shadi'],
+  ['rishta','rishtas','rishtay'],
+  ['babe','baby','babes','bby','babyy'],
+  ['jaan','jaanu','jaani','meri jaan'],
+  ['i hate you','hate you','hate u','i hate u'],
+  ['wyd','what you doing','what are you doing','wat u doing','what u doing'],
+  ['omg','oh my god','oh my days','omd'],
+  ['lol'],['lmao','lmfao'],['haha','hahaha','hahahaha','hehe']
+];
+const CS_SWEAR=['fuck','fucking','fucked','fucker','shit','shitty','wtf','bitch','bastard','dickhead','prick','twat','crap','piss','pissed','arse','arsehole','damn','bloody','bs'];
+const CS_PEOPLE_COL=['#21a9b6','#e5677e'];
+function csCleanTerm(s){
+  return String(s).replace(/[\u201c\u201d"]/g,'').replace(/^\s*(the word|the phrase|the|a|an|our|my|your|her|his|about)\s+/,'')
+    .replace(/\s+(the most|most|more|first|ever|again|before|a lot|alot|often|time|times|the first time|the last time)\s*$/,'')
+    .replace(/\s+(to each other|to me|to you|to her|to him)\s*$/,'').trim();
+}
+function csTermPlan(term){
+  if(term==='__swear')return {terms:CS_SWEAR,label:'swearing',note:'Counting the usual swear words'};
+  const t=term.toLowerCase().trim();
+  for(const g of CS_PHRASES)if(g.includes(t))return {terms:g,label:g[0],note:g.length>1?'Counting '+g.slice(0,7).join(', ')+(g.length>7?'\u2026':''):''};
+  if(!/\s/.test(t))for(const [k,v] of Object.entries(CS_TOPICS))if(v.on.includes(t)||k===t){
+    const w=v.core||v.w;return {terms:[...new Set([t,...w])],label:t,note:'Counting '+w.slice(0,8).join(', ')+'\u2026'};}
+  return {terms:[t],label:t,note:''};
+}
+function csWhoIn(t){for(const p of CS.people){const n=p.toLowerCase().split(/\s+/)[0];if(n.length>1&&new RegExp('\\b'+n+'\\b').test(t))return p;}return null;}
+function csMediaKind(w){w=w.replace(/s$/,'');return /voice|vn|audio/.test(w)?'audio':/vid/.test(w)?'video':/sticker/.test(w)?'sticker':/gif/.test(w)?'gif':/meme/.test(w)?'image':'image';}
+function csFirst(p){return String(p).split(/\s+/)[0];}
+
+function csIntent(raw){
+  let s=raw.toLowerCase().replace(/[\u2018\u2019]/g,"'").replace(/[\u201c\u201d"]/g,'').replace(/[?!.]+\s*$/,'').replace(/\s+/g,' ').trim();
+  s=s.replace(/^(hey|yo|ok|okay|so|please|pls|can you|could you|show me|tell me|i wanna know|i want to know|do you know)\s+/,'').trim();
+  const dp=csParseDate(s), range=dp?{from:dp.from,to:dp.to,label:dp.label}:null;
+  const t=' '+(dp?dp.rest:s)+' ', has=re=>re.test(t), who=csWhoIn(t);
+  const STAT=/\b(who|how many|how much|how long|how often|longest|shortest|total|most|more|average|count|stats|percent|percentage)\b/;
+  if(/^\s*(our |the |chat |all |show |show me |show our )?(stats|statistics|overview|summary|wrapped|numbers)( for (us|our chat))?\s*$/.test(t))return {type:'overview',range};
+  if(has(/\b(calls?|called|calling|rang|rings|facetime|phoned|phone calls?)\b/)&&has(STAT))return {type:'calls',range,who};
+  if(has(/\bemojis?\b/))return {type:'emoji',range,who};
+  if(has(/\b(most (used|said|common|popular) words?|top words|favou?rite words?|words? (we|i|you) (say|use) (the )?most|what (words )?do (we|i|you) say (the )?most)\b/))return {type:'words',range,who};
+  if(has(/\bwho (texts|messages|starts|says hi|speaks|talks|hits up|starts talking)\b[^]*\b(first|starts?)\b|\bwho starts\b|\bconversation starters?\b|\bstarts? (the )?conversations?\b/))return {type:'starts',range};
+  if((has(/\b(repl(y|ies|ied)|respond|responds|responded|answers?)\b/)&&has(/\b(fast|faster|fastest|quick|quicker|quickest|slow|slower|time|long|longer)\b/))||has(/\bleaves? (me|you|him|her|each other) on (read|delivered)\b/))return {type:'replies',range};
+  if(has(/\bnight owl\b/)||(has(/\bwho\b/)&&has(/\b(stays? up|up (late|later|latest)|texts? (late|at night)|late at night|latest)\b/)))return {type:'night',range};
+  if(has(/\bearly bird\b/)||(has(/\bwho\b/)&&has(/\b(wakes? up|gets? up|up (early|earlier|first)|texts? (early|in the morning))\b/)))return {type:'early',range};
+  if(has(/\b(double text(s|ing)?|in a row|spams?|spamming|back to back)\b/))return {type:'runs',range};
+  if(has(/\b(longest|biggest) (message|text|paragraph)s?\b/))return {type:'longest',range};
+  if(has(/\b(busiest|most active|quietest)\b/)||has(/\bwhen do we (talk|text|chat|message) (the )?most\b|\bwhat time do we (talk|text|chat)\b|\bwhich day do we (talk|text|chat)\b/))return {type:'when',range};
+  if(has(/\b(streak|days in a row|longest gap|without talking|went quiet|longest (time|break))\b|\bhow long have we been (talking|texting|chatting)\b/))return {type:'streak',range};
+  const md=t.match(/\b(voice ?notes?|vns?|voice messages?|voicenotes?|audios?|photos?|pics?|pictures?|images?|selfies?|videos?|vids?|stickers?|gifs?|memes?)\b/);
+  if(md&&has(STAT))return {type:'media',kind:csMediaKind(md[1]),word:md[1],range,who};
+  if(has(/\bwho (texts|messages|talks|chats|types|yaps|sends (more |the most )?(messages|texts))\b/)||has(/\bhow many (messages|texts)\b/))return {type:'volume',range,who};
+  if(has(/\bwho (swears|curses)\b|\bswear(s|ing)? (more|most|the most)\b|\bhow (much|often) do (we|i|you) swear\b/))return {type:'term',term:'__swear',range,who};
+  const fl=t.match(/\b(first|last|latest|earliest|most recent|recent)\b/);
+  const ml=t.match(/\b(?:spoke about|speak about|talk(?:ed)? about|chat(?:ted)? about|about|mention(?:ed|ing)?|say|said|bring up|brought up|discuss(?:ed)?|use(?:d)?|sen[dt]|type(?:d)?)\s+(.+?)\s*$/);
+  if(fl&&ml&&has(/\b(when|how long ago|what date|which day|time|date)\b/))
+    return {type:'mention',which:/first|earliest/.test(fl[1])?'first':'last',term:csCleanTerm(ml[1]),range,who};
+  let m=t.match(/\bhow (?:many times|often|much)\b[^]*?\b(?:say|said|says|mention(?:ed|s)?|talk(?:ed)? about|use[ds]?|used|type[ds]?|typed|send|sent|bring up|brought up|spoke about|speak about)\s+(.+?)\s*$/);
+  if(m)return {type:'term',term:csCleanTerm(m[1]),range,who};
+  m=t.match(/\bwho (?:says?|said|uses?|types?|writes?|mentions?|talks about|brings up|sends?)\s+(.+?)\s*$/);
+  if(m&&csCleanTerm(m[1]))return {type:'term',term:csCleanTerm(m[1]),range,who};
+  return null;
+}
+
+/* ---- the numbers ---- */
+function csCallSecs(d){let s=0,m;const re=/(\d+)\s*(hr|hour|min|sec)/gi;while((m=re.exec(d||'')))s+=+m[1]*({hr:3600,hour:3600,min:60,sec:1}[m[2].toLowerCase()]);return s;}
+function csBase(lo,hi){
+  const P={};const get=w=>P[w]||(P[w]={msgs:0,media:{},omit:{},calls:0,voice:0,video:0,missed:0,secs:0,timed:0,starts:0,rep:[],night:0,early:0,runMax:0,runs:0,runSum:0,chars:0});
+  const hours=new Array(24).fill(0), wd=new Array(7).fill(0), days=new Map();
+  let prev=null, runWho=null, runLen=0, longest=null, longCall=null;
+  const endRun=()=>{if(runWho){const p=get(runWho);p.runs++;p.runSum+=runLen;if(runLen>p.runMax)p.runMax=runLen;}};
+  for(let i=lo;i<hi;i++){
+    const m=CS.msgs[i], p=get(m.who), d=new Date(m.t), H=d.getUTCHours();
+    p.msgs++;hours[H]++;wd[d.getUTCDay()]++;const dk=csDay0(m.t);days.set(dk,(days.get(dk)||0)+1);
+    if(m.media)p.media[m.mk]=(p.media[m.mk]||0)+1;
+    if(m.omit)p.omit[m.omit]=(p.omit[m.omit]||0)+1;
+    if(m.call){p.calls++;m.call.vid?p.video++:p.voice++;
+      const missed=m.call.miss||/no answer|declined|unavailable/i.test(m.call.d||'');if(missed)p.missed++;
+      const s=csCallSecs(m.call.d);p.secs+=s;if(s>0)p.timed++;if(!longCall||s>longCall.s)longCall={s,i};}
+    if(!prev||m.t-prev.t>=4*3600000)p.starts++;
+    if(prev&&prev.who!==m.who&&m.t-prev.t<6*3600000)p.rep.push(m.t-prev.t);
+    if(H<4)p.night++;else if(H>=5&&H<9)p.early++;
+    if(m.text&&!m.poll){p.chars+=m.text.length;if(!longest||m.text.length>CS.msgs[longest].text.length)longest=i;}
+    if(m.who===runWho)runLen++;else{endRun();runWho=m.who;runLen=1;}
+    prev=m;
+  }
+  endRun();
+  Object.values(P).forEach(p=>{p.rep.sort((a,b)=>a-b);p.medRep=p.rep.length?p.rep[p.rep.length>>1]:null;p.rep=null;});
+  // streaks: consecutive days with at least one message
+  const ds=[...days.keys()].sort((a,b)=>a-b);let best=0,cur=0,bestEnd=null,gap=0,gapAt=null;
+  for(let k=0;k<ds.length;k++){if(k&&ds[k]-ds[k-1]===CS_DAY)cur++;else cur=1;if(cur>best){best=cur;bestEnd=ds[k];}
+    if(k&&ds[k]-ds[k-1]>gap){gap=ds[k]-ds[k-1];gapAt=ds[k-1];}}
+  return {P,hours,wd,days,longest,longCall,streak:best,streakEnd:bestEnd,gapDays:gap?gap/CS_DAY-1:0,gapAt,lo,hi};
+}
+function csBaseFor(range){
+  if(!range){if(!CS.stats||CS.stats.n!==CS.msgs.length)CS.stats={n:CS.msgs.length,b:csBase(0,CS.msgs.length)};return CS.stats.b;}
+  return csBase(csLB(range.from),csLB(range.to));
+}
+function csTermStats(terms,lo,hi){
+  const rx=csRx(terms,'iu'), per={}, months=new Map();let n=0,first=null,last=null;
+  for(let i=lo;i<hi;i++){const m=CS.msgs[i];if(!m.text||m.del||m.sys||!rx.test(m.text))continue;
+    n++;per[m.who]=(per[m.who]||0)+1;if(first===null)first=i;last=i;
+    const d=new Date(m.t),mk=Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),1);months.set(mk,(months.get(mk)||0)+1);}
+  return {n,per,first,last,months,rx};
+}
+
+/* ---- little building blocks for the cards ---- */
+function csAgo(t){
+  const d=Math.round((csTodayUTC()-csDay0(t))/CS_DAY);
+  if(d<=0)return 'today';if(d===1)return 'yesterday';if(d<14)return d+' days ago';
+  if(d<60)return Math.round(d/7)+' weeks ago';if(d<730){const m=Math.round(d/30.4);return m+' month'+(m===1?'':'s')+' ago';}
+  return Math.round(d/365)+' years ago';
+}
+const csN=n=>Math.round(n).toLocaleString('en-GB');
+function csDur(ms){const s=Math.round(ms/1000);if(s<60)return s+' sec';const m=Math.round(s/60);if(m<60)return m+' min';const h=Math.floor(m/60),r=m%60;return h+' hr'+(r?' '+r+' min':'');}
+function csHours(secs){const h=secs/3600;return h>=10?csN(h)+' hours':h>=1?(Math.round(h*10)/10)+' hours':Math.round(secs/60)+' min';}
+function csTwo(){return CS.people.slice(0,2);}
+function csVs(vals,fmt,lowerWins){                      // vals: {name: number}
+  const [a,b]=csTwo();const va=vals[a]||0,vb=vals[b]||0,tot=va+vb;
+  if(!tot)return '';
+  const pa=Math.round(va/tot*100),f=fmt||csN;
+  return '<div class="cs-vs"><div class="vs-names"><span style="color:'+CS_PEOPLE_COL[0]+'">'+esc(csFirst(a))+' <b>'+f(va)+'</b></span>'
+    +'<span style="color:'+CS_PEOPLE_COL[1]+'"><b>'+f(vb)+'</b> '+esc(csFirst(b))+'</span></div>'
+    +'<div class="vs-bar"><i style="width:'+pa+'%;background:'+CS_PEOPLE_COL[0]+'"></i><i style="width:'+(100-pa)+'%;background:'+CS_PEOPLE_COL[1]+'"></i></div>'
+    +'<div class="vs-pct"><span>'+pa+'%</span><span>'+(100-pa)+'%</span></div></div>';
+}
+function csVerdict(vals,verbMore,lowerWins){
+  const [a,b]=csTwo();const va=vals[a]||0,vb=vals[b]||0;if(!va&&!vb)return '';
+  const tot=va+vb, share=Math.max(va,vb)/tot;
+  if(!lowerWins&&share<0.53)return 'Pretty much even';
+  if(lowerWins){const r=Math.min(va,vb)/Math.max(va,vb);if(r>0.9)return 'Pretty much even';}
+  const winner=lowerWins?(va<=vb?a:b):(va>=vb?a:b);
+  return esc(csFirst(winner))+' '+verbMore;
+}
+function csCard(k,big,rows){return '<div class="cs-card st-card"><div class="cc-k">'+k+'</div>'+(big?'<div class="cc-big">'+big+'</div>':'')+rows.filter(Boolean).join('')+'</div>';}
+const csRowS=(label,val)=>'<div class="st-row"><span>'+label+'</span><b>'+val+'</b></div>';
+function csMonths(map){
+  if(!map||map.size<2)return '';
+  const ks=[...map.keys()].sort((a,b)=>a-b);const first=ks[0],last=ks[ks.length-1];const all=[];
+  for(let d=new Date(first);d.getTime()<=last;d=new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,1)))all.push(d.getTime());
+  const mx=Math.max(...map.values());
+  return '<div class="st-months">'+all.slice(-12).map(k=>{const v=map.get(k)||0;const d=new Date(k);
+    return '<div class="stm"><i style="height:'+Math.max(3,Math.round(v/mx*54))+'px"></i><span>'+csShortM(d.getUTCMonth()).charAt(0)+'</span></div>';}).join('')+'</div>';
+}
+function csSnip(i,label){
+  const m=CS.msgs[i];const tx=m.text||(m.media?'('+(m.mk==='audio'?'voice note':m.mk)+')':'');
+  return '<button class="cc-snip" data-i="'+i+'"><span class="sn-h">'+label+' \u00b7 '+csDate(m.t)+' \u00b7 '+csAgo(m.t)+' \u00b7 '+esc(csFirst(m.who))+'</span>'
+    +'<span class="sn-t">'+esc(tx.length>140?tx.slice(0,140)+'\u2026':tx)+'</span></button>';
+}
+function csRangeTag(r){return r?' \u00b7 '+esc(r.label):'';}
+
+/* ---- answering ---- */
+function csAnswer(it){
+  const box=$('cs-results'), also=$('cs-also'), N=CS.msgs.length;
+  const lo=it.range?csLB(it.range.from):0, hi=it.range?csLB(it.range.to):N;
+  if(hi<=lo){box.innerHTML='<div class="cs-empty">No messages'+(it.range?' in '+esc(it.range.label):'')+'.</div>';return;}
+  const add=html=>box.insertAdjacentHTML('beforeend',html);
+  const two=csTwo();
+  if(it.type==='term'||it.type==='mention'){
+    const plan=csTermPlan(it.term||'');if(!plan.terms[0]){box.innerHTML='<div class="cs-empty">What word should I look for?</div>';return;}
+    const st=csTermStats(plan.terms,lo,hi);
+    if(plan.note)also.innerHTML=esc(plan.note)+(it.range?' \u00b7 only <b>'+esc(it.range.label)+'</b>':'');
+    else if(it.range)also.innerHTML='Only <b>'+esc(it.range.label)+'</b>';
+    if(!st.n){box.innerHTML='<div class="cs-empty">Never mentioned'+(it.range?' in '+esc(it.range.label):'')+' \u2014 not \u201c'+esc(plan.label)+'\u201d, anyway.</div>';return;}
+    let bm=null;st.months.forEach((v,k)=>{if(!bm||v>bm[1])bm=[k,v];});
+    const span=Math.max(1,Math.round((CS.msgs[st.last].t-CS.msgs[st.first].t)/CS_DAY));
+    const whoLine=it.who?'<div class="cc-row"><b>'+esc(csFirst(it.who))+'</b>: '+csN(st.per[it.who]||0)+' of them</div>':'';
+    const head=it.type==='mention'
+      ?(it.which==='first'?'First mentioned '+csAgo(CS.msgs[st.first].t):'Last mentioned '+csAgo(CS.msgs[st.last].t))
+      :csN(st.n)+' message'+(st.n===1?'':'s');
+    add(csCard('\u201c'+esc(plan.label)+'\u201d'+csRangeTag(it.range),head,[
+      it.type==='mention'?'<div class="cc-row">'+csN(st.n)+' messages over '+csN(span)+' days</div>':whoLine,
+      '<div class="cc-row cc-verdict">'+csVerdict(st.per,'says it more')+'</div>',csVs(st.per),
+      csSnip(st.first,'First'),st.last!==st.first?csSnip(st.last,'Most recent'):'',
+      bm&&st.months.size>1?'<div class="cc-row">Peak: '+CS_MN[new Date(bm[0]).getUTCMonth()]+' ('+csN(bm[1])+')</div>':'',csMonths(st.months)]));
+    // and the messages themselves
+    const hits=[];for(let i=hi-1;i>=lo;i--){const m=CS.msgs[i];if(it.who&&m.who!==it.who)continue;if(!m.text||m.del||m.sys)continue;if(st.rx.test(m.text))hits.push(m);}
+    if(it.type==='mention'&&it.which==='first')hits.reverse();
+    const hd=document.createElement('div');hd.className='cs-head';
+    hd.textContent=csN(hits.length)+' message'+(hits.length===1?'':'s')+' \u00b7 '+(it.type==='mention'&&it.which==='first'?'oldest':'newest')+' first'+(it.who?' \u00b7 from '+it.who:'');
+    box.appendChild(hd);
+    const rxH=csRx(plan.terms,'giu');
+    hits.slice(0,CS.shown).forEach(m=>box.appendChild(csRow(m,rxH)));
+    if(hits.length>CS.shown)csMore(box,hits.length-CS.shown);
+    return;
+  }
+  const B=csBaseFor(it.range), P=B.P, val=f=>{const o={};two.forEach(w=>o[w]=P[w]?f(P[w]):0);return o;};
+  const total=two.reduce((s,w)=>s+(P[w]?P[w].msgs:0),0);
+  if(it.type==='calls'){
+    const calls=val(p=>p.calls), secs=val(p=>p.secs), nC=calls[two[0]]+calls[two[1]];
+    if(!nC){box.innerHTML='<div class="cs-empty">No calls'+(it.range?' in '+esc(it.range.label):'')+'.</div>';return;}
+    const tSecs=secs[two[0]]+secs[two[1]];
+    add(csCard('Calls'+csRangeTag(it.range),csN(nC)+' calls',[
+      '<div class="cc-row cc-verdict">'+csVerdict(calls,'calls more')+'</div>',csVs(calls),
+      csRowS('Total time on calls',csHours(tSecs)),
+      csRowS('Voice / video',csN(two.reduce((s,w)=>s+(P[w]?P[w].voice:0),0))+' / '+csN(two.reduce((s,w)=>s+(P[w]?P[w].video:0),0))),
+      csRowS('Average call',csHours(tSecs/Math.max(1,two.reduce((s,w)=>s+(P[w]?P[w].timed:0),0)))+' (calls that connected)'),
+      B.longCall&&B.longCall.s?csRowS('Longest call',csHours(B.longCall.s)+' \u00b7 '+csDate(CS.msgs[B.longCall.i].t)+' \u00b7 '+esc(csFirst(CS.msgs[B.longCall.i].who))):'',
+      '<div class="st-sub">Not picked up \u2014 by who was ringing</div>',csVs(val(p=>p.missed)),
+      '<div class="st-note">Calls are counted by who rang. This phone\u2019s export may log missed calls differently from the other phone\u2019s. WhatsApp rounds long calls to the hour.</div>']));
+    return;
+  }
+  if(it.type==='volume'){
+    const msgs=val(p=>p.msgs), days=B.days.size, chars=val(p=>p.chars);
+    add(csCard('Messages'+csRangeTag(it.range),csN(total),[
+      '<div class="cc-row cc-verdict">'+csVerdict(msgs,'texts more')+'</div>',csVs(msgs),
+      csRowS('A day, on average',csN(total/Math.max(1,days))),
+      csRowS('Average message',two.map(w=>esc(csFirst(w))+' '+Math.round((chars[w]||0)/Math.max(1,msgs[w]||1))+' letters').join(' \u00b7 '))]));
+    return;
+  }
+  if(it.type==='starts'){
+    const s=val(p=>p.starts);
+    add(csCard('Who starts the conversation'+csRangeTag(it.range),'',[
+      '<div class="cc-row cc-verdict">'+csVerdict(s,'starts it more')+'</div>',csVs(s),
+      '<div class="st-note">A conversation starts when someone messages after 4 hours or more of quiet.</div>']));
+    return;
+  }
+  if(it.type==='replies'){
+    const r=val(p=>p.medRep||0);
+    add(csCard('Reply speed'+csRangeTag(it.range),'',[
+      '<div class="cc-row cc-verdict">'+csVerdict(r,'replies faster',true)+'</div>',
+      two.map(w=>csRowS(esc(csFirst(w))+' usually replies in',r[w]?csDur(r[w]):'\u2014')).join(''),
+      '<div class="st-note">The typical gap before replying to the other, ignoring gaps over 6 hours (sleep, shifts).</div>']));
+    return;
+  }
+  if(it.type==='night'||it.type==='early'){
+    const f=it.type==='night'?(p=>p.night):(p=>p.early), v=val(f);
+    add(csCard((it.type==='night'?'Late night texting (midnight\u20134am)':'Early texting (5\u20139am)')+csRangeTag(it.range),'',[
+      '<div class="cc-row cc-verdict">'+csVerdict(v,it.type==='night'?'stays up later':'is up earlier')+'</div>',csVs(v)]));
+    return;
+  }
+  if(it.type==='runs'){
+    const mx=val(p=>p.runMax), avg=val(p=>p.runSum/Math.max(1,p.runs));
+    add(csCard('Messages in a row'+csRangeTag(it.range),'',[
+      '<div class="cc-row cc-verdict">'+csVerdict(avg,'double texts more')+'</div>',
+      csVs(avg,x=>(Math.round(x*10)/10)+' avg'),
+      two.map(w=>csRowS(esc(csFirst(w))+'\u2019s record',csN(mx[w]||0)+' in a row')).join('')]));
+    return;
+  }
+  if(it.type==='longest'){
+    if(B.longest==null){box.innerHTML='<div class="cs-empty">No messages there.</div>';return;}
+    const m=CS.msgs[B.longest];
+    add(csCard('Longest message'+csRangeTag(it.range),csN(m.text.length)+' characters',[csSnip(B.longest,esc(csFirst(m.who)))]));
+    return;
+  }
+  if(it.type==='when'){
+    const hmax=Math.max(...B.hours),wmax=Math.max(...B.wd);
+    const peakH=B.hours.indexOf(hmax),peakW=B.wd.indexOf(wmax);
+    const top=[...B.days.entries()].sort((a,b)=>b[1]-a[1]).slice(0,5);
+    const hourBars='<div class="st-hours">'+B.hours.map((v,hh)=>'<div class="sth" title="'+hh+':00"><i style="height:'+Math.max(2,Math.round(v/hmax*54))+'px"></i>'+(hh%6===0?'<span>'+hh+'</span>':'')+'</div>').join('')+'</div>';
+    const wdBars='<div class="st-months">'+[1,2,3,4,5,6,0].map(d=>'<div class="stm"><i style="height:'+Math.max(3,Math.round(B.wd[d]/wmax*54))+'px"></i><span>'+CS_WN[d].charAt(0)+'</span></div>').join('')+'</div>';
+    add(csCard('When you talk'+csRangeTag(it.range),'',[
+      csRowS('Busiest time',peakH+':00\u2013'+(peakH+1)%24+':00'),hourBars,
+      csRowS('Busiest day of the week',CS_WN[peakW]),wdBars,
+      '<div class="st-sub">Busiest days</div>',
+      top.map(([d,n])=>'<button class="cc-day" data-t="'+d+'"><span class="cd-d">'+csDate(d)+'</span><span class="cd-bar"><i style="width:'+Math.round(n/top[0][1]*100)+'%"></i></span><span class="cd-n">'+csN(n)+'</span></button>').join('')]));
+    return;
+  }
+  if(it.type==='streak'){
+    const first=CS.msgs[lo].t, span=Math.round((csDay0(CS.msgs[hi-1].t)-csDay0(first))/CS_DAY)+1;
+    add(csCard('Talking'+csRangeTag(it.range),csN(span)+' days',[
+      csRowS('Since',csDate(first)+' \u00b7 '+csAgo(first)),
+      csRowS('Days you talked',csN(B.days.size)+' of '+csN(span)),
+      csRowS('Longest streak',csN(B.streak)+' days in a row'+(B.streakEnd?' (to '+csDate(B.streakEnd)+')':'')),
+      csRowS('Longest gap',B.gapDays?csN(B.gapDays)+' day'+(B.gapDays===1?'':'s')+' after '+csDate(B.gapAt):'Never missed a day')]));
+    return;
+  }
+  if(it.type==='media'){
+    const k=it.kind, v=val(p=>(p.media[k]||0)+(p.omit[k]||0)), nm={audio:'Voice notes',image:'Photos',video:'Videos',sticker:'Stickers',gif:'GIFs'}[k]||'Media';
+    add(csCard(nm+csRangeTag(it.range),csN((v[two[0]]||0)+(v[two[1]]||0)),[
+      '<div class="cc-row cc-verdict">'+csVerdict(v,'sends more')+'</div>',csVs(v),
+      '<div class="st-note">Includes ones WhatsApp left out of the export.</div>']));
+    return;
+  }
+  if(it.type==='emoji'){
+    const per={},all=new Map(),rx=/\p{Extended_Pictographic}(?:\uFE0F)?(?:\u200D\p{Extended_Pictographic}(?:\uFE0F)?)*/gu;
+    for(let i=lo;i<hi;i++){const m=CS.msgs[i];if(!m.text)continue;const f=m.text.match(rx);if(!f)continue;
+      f.forEach(e=>{e=e.replace(/\uFE0F/g,'');const o=all.get(e)||{n:0};o.n++;o[m.who]=(o[m.who]||0)+1;all.set(e,o);per[m.who]=(per[m.who]||0)+1;});}
+    const top=[...all.entries()].sort((a,b)=>b[1].n-a[1].n).slice(0,10);
+    if(!top.length){box.innerHTML='<div class="cs-empty">No emojis there.</div>';return;}
+    add(csCard('Emojis'+csRangeTag(it.range),csN(top.reduce((s,x)=>s+x[1].n,0))+' of your top 10',[
+      '<div class="cc-row cc-verdict">'+csVerdict(per,'uses more emojis')+'</div>',csVs(per),
+      '<div class="st-emo">'+top.map(([e,o])=>'<div class="se"><span class="se-e">'+e+'</span><span class="se-n">'+csN(o.n)+'</span><span class="se-w">'
+        +two.map((w,ix)=>'<i style="color:'+CS_PEOPLE_COL[ix]+'">'+csN(o[w]||0)+'</i>').join(' \u00b7 ')+'</span></div>').join('')+'</div>']));
+    return;
+  }
+  if(it.type==='words'){
+    const counts=new Map(), per={};two.forEach(w=>per[w]=new Map());
+    const rx=/[\p{L}']+/gu;
+    for(let i=lo;i<hi;i++){const m=CS.msgs[i];if(!m.text||m.del||m.sys||m.poll)continue;const f=m.text.toLowerCase().match(rx);if(!f)continue;
+      for(let w of f){w=w.replace(/^'+|'+$/g,'');if(w.length<3||CS_WSTOP.has(w))continue;counts.set(w,(counts.get(w)||0)+1);const pm=per[m.who];if(pm)pm.set(w,(pm.get(w)||0)+1);}}
+    const top=[...counts.entries()].sort((a,b)=>b[1]-a[1]).slice(0,15);
+    const topBy=w=>[...per[w].entries()].sort((a,b)=>b[1]-a[1]).slice(0,6).map(x=>esc(x[0])).join(', ');
+    add(csCard('Words you say most'+csRangeTag(it.range),'',[
+      '<div class="st-words">'+top.map(([w,n])=>'<button class="sw" data-q="who says '+esc(w)+' more">'+esc(w)+' <span>'+csN(n)+'</span></button>').join('')+'</div>',
+      two.map(w=>csRowS(esc(csFirst(w))+'\u2019s favourites',topBy(w))).join(''),
+      '<div class="st-note">Tap a word to see who says it more. Little words like \u201cthe\u201d and \u201cyou\u201d are skipped.</div>']));
+    return;
+  }
+  if(it.type==='overview'){
+    const msgs=val(p=>p.msgs), calls=val(p=>p.calls), secs=val(p=>p.secs), starts=val(p=>p.starts), rep=val(p=>p.medRep||0);
+    const vn=val(p=>(p.media.audio||0)+(p.omit.audio||0)), ph=val(p=>(p.media.image||0)+(p.omit.image||0)+(p.media.video||0)+(p.omit.video||0));
+    const first=CS.msgs[lo].t, span=Math.round((csDay0(CS.msgs[hi-1].t)-csDay0(first))/CS_DAY)+1;
+    const busiest=[...B.days.entries()].sort((a,b)=>b[1]-a[1])[0];
+    const peakH=B.hours.indexOf(Math.max(...B.hours));
+    const tap=(q,label)=>'<button class="st-link" data-q="'+q+'">'+label+' \u203a</button>';
+    add(csCard('Your chat'+csRangeTag(it.range),csN(total)+' messages',[
+      '<div class="cc-row">'+csN(span)+' days \u00b7 '+csN(total/Math.max(1,B.days.size))+' a day \u00b7 since '+csDate(first)+'</div>',
+      csVs(msgs),
+      '<div class="st-sub">'+tap('who calls the most','Calls')+'</div>',
+      csRowS('Calls',csN(calls[two[0]]+calls[two[1]])+' \u00b7 '+csHours(secs[two[0]]+secs[two[1]])),csVs(calls),
+      '<div class="st-sub">'+tap('who texts first','Who starts it')+'</div>',csVs(starts),
+      '<div class="st-sub">'+tap('who replies faster','Reply speed')+'</div>',
+      two.map(w=>csRowS(esc(csFirst(w)),rep[w]?csDur(rep[w]):'\u2014')).join(''),
+      '<div class="st-sub">'+tap('who sends more voice notes','Voice notes')+'</div>',csVs(vn),
+      '<div class="st-sub">'+tap('who sends more photos','Photos & videos')+'</div>',csVs(ph),
+      '<div class="st-sub">'+tap('busiest day','When you talk')+'</div>',
+      csRowS('Busiest day',busiest?csDate(busiest[0])+' ('+csN(busiest[1])+')':'\u2014'),
+      csRowS('Busiest time',peakH+':00'),
+      csRowS('Longest streak',csN(B.streak)+' days'),
+      '<div class="st-sub">'+tap('most used emojis','Emojis')+' '+tap('most used words','Words')+' '+tap('who says love you more','Love you')+'</div>']));
+    return;
+  }
+}
+const CS_WSTOP=new Set(('the and you that this with have for not but are was its it\'s can get got just like what your yeah yes too all out how now when then they them there their will would could should did does doing done had has him her his she one see one about from back know want need going gonna wanna think thats that\'s dont don\'t cant can\'t im i\'m ive i\'ve youre you\'re ill i\'ll u ur also really very more some any well even still been were who why where which into over only much make made say said tell told came come take took give gave something nothing anything everything thing things time way lot lots okay ok yh ye nah ngl tho though because cos coz cuz bc wait let did didnt didn\'t isnt isn\'t wasnt wasn\'t aint ain\'t then than bit oh ah uh um hm hmm mm our ours mine yours me my we us he him it is am be to of in on at by an or as if so do no up go').split(/\s+/));
+
+/* examples when the box is empty */
+const CS_SUGGEST=['our stats','who calls the most','who says love you more','how long ago did we first mention marriage',
+  'what did we talk about yesterday','who texts first','who replies faster','most used emojis','what words do we say the most',
+  'busiest day','longest streak','who sends more voice notes','who stays up later','what did we talk about in june'];
+function csSuggest(){
+  $('cs-results').innerHTML='<div class="cs-head">Try asking</div><div class="st-words">'
+    +CS_SUGGEST.map(q=>'<button class="sw sw-q" data-q="'+esc(q)+'">'+esc(q)+'</button>').join('')+'</div>';
+}
+$('cs-results').addEventListener('click',e=>{
+  const q=e.target.closest('[data-q]');if(q){$('cs-q').value=q.dataset.q;CS.shown=40;csSearch();$('chatpanel').scrollTop=0;return;}
+  const s=e.target.closest('.cc-snip');if(s)csContext(+s.dataset.i,null);
+});
 function csSearch(){
   const q=$('cs-q').value.trim(), box=$('cs-results'), also=$('cs-also');
   box.innerHTML='';also.innerHTML='';
-  if(q.length<2||!CS.msgs)return;
-  const plan=csPlan(q);
+  if(!CS.msgs)return;
+  if(q.length<2){csSuggest();return;}
+  const it=csIntent(q);
+  if(it){csAnswer(it);return;}
+  const dp=csParseDate(q);
+  const plan=csPlan(dp?dp.rest:q);
   const all=[...plan.direct,...plan.extra];
-  if(!all.length){box.innerHTML='<div class="cs-empty">Try a word or two \u2014 like \u201cbiryani\u201d or \u201cwhen did we last talk about work\u201d.</div>';return;}
-  const rxT=csRx(all,'iu'), rxD=plan.direct.length?csRx(plan.direct,'iu'):null;
+  if(dp&&!all.length){csDateView(dp,plan);return;}             // just a date: show that day / that stretch
+  if(!all.length){box.innerHTML='<div class="cs-empty">Try a word or two \u2014 like \u201cbiryani\u201d, \u201cwhen did we last talk about work\u201d, or \u201cwhat did we talk about on 2 May\u201d.</div>';return;}
+  const rxT=csRx(all,'iu');
+  const lo=dp?csLB(dp.from):0, hi=dp?csLB(dp.to):CS.msgs.length;
   const hits=[];
-  for(let i=CS.msgs.length-1;i>=0;i--){
+  for(let i=hi-1;i>=lo;i--){
     const m=CS.msgs[i];
     if(plan.sender&&m.who!==plan.sender)continue;
     if(m.del||m.sys||!m.text)continue;
     if(rxT.test(m.text))hits.push(m);
   }
   if(plan.oldestFirst)hits.reverse();
-  if(plan.extra.length){
-    also.innerHTML='Also searching for <b>'+esc(plan.extra.slice(0,10).join(', '))+'</b>'+(plan.extra.length>10?' and '+(plan.extra.length-10)+' more':'');
-  }
-  if(!hits.length){box.innerHTML='<div class="cs-empty">Nothing found for that.</div>';return;}
+  const bits=[];
+  if(dp)bits.push('Only <b>'+esc(dp.label)+'</b>');
+  if(plan.extra.length)bits.push('also searching for <b>'+esc(plan.extra.slice(0,10).join(', '))+'</b>'+(plan.extra.length>10?' and '+(plan.extra.length-10)+' more':''));
+  if(bits.length){const t=bits.join(' \u00b7 ');also.innerHTML=t.charAt(0).toUpperCase()+t.slice(1);}
+  if(!hits.length){box.innerHTML='<div class="cs-empty">Nothing found for that'+(dp?' in '+esc(dp.label):'')+'.</div>';return;}
   const head=document.createElement('div');head.className='cs-head';
   head.textContent=hits.length.toLocaleString('en-GB')+' message'+(hits.length===1?'':'s')+' \u00b7 '+(plan.oldestFirst?'oldest':'newest')+' first'+(plan.sender?' \u00b7 from '+plan.sender:'');
   box.appendChild(head);
   const rxH=csRx(all,'giu');
-  hits.slice(0,CS.shown).forEach(m=>{
-    const b=document.createElement('button');b.className='cs-msg';
-    const body=(m.call?(m.call.vid?'\ud83d\udcf9 ':'\ud83d\udcde '):m.poll?'\ud83d\udcca ':m.media?(m.mk==='video'||m.mk==='gif'?'\ud83c\udfa5 ':m.mk==='audio'?'\ud83c\udfa4 ':'\ud83d\udcf7 '):'')+(m.poll?m.poll.q:(m.text.length>420?m.text.slice(0,420)+'\u2026':m.text));
-    b.innerHTML=csAvatar(m.who,'cs-ava')
-      +'<div class="cs-rbody"><div class="t"><b>'+esc(m.who)+'</b><span>'+csDate(m.t)+'</span></div>'
-      +'<div class="x2">'+csHighlight(body,rxH)+'</div></div>';
-    b.onclick=()=>csContext(m.i,rxH);
-    box.appendChild(b);
-  });
-  if(hits.length>CS.shown){
-    const more=document.createElement('button');more.className='cs-more';
-    more.textContent='Show more ('+(hits.length-CS.shown).toLocaleString('en-GB')+' left)';
-    more.onclick=()=>{CS.shown+=40;csSearch();};
-    box.appendChild(more);
+  hits.slice(0,CS.shown).forEach(m=>box.appendChild(csRow(m,rxH)));
+  if(hits.length>CS.shown)csMore(box,hits.length-CS.shown);
+}
+
+/* ---------- one day, or a stretch of days ---------- */
+function csGoDay(t){                       // put a date in the box and show it
+  const d=new Date(t);
+  $('cs-q').value=d.getUTCDate()+' '+CS_MN[d.getUTCMonth()]+' '+d.getUTCFullYear();
+  CS.shown=40;csSearch();$('chatpanel').scrollTop=0;
+}
+function csDateView(dp,plan){
+  const box=$('cs-results'), N=CS.msgs.length;
+  const lo=csLB(dp.from), hi=csLB(dp.to);
+  const idx=[];for(let i=lo;i<hi;i++){if(plan.sender&&CS.msgs[i].who!==plan.sender)continue;idx.push(i);}
+  const card=document.createElement('div');card.className='cs-card';
+  const who={};let photos=0,calls=0;
+  idx.forEach(i=>{const m=CS.msgs[i];who[m.who]=(who[m.who]||0)+1;if(m.mk==='image'||m.mk==='video'||m.omit==='image'||m.omit==='video')photos++;if(m.call)calls++;});
+  const peopleLine=CS.people.filter(p=>who[p]).map(p=>esc(p.split(/\s+/)[0])+' '+who[p].toLocaleString('en-GB')).join(' \u00b7 ')
+    +(photos?' \u00b7 '+photos+' photo'+(photos===1?'':'s'):'')+(calls?' \u00b7 '+calls+' call'+(calls===1?'':'s'):'');
+  // nearest days that do have messages, for the arrows and for empty days
+  const prevT=lo>0?csDay0(CS.msgs[lo-1].t):null, nextT=hi<N?csDay0(CS.msgs[hi].t):null;
+  const navBtn=(t,dir)=>t==null?'':'<button class="cc-nav-b" data-t="'+t+'">'+(dir<0?'\u2039 ':'')+csDate(t).replace(/ \d{4}$/,'')+(dir>0?' \u203a':'')+'</button>';
+
+  if(dp.kind==='day'){
+    if(!idx.length){
+      card.innerHTML='<div class="cc-k">'+esc(dp.label)+'</div><div class="cc-big">No messages'+(plan.sender?' from '+esc(plan.sender):'')+' that day</div>'
+        +'<div class="cc-nav">'+navBtn(prevT,-1)+navBtn(nextT,1)+'</div>';
+    }else{
+      const first=CS.msgs[idx[0]], last=CS.msgs[idx[idx.length-1]], topics=csTopicsFor(idx);
+      card.innerHTML='<div class="cc-k">'+esc(dp.label)+'</div>'
+        +'<div class="cc-big">'+idx.length.toLocaleString('en-GB')+' message'+(idx.length===1?'':'s')+(plan.sender?' from '+esc(plan.sender.split(/\s+/)[0]):'')+'</div>'
+        +'<div class="cc-row">'+peopleLine+'</div>'
+        +'<div class="cc-row">First message '+csTime(first.t)+' \u00b7 last '+csTime(last.t)+'</div>'
+        +(topics.length?'<div class="cc-row cc-topics">Mostly about <b>'+topics.map(esc).join('</b>, <b>')+'</b></div>':'')
+        +'<button class="cc-open" data-i="'+idx[0]+'">Open this day in the chat</button>'
+        +'<div class="cc-nav">'+navBtn(prevT,-1)+navBtn(nextT,1)+'</div>';
+    }
+    box.appendChild(card);
+    if(idx.length){
+      const head=document.createElement('div');head.className='cs-head';head.textContent='The day, in order';box.appendChild(head);
+      idx.slice(0,CS.shown).forEach(i=>box.appendChild(csRow(CS.msgs[i],null)));
+      if(idx.length>CS.shown)csMore(box,idx.length-CS.shown);
+    }
+  }else{
+    // a week, month, year or range: every day in it, with how busy it was
+    const perDay=new Map();idx.forEach(i=>{const d=csDay0(CS.msgs[i].t);perDay.set(d,(perDay.get(d)||0)+1);});
+    const daysSpan=Math.round((Math.min(dp.to,csTodayUTC()+CS_DAY)-dp.from)/CS_DAY);
+    let busiest=null;perDay.forEach((n,d)=>{if(!busiest||n>busiest[1])busiest=[d,n];});
+    const topics=idx.length?csTopicsFor(idx):[];
+    card.innerHTML='<div class="cc-k">'+esc(dp.label)+'</div>'
+      +'<div class="cc-big">'+idx.length.toLocaleString('en-GB')+' message'+(idx.length===1?'':'s')+(plan.sender?' from '+esc(plan.sender.split(/\s+/)[0]):'')+'</div>'
+      +(idx.length?'<div class="cc-row">'+peopleLine+'</div>'
+        +'<div class="cc-row">Talked on '+perDay.size+' of '+Math.max(perDay.size,daysSpan)+' days'
+        +(busiest?' \u00b7 busiest '+csDate(busiest[0]).replace(/ \d{4}$/,'')+' ('+busiest[1].toLocaleString('en-GB')+')':'')+'</div>'
+        +(topics.length?'<div class="cc-row cc-topics">Mostly about <b>'+topics.map(esc).join('</b>, <b>')+'</b></div>':'')
+        :'<div class="cc-nav">'+navBtn(prevT,-1)+navBtn(nextT,1)+'</div>');
+    box.appendChild(card);
+    if(perDay.size){
+      const head=document.createElement('div');head.className='cs-head';head.textContent='Tap a day to see it';box.appendChild(head);
+      const max=Math.max(...perDay.values());
+      const list=document.createElement('div');list.className='cc-days';
+      [...perDay.entries()].sort((a,b)=>a[0]-b[0]).forEach(([d,n])=>{
+        const w=new Date(d);
+        const r=document.createElement('button');r.className='cc-day';r.dataset.t=d;
+        r.innerHTML='<span class="cd-d">'+CS_WN[w.getUTCDay()].slice(0,3)+' '+w.getUTCDate()+' '+csShortM(w.getUTCMonth())+'</span>'
+          +'<span class="cd-bar"><i style="width:'+Math.max(3,Math.round(n/max*100))+'%"></i></span><span class="cd-n">'+n.toLocaleString('en-GB')+'</span>';
+        list.appendChild(r);
+      });
+      box.appendChild(list);
+    }
   }
 }
+$('cs-results').addEventListener('click',e=>{
+  const o=e.target.closest('.cc-open');if(o){csContext(+o.dataset.i,null,true);return;}
+  const n=e.target.closest('.cc-nav-b,.cc-day');if(n)csGoDay(+n.dataset.t);
+});
 function csMine(who){
   const mine=deviceOwner==='fiaza'?S.fiazaName:S.shaadName;
   return !!mine&&who.toLowerCase().startsWith(String(mine).toLowerCase().split(/\s+/)[0]);
@@ -5290,6 +5882,7 @@ function csTab(t,keep){
   $('cs-tabC').classList.toggle('on',t==='c');$('cs-tabS').classList.toggle('on',t==='s');$('cs-tabP').classList.toggle('on',t==='p');
   $('cs-tab-chat').style.display=t==='c'?'':'none';
   $('cs-tab-search').style.display=t==='s'?'':'none';$('cs-tab-photos').style.display=t==='p'?'':'none';
+  if(t==='s'&&CS.msgs&&!$('cs-q').value.trim())csSuggest();
   $('chatpanel').classList.toggle('chatmode',t==='c');
   if(t==='c'){if(!keep&&!$('cs-ctx-body').children.length)csOpenLatest();}
   if(t==='p')csRenderPhotos();else{if(csGridObs)csGridObs.disconnect();csRelease('grid');$('cs-photos').innerHTML='';}
@@ -5331,13 +5924,18 @@ document.addEventListener('keydown',e=>{
   if($('cs-viewer').style.display==='none')return;
   if(e.key==='Escape')csCloseViewer();else if(e.key==='ArrowLeft')csVwGo(1);else if(e.key==='ArrowRight')csVwGo(-1);
 });
-function csContext(i,rx){
+function csContext(i,rx,top){
   csTab('c',true);
   csAtBottom=false;
   csRelease('ctx');
-  csWin={from:Math.max(0,i-40),to:Math.min(CS.msgs.length,i+41),focus:i,rx};
+  csWin=top?{from:Math.max(0,i-3),to:Math.min(CS.msgs.length,i+120),focus:i,rx}
+           :{from:Math.max(0,i-40),to:Math.min(CS.msgs.length,i+41),focus:i,rx};
   csRenderWin();
-  requestAnimationFrame(()=>{const f=$('cs-focus');if(f)f.scrollIntoView({block:'center'});
+  requestAnimationFrame(()=>{const f=$('cs-focus');
+    if(f){if(top){
+      // measure the message, not the date pill: the pill sticks to the top while scrolling, so its position lies
+      const sc=$('wa-scroll');sc.scrollTop+=f.getBoundingClientRect().top-sc.getBoundingClientRect().top-50;
+    }else f.scrollIntoView({block:'center'});}
     $('wa-down').classList.add('on');});
 }
 
@@ -5350,7 +5948,7 @@ function csShowMain(){
   $('cs-empty').style.display='none';$('cs-main').style.display='';
   csRelease('ctx');$('cs-ctx-body').innerHTML='';
   $('cs-results').innerHTML='';$('cs-also').innerHTML='';
-  csBuildMedia();
+  csBuildMedia();CS.stats=null;
   $('cs-tabP').textContent=CS.media.length?'Photos ('+CS.media.length.toLocaleString('en-GB')+')':'Photos';
   csTab('c');
 }
@@ -5470,6 +6068,9 @@ $('cs-forget').onclick=async()=>{
 let csT=null;
 $('cs-q').addEventListener('input',()=>{CS.shown=40;clearTimeout(csT);csT=setTimeout(csSearch,120);});
 $('cs-q').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();csSearch();}});
+$('cs-date').addEventListener('focus',()=>{if(!CS.msgs||!CS.msgs.length)return;
+  $('cs-date').min=csDayKey(CS.msgs[0].t);$('cs-date').max=csDayKey(CS.msgs[CS.msgs.length-1].t);});
+$('cs-date').addEventListener('change',e=>{const v=e.target.value;if(!v)return;csTab('s');csGoDay(Date.parse(v+'T00:00:00Z'));e.target.value='';});
 
 document.querySelectorAll('.foldhead,.subhead').forEach(b=>{
   b.onclick=()=>{const s=$(b.dataset.fold);if(s)s.classList.toggle('open');};
