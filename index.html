@@ -1467,6 +1467,66 @@
   .se-n{font-weight:700;font-size:14px}
   .se-w{margin-left:auto;font-size:11.5px}
   .se-w i{font-style:normal}
+
+  /* ---- reminders ---- */
+  .appcard.ac-rem{margin-bottom:10px;background:linear-gradient(135deg,#c2410c 0%,#f97316 50%,#fbbf24 100%);box-shadow:0 12px 26px -12px rgba(249,115,22,.8)}
+  .ac-txt .ac-sub{display:block;font-size:12.5px;font-weight:600;opacity:.92;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ac-txt .ac-sub:empty{display:none}
+  .rm-hint{font-size:12.5px;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:9px 12px;margin-bottom:10px}
+  .rm-hint:empty{display:none}
+  .rm-addrow{display:flex;gap:8px;margin-bottom:6px}
+  .rm-add{flex:1;background:var(--surface);border:1px dashed var(--border);color:var(--text);border-radius:14px;padding:13px 8px;font-weight:700;font-size:14px;cursor:pointer}
+  .rm-sec{margin-top:14px}
+  .rm-row{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--border);
+    border-radius:14px;padding:11px 12px;margin-bottom:8px;color:var(--text);cursor:pointer}
+  .rm-row.rm-today{border-color:#f97316;box-shadow:0 0 0 1px #f97316 inset}
+  .rm-row.rm-done{opacity:.55}
+  .rm-ic{flex:none;width:40px;height:40px;border-radius:12px;background:rgba(249,115,22,.14);display:flex;align-items:center;justify-content:center;font-size:20px}
+  .rm-tx{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.3}
+  .rm-tx b{font-size:15px}
+  .rm-tx span{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .rm-tx i{font-style:normal;font-size:12.5px;color:var(--text);opacity:.8;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rm-side{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:3px;text-align:right}
+  .rm-side b{font-size:13px;color:#fb923c}
+  .rm-side span{font-size:11.5px;color:var(--muted)}
+  .rm-empty{color:var(--muted);text-align:center;padding:30px 14px;font-size:14px;line-height:1.6}
+  .rme-seg{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+  .rme-seg button{flex:1 1 auto;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:999px;padding:9px 12px;font-size:13.5px;font-weight:600;cursor:pointer}
+  .rme-seg button.on{background:#f97316;border-color:#f97316;color:#1a0d02}
+  .rme-l{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:14px 2px 6px}
+  .rme-l span{text-transform:none;letter-spacing:0;font-weight:500}
+  .rme-in{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:12px;font-size:16px;font-family:inherit}
+  .rme-row{display:flex;gap:8px}
+  .rme-row .rme-in{flex:1;min-width:0}
+  .rme-tip{font-size:12.5px;color:var(--muted);margin:8px 2px 0}
+  .rme-err{color:#f0736f;font-size:13.5px;min-height:1em;margin:12px 2px 0}
+  .rme-save{width:100%;background:#f97316;color:#1a0d02;border:none;border-radius:14px;padding:14px;font-weight:800;font-size:15.5px;margin-top:10px;cursor:pointer}
+  .rme-del{width:100%;background:none;border:none;color:#f0736f;font-weight:700;font-size:14.5px;padding:14px;cursor:pointer}
+  .sh-rem:empty{display:none}
+  .sh-rem{margin:6px 0 2px}
+  .sh-rem-l{font-size:14px;font-weight:600;color:#fb923c;padding:3px 0}
+  #rme-day{flex:0 0 74px!important}
+  #rme-mon{flex:1.4 1 0!important}
+  #rme-year{flex:1 1 0!important}
+  #rme-before button{padding:9px 6px}
+
+  /* ---- alerts ---- */
+  .rma{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+  .rma .rma-w{flex:1;min-width:0}
+  .rma .rma-t{flex:0 0 128px;width:128px;padding-left:10px;padding-right:8px}
+  .rma-at{color:var(--muted);font-size:13px;flex:none}
+  .rma-x{flex:none;width:40px;height:44px;border-radius:12px;background:var(--surface);border:1px solid var(--border);color:var(--muted);font-size:15px;cursor:pointer}
+  .rme-addalert{background:none;border:1px dashed var(--border);color:#fb923c;border-radius:12px;padding:10px;width:100%;font-weight:700;font-size:14px;cursor:pointer}
+  #sec-phoneset .nf-sec{padding:6px 0 12px!important;border-bottom:1px solid var(--border);margin-bottom:10px}
+
+  /* ---- Health is orange, Reminders is purple ---- */
+  #go-health{background:linear-gradient(135deg,#c2410c 0%,#f97316 50%,#fbbf24 100%)!important;box-shadow:0 12px 26px -12px rgba(249,115,22,.8)!important}
+  .appcard.ac-rem{background:linear-gradient(135deg,#7b3cf0 0%,#b44cf0 45%,#ff5c9d 100%)!important;box-shadow:0 12px 26px -12px rgba(180,76,240,.85)!important}
+  .rm-ic{background:rgba(180,124,255,.16)!important}
+  .rm-row.rm-today{border-color:#b47cff!important;box-shadow:0 0 0 1px #b47cff inset!important}
+  .rm-side b,.sh-rem-l,.rme-addalert{color:#c9a3ff!important}
+  .rme-seg button.on{background:#a855f7!important;border-color:#a855f7!important;color:#fff!important}
+  .rme-save{background:linear-gradient(135deg,#7b3cf0,#b44cf0 55%,#ff5c9d)!important;color:#fff!important}
 </style>
 
 </head>
@@ -1654,6 +1714,7 @@
     <h3 id="sh-date"></h3>
     <div class="state" id="sh-state"></div>
     <div class="shanni" id="sh-anni" style="display:none"></div>
+    <div class="sh-rem" id="sh-rem"></div>
     <div class="sh-elapsed" id="sh-elapsed"></div>
   </div>
   <div class="shevs" id="sh-events"></div>
@@ -1755,6 +1816,45 @@
   </div>
   <button class="save-btn" id="w-save">Add to our list</button>
   <button class="reset" id="w-delete" style="margin-top:10px;display:none">Delete</button>
+</div>
+
+<div class="panel" id="rempanel">
+  <div class="phead"><h2>Reminders</h2><button class="x" id="closeRem">&#10005;</button></div>
+  <div class="rm-hint" id="rm-hint"></div>
+  <div class="rm-addrow"><button class="rm-add" id="rm-add-b">&#127874; Add a birthday</button><button class="rm-add" id="rm-add-r">&#128276; Add a reminder</button></div>
+  <div id="rm-list"></div>
+</div>
+
+<div class="panel" id="rmedit">
+  <div class="phead"><h2 id="rme-title">New reminder</h2><button class="x" id="closeRmEdit">&#10005;</button></div>
+  <div class="rme-seg" id="rme-kind"><button data-v="birthday">&#127874; Birthday</button><button data-v="reminder">&#128276; Reminder</button></div>
+  <div id="rme-bday">
+    <label class="rme-l">Whose birthday?</label>
+    <input class="rme-in" id="rme-name" placeholder="e.g. Mum" maxlength="40" autocomplete="off">
+    <label class="rme-l">When?</label>
+    <div class="rme-row"><select class="rme-in" id="rme-day"></select><select class="rme-in" id="rme-mon"></select>
+      <input class="rme-in" id="rme-year" inputmode="numeric" placeholder="Year (optional)" maxlength="4"></div>
+    <div class="rme-tip">Add the year they were born and it’ll say how old they’re turning.</div>
+  </div>
+  <div id="rme-rem">
+    <label class="rme-l">What’s it for?</label>
+    <input class="rme-in" id="rme-what" placeholder="e.g. Pay council tax" maxlength="60" autocomplete="off">
+    <label class="rme-l">When?</label>
+    <div class="rme-row"><input class="rme-in" type="date" id="rme-date"><input class="rme-in" type="time" id="rme-time" value="09:00"></div>
+    <label class="rme-l">Repeat</label>
+    <select class="rme-in" id="rme-repeat"><option value="none">Doesn’t repeat</option><option value="daily">Every day</option>
+      <option value="weekly">Every week</option><option value="monthly">Every month</option><option value="yearly">Every year</option></select>
+  </div>
+  <label class="rme-l">Remind me</label>
+  <div id="rme-alerts"></div>
+  <button class="rme-addalert" id="rme-addalert">+ Add another alert</button>
+  <label class="rme-l">Who gets it?</label>
+  <div class="rme-seg" id="rme-for"><button data-v="both">Both of us</button><button data-v="shaad">Shaad</button><button data-v="fiaza">Fiaza</button></div>
+  <label class="rme-l">Note <span>(optional)</span></label>
+  <textarea class="rme-in" id="rme-note" rows="2" maxlength="200" placeholder="Shows in the notification"></textarea>
+  <div class="rme-err" id="rme-err"></div>
+  <button class="rme-save" id="rme-save">Save</button>
+  <button class="rme-del" id="rme-del">Delete</button>
 </div>
 
 <div class="panel" id="chatpanel">
@@ -1873,6 +1973,14 @@
     <span class="ac-go">&rsaquo;</span>
   </button>
 
+  <button class="appcard ac-rem" id="go-rem-tile">
+    <span class="ac-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="26" height="26"><path d="M12 3.5a6 6 0 0 0-6 6v3.4L4.5 16v1h15v-1L18 12.9V9.5a6 6 0 0 0-6-6zM9.8 19a2.3 2.3 0 0 0 4.4 0" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>
+    </span>
+    <span class="ac-txt"><b>Reminders</b><span class="ac-sub" id="rm-tile-sub"></span></span>
+    <span class="ac-go">&rsaquo;</span>
+  </button>
+
   <button class="appcard" id="go-health">
     <span class="ac-icon" aria-hidden="true">
       <svg viewBox="0 0 24 24" width="26" height="26">
@@ -1885,13 +1993,6 @@
   </button>
 
 
-  <div class="psec nf-sec" id="sec-notify">
-    <div class="nf-row">
-      <span class="nf-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 3.5a6 6 0 0 0-6 6v3.4L4.5 16v1h15v-1L18 12.9V9.5a6 6 0 0 0-6-6zM9.8 19a2.3 2.3 0 0 0 4.4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>
-      <div class="nf-txt"><b id="nf-head">Notifications</b><span id="nf-status">Off on this phone</span></div>
-      <button class="nf-btn" id="nf-btn">Turn on</button>
-    </div>
-  </div>
   <div class="psec fold" id="sec-more">
     <button class="foldhead" data-fold="sec-more"><span>More</span><i class="foldchev">&rsaquo;</i></button>
     <div class="foldbody">
@@ -1918,13 +2019,20 @@
         </div>
       </div>
 
-      <div class="subfold" id="sub-device">
-        <button class="subhead" data-fold="sub-device"><span>Device</span><i class="foldchev">&rsaquo;</i></button>
-        <div class="foldbody">
-          <button class="morebtn" id="go-phone">This phone: <b id="more-owner"></b> &rsaquo;</button>
+    </div>
+  </div>
+
+  <div class="psec fold" id="sec-phoneset">
+    <button class="foldhead" data-fold="sec-phoneset"><span>Phone settings</span><i class="foldchev">&rsaquo;</i></button>
+    <div class="foldbody">
+      <div class="nf-sec" id="sec-notify">
+    <div class="nf-row">
+          <span class="nf-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 3.5a6 6 0 0 0-6 6v3.4L4.5 16v1h15v-1L18 12.9V9.5a6 6 0 0 0-6-6zM9.8 19a2.3 2.3 0 0 0 4.4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>
+          <div class="nf-txt"><b id="nf-head">Notifications</b><span id="nf-status">Off on this phone</span></div>
+          <button class="nf-btn" id="nf-btn">Turn on</button>
         </div>
       </div>
-
+      <button class="morebtn" id="go-phone">This phone: <b id="more-owner"></b> &rsaquo;</button>
     </div>
   </div>
 
@@ -1982,6 +2090,7 @@ let S={...DEFAULTS};
 let overrides={};   // {key:{shaad?,fiaza?,note?}}  note = {text,by?}
 let events=[];      // [{name,date}]
 let wishes=[];      // [{text,tag,done}]
+let reminders={};   // {id:{kind,name|title,date,time,repeat,before,for,year,note,by}}
 let deviceOwner=null; // 'shaad' | 'fiaza' | null  (per device, not synced)
 
 /* =================== notifications ===================
@@ -2125,7 +2234,7 @@ function nfStatus(){
   $('nf-head').textContent=other?'Tell me when '+other+' changes something':'Notifications';
   btn.disabled=false;btn.textContent=on?'Turn off':'Turn on';btn.classList.toggle('on',!!on);
   if(VAPID_KEY.includes('REPLACE')){st.textContent='Not set up yet \u2014 needs the key from Firebase';btn.disabled=true;return;}
-  if(!deviceOwner){st.textContent='Pick whose phone this is first (More \u203a Device)';btn.disabled=true;return;}
+  if(!deviceOwner){st.textContent='Pick whose phone this is first (This phone, just below)';btn.disabled=true;return;}
   if(NF_IOS&&!nfStandalone()){st.textContent='Add the app to your Home Screen, then open it from the icon';btn.disabled=true;return;}
   if(!('serviceWorker' in navigator)||typeof Notification==='undefined'){st.textContent='This phone can\u2019t do notifications here';btn.disabled=true;return;}
   if(Notification.permission==='denied'){st.textContent='Blocked \u2014 allow it in your phone\u2019s Settings \u203a Notifications';btn.disabled=true;return;}
@@ -2204,6 +2313,7 @@ async function loadAll(){
   const s=await sget('settings'); if(s){try{S={...DEFAULTS,...JSON.parse(s)};}catch(e){}}
   const o=await sget('overrides'); if(o){try{overrides=JSON.parse(o);migrateOverrides();lastGoodOverrideCount=Object.keys(overrides).length;}catch(e){}}
   const ev=await sget('events'); if(ev){try{events=JSON.parse(ev);}catch(e){}}
+  const rmS=await sget('reminders'); if(rmS){try{reminders=JSON.parse(rmS)||{};}catch(e){}}
   const wi=await sget('wishes'); if(wi){try{wishes=JSON.parse(wi);}catch(e){}}
   const mo=await sget('money'); if(mo){try{money={...money,...JSON.parse(mo)};}catch(e){}}
   try{const l=JSON.parse(localStorage.getItem('openlog')||'[]');if(l.length)openLog=l;}catch(e){}
@@ -2256,6 +2366,7 @@ function initFirebase(){
         health=v||{}; bumpHealth(); if(view==='health')renderHealth();
       });
       DB.ref('shared/wishes').on('value',s=>{const v=s.val();wishes=Array.isArray(v)?v:Object.values(v||{});NF.snapW=nfClone(wishes);renderAll();});
+      DB.ref('shared/reminders').on('value',s=>{reminders=s.val()||{};sset('reminders',JSON.stringify(reminders));if($('rempanel').classList.contains('on'))rmRender();});
       nfOnline();
       DB.ref('shared/money').on('value',s=>{const v=s.val();
         if(v){money={...money,...v};money.entries=Array.isArray(v.entries)?v.entries:Object.values(v.entries||{});bumpEarn();
@@ -4393,6 +4504,7 @@ function openSheet(k){sheetKey=k;
   $('sh-state').textContent=stateWords(k);
   {const n=anniversaryOf(k),el=$('sh-anni');
    if(el){el.style.display=n?'':'none';if(n)el.textContent='\u2726 '+anniversaryLabel(n);}}
+  rmDayLines(k);
   const nb=noteObj(k);
   $('sh-note').value=nb?nb.text:'';
   noteBy=(nb&&nb.by)||deviceOwner||'shaad';
@@ -4558,12 +4670,15 @@ function openSettings(){
   showPhoneSec=false;tmpOwner=deviceOwner;syncOwnerPick();syncOwnerUI();updateBackupUI();renderNextSee();
   $('go-hundred').style.display=daysTogether()>=MILESTONE?'':'none';
   try{nfStatus();}catch(e){}
+  try{rmTileSub();const f=$('rme-for').children;f[1].textContent=S.shaadName;f[2].textContent=S.fiazaName;}catch(e){}
   $('settings').classList.add('on');syncPanelFlag();
 }
 function closeSettings(){$('settings').classList.remove('on');syncPanelFlag();}
 function syncPanelFlag(){
   // anything full-screen means the calendar behind it is invisible — stop animating it
   const covered = $('settings').classList.contains('on')
+    || $('rempanel').classList.contains('on')
+    || $('rmedit').classList.contains('on')
     || $('logpanel').classList.contains('on')
     || $('healthday').classList.contains('on')
     || $('ranges').classList.contains('on')
@@ -6109,7 +6224,7 @@ function markGearDue(){
 }
 $('bk-export').onclick=()=>{
   const payload={app:'shaad-x-fiaza',version:1,exported:new Date().toISOString(),
-    data:{settings:S,overrides:overrides,events:events,wishes:wishes,money:money,health:health,
+    data:{settings:S,overrides:overrides,events:events,wishes:wishes,reminders:reminders,money:money,health:health,
           openlog:openLog,opens:opens}};
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
   const url=URL.createObjectURL(blob),a=document.createElement('a'),d=new Date(),pad=n=>String(n).padStart(2,'0');
@@ -6135,6 +6250,7 @@ $('bk-no').onclick=()=>{$('bk-confirm').style.display='none';pendingImport=null;
 $('bk-yes').onclick=async()=>{if(!pendingImport)return;const d=pendingImport;
   if(d.settings)S={...DEFAULTS,...d.settings};
   overrides=d.overrides||{};migrateOverrides();events=Array.isArray(d.events)?d.events:[];wishes=Array.isArray(d.wishes)?d.wishes:[];bumpEarn();
+  if(d.reminders&&typeof d.reminders==='object'){reminders=d.reminders;await sset('reminders',JSON.stringify(reminders));if(fbReady&&DB){try{await DB.ref('shared/reminders').set(reminders);}catch(e){}}}
   if(d.health&&typeof d.health==='object'){health=d.health;bumpHealth();}
   if(d.money&&typeof d.money==='object'){money={...money,...d.money};
     money.entries=Array.isArray(money.entries)?money.entries:[];money.actuals=money.actuals||{};bumpEarn();}
@@ -6440,6 +6556,215 @@ document.getElementById('rsx-prev').onclick=rsxPrev;
   stg.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});
   stg.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;
     if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)){dx<0?rsxNext():rsxPrev();}},{passive:true});})();
+
+
+/* =================== reminders & birthdays ===================
+   Kept in shared/reminders. The Firebase timer (remindersTick) sends them;
+   this side just lists them and lets you add, change and delete. */
+const RM_DAY=86400000;
+const RM_MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const RM_MNL=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const RM_WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const rmDim=(y,m)=>new Date(Date.UTC(y,m+1,0)).getUTCDate();
+const rmAt=(y,m,d)=>Date.UTC(y,m,Math.min(d,rmDim(y,m)));
+function rmToday(){const n=new Date();return Date.UTC(n.getFullYear(),n.getMonth(),n.getDate());}
+function rmParts(r){const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(r.date||'');return m?{y:+m[1],m:+m[2]-1,d:+m[3]}:null;}
+/* the next day it happens, on or after `from` (a day, wall clock) */
+function rmNext(r,from){
+  const p=rmParts(r);if(!p)return null;
+  const start=rmAt(p.y,p.m,p.d), F=new Date(from), rep=r.kind==='birthday'?'yearly':(r.repeat||'none');
+  let o;
+  if(rep==='none')return start>=from?start:null;
+  if(rep==='daily')o=from;
+  else if(rep==='weekly'){o=from;const want=new Date(start).getUTCDay();while(new Date(o).getUTCDay()!==want)o+=RM_DAY;}
+  else if(rep==='monthly'){let y=F.getUTCFullYear(),m=F.getUTCMonth();o=rmAt(y,m,p.d);if(o<from){m++;if(m>11){m=0;y++;}o=rmAt(y,m,p.d);}}
+  else{let y=F.getUTCFullYear();o=rmAt(y,p.m,p.d);if(o<from)o=rmAt(y+1,p.m,p.d);}
+  if(r.kind!=='birthday'&&o<start)o=start;
+  return o;
+}
+function rmName(r){return r.kind==='birthday'?((r.name||'Someone').trim()+'\u2019s birthday'):(r.title||'Reminder').trim();}
+function rmWhen(o){const t=rmToday(),d=Math.round((o-t)/RM_DAY);
+  return d===0?'Today':d===1?'Tomorrow':d<7?'In '+d+' days':d<14?'In a week':d<60?'In '+Math.round(d/7)+' weeks':'In '+Math.round(d/30.4)+' months';}
+function rmNice(o){const d=new Date(o);return RM_WD[d.getUTCDay()]+' '+d.getUTCDate()+' '+RM_MN[d.getUTCMonth()];}
+function rmAge(r,o){return r.kind==='birthday'&&r.year?new Date(o).getUTCFullYear()-r.year:null;}
+const RM_REP={daily:'every day',weekly:'every week',monthly:'every month',yearly:'every year'};
+function rmForLabel(f){return f==='shaad'?S.shaadName:f==='fiaza'?S.fiazaName:'Both';}
+function rmSorted(){
+  const t=rmToday();
+  return Object.entries(reminders||{}).filter(([,r])=>r&&r.date).map(([id,r])=>({id,r,o:rmNext(r,t)}))
+    .sort((a,b)=>(a.o==null)-(b.o==null)||(a.o-b.o)||rmName(a.r).localeCompare(rmName(b.r)));
+}
+function rmRender(){
+  const box=$('rm-list'), list=rmSorted(), t=rmToday();
+  $('rm-hint').innerHTML=(!localStorage.getItem('nfKey')
+    ?'Turn on notifications in Settings \u203a Phone settings to get these as alerts on this phone.':'');
+  if(!list.length){box.innerHTML='<div class="rm-empty">Nothing yet. Add birthdays and reminders, and you\u2019ll both get a notification when they\u2019re due.</div>';return;}
+  let html='',sec='';
+  list.forEach(({id,r,o})=>{
+    const s=o==null?'Done':(o-t)/RM_DAY<=31?'Coming up':'Later';
+    if(s!==sec){html+='<div class="cs-head rm-sec">'+s+'</div>';sec=s;}
+    const age=o!=null?rmAge(r,o):null;
+    const bits=[];
+    if(o!=null)bits.push(rmNice(o)+(r.kind==='reminder'&&r.time?' \u00b7 '+r.time:''));
+    if(age)bits.push('turns '+age);
+    if(r.kind==='reminder'&&r.repeat&&r.repeat!=='none')bits.push(RM_REP[r.repeat]);
+    const al=rmAlertsOf(r).filter(a=>!(a.m===0));
+    if(al.length)bits.push('\ud83d\udd14 '+al.map(rmAlertLabel).join(', '));
+    html+='<button class="rm-row'+(o===t?' rm-today':'')+(o==null?' rm-done':'')+'" data-id="'+esc(id)+'">'
+      +'<span class="rm-ic">'+(r.kind==='birthday'?'\ud83c\udf82':(r.repeat&&r.repeat!=='none'?'\ud83d\udd01':'\ud83d\udd14'))+'</span>'
+      +'<span class="rm-tx"><b>'+esc(rmName(r))+'</b><span>'+esc(bits.join(' \u00b7 '))+'</span>'+(r.note?'<i>'+esc(r.note)+'</i>':'')+'</span>'
+      +'<span class="rm-side"><b>'+(o==null?'':esc(rmWhen(o)))+'</b><span>'+esc(rmForLabel(r.for))+'</span></span></button>';
+  });
+  box.innerHTML=html;
+}
+function rmTileSub(){
+  const nx=rmSorted().find(x=>x.o!=null);
+  $('rm-tile-sub').textContent=nx?rmName(nx.r)+' \u00b7 '+rmWhen(nx.o).toLowerCase():'';
+}
+function rmDayLines(k){
+  const el=$('sh-rem');if(!el)return;
+  const day=Date.parse(k+'T00:00:00Z');
+  const on=Object.values(reminders||{}).filter(r=>r&&r.date&&rmNext(r,day)===day);
+  el.innerHTML=on.map(r=>{const a=rmAge(r,day);
+    return '<div class="sh-rem-l">'+(r.kind==='birthday'?'\ud83c\udf82 ':'\ud83d\udd14 ')+esc(rmName(r))
+      +(a?' \u00b7 turns '+a:'')+(r.kind==='reminder'&&r.time?' \u00b7 '+esc(r.time):'')+'</div>';}).join('');
+}
+
+/* ---- adding and changing ---- */
+let rmEditing=null;
+function rmSeg(id,v){[...$(id).children].forEach(b=>b.classList.toggle('on',b.dataset.v===String(v)));}
+function rmSegVal(id){const b=$(id).querySelector('.on');return b?b.dataset.v:null;}
+['rme-kind','rme-for'].forEach(id=>$(id).addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  rmSeg(id,b.dataset.v);if(id==='rme-kind')rmKindUI();}));
+(function(){const d=$('rme-day'),m=$('rme-mon');
+  for(let i=1;i<=31;i++)d.insertAdjacentHTML('beforeend','<option value="'+i+'">'+i+'</option>');
+  RM_MNL.forEach((n,i)=>m.insertAdjacentHTML('beforeend','<option value="'+i+'">'+n+'</option>'));})();
+
+/* ---- alerts: {d: days before, t: 'HH:MM'} or {m: minutes before the reminder's own time} ---- */
+const RM_DAYOPTS=[[0,'On the day'],[1,'Day before'],[2,'2 days before'],[3,'3 days before'],[7,'1 week before'],[14,'2 weeks before']];
+const RM_MINOPTS=[[0,'At the time'],[15,'15 min before'],[30,'30 min before'],[60,'1 hour before'],[120,'2 hours before'],[180,'3 hours before']];
+function rmAlertsOf(r){                      // older reminders only had "before"
+  if(Array.isArray(r.alerts)&&r.alerts.length)return r.alerts.map(a=>a.m!=null?{m:+a.m}:{d:+a.d,t:a.t});
+  const t=r.time||'09:00', out=[r.kind==='birthday'?{d:0,t}:{m:0}];
+  if(+r.before>0)out.push({d:+r.before,t});
+  return out;
+}
+function rmAlertLabel(a){
+  if(a.m!=null){const o=RM_MINOPTS.find(x=>x[0]===a.m);return o?o[1].toLowerCase():a.m+' min before';}
+  const o=RM_DAYOPTS.find(x=>x[0]===a.d);return (o?o[1]:a.d+' days before').toLowerCase()+' '+a.t;
+}
+function rmAlertRow(a){
+  const kind=rmSegVal('rme-kind'), v=a.m!=null?'m'+a.m:'d'+a.d;
+  const opts=(kind==='reminder'?RM_MINOPTS.map(([n,l])=>['m'+n,l]):[]).concat(RM_DAYOPTS.map(([n,l])=>['d'+n,kind==='reminder'&&n===0?'Earlier that day':l]));
+  const row=document.createElement('div');row.className='rma';
+  row.innerHTML='<select class="rme-in rma-w">'+opts.map(([k,l])=>'<option value="'+k+'"'+(k===v?' selected':'')+'>'+l+'</option>').join('')+'</select>'
+    +'<span class="rma-at">at</span><input class="rme-in rma-t" type="time" value="'+(a.t||'09:00')+'"><button class="rma-x" aria-label="Remove this alert">\u2715</button>';
+  const sync=()=>{const isDay=row.querySelector('.rma-w').value.charAt(0)==='d';row.querySelector('.rma-t').style.display=isDay?'':'none';row.querySelector('.rma-at').style.display=isDay?'':'none';};
+  row.querySelector('.rma-w').onchange=sync;
+  row.querySelector('.rma-x').onclick=()=>{row.remove();rmAlertBtn();};
+  sync();
+  return row;
+}
+function rmSetAlerts(list){const box=$('rme-alerts');box.innerHTML='';list.slice(0,5).forEach(a=>box.appendChild(rmAlertRow(a)));rmAlertBtn();}
+function rmGetAlerts(){
+  const seen=new Set(), out=[];
+  $('rme-alerts').querySelectorAll('.rma').forEach(row=>{
+    const v=row.querySelector('.rma-w').value, n=+v.slice(1);
+    const a=v.charAt(0)==='m'?{m:n}:{d:n,t:row.querySelector('.rma-t').value||'09:00'};
+    const k=JSON.stringify(a);if(!seen.has(k)){seen.add(k);out.push(a);}
+  });
+  return out;
+}
+function rmAlertBtn(){$('rme-addalert').style.display=$('rme-alerts').children.length>=5?'none':'';}
+$('rme-addalert').onclick=()=>{
+  if($('rme-alerts').children.length>=5)return;
+  const have=rmGetAlerts();
+  // suggest something sensible that isn't already there
+  const pick=[{d:1,t:'20:00'},{d:0,t:'08:00'},{m:60},{d:3,t:'10:00'},{d:7,t:'10:00'}].find(a=>
+    (rmSegVal('rme-kind')==='reminder'||a.m==null)&&!have.some(b=>JSON.stringify(b)===JSON.stringify(a)))||{d:1,t:'20:00'};
+  $('rme-alerts').appendChild(rmAlertRow(pick));rmAlertBtn();
+};
+function rmKindUI(){
+  const k=rmSegVal('rme-kind');$('rme-bday').style.display=k==='birthday'?'':'none';$('rme-rem').style.display=k==='reminder'?'':'none';
+  // birthdays have no time of their own, so "X minutes before" makes no sense there
+  const cur=$('rme-alerts').children.length?rmGetAlerts():[];
+  const fixed=cur.map(a=>k==='birthday'&&a.m!=null?{d:0,t:'09:00'}:a);
+  rmSetAlerts(fixed.length?fixed:(k==='birthday'?[{d:0,t:'09:00'}]:[{m:0}]));
+}
+function rmOpenEdit(id,kind){
+  const r=id?reminders[id]:null;rmEditing=id||null;
+  $('rme-title').textContent=r?'Edit':kind==='birthday'?'New birthday':'New reminder';
+  $('rme-alerts').innerHTML='';
+  rmSeg('rme-kind',r?r.kind:(kind||'reminder'));rmKindUI();
+  const p=r?rmParts(r):null, now=new Date();
+  $('rme-name').value=r&&r.kind==='birthday'?(r.name||''):'';
+  $('rme-day').value=String(p&&r.kind==='birthday'?p.d:now.getDate());
+  $('rme-mon').value=String(p&&r.kind==='birthday'?p.m:now.getMonth());
+  $('rme-year').value=r&&r.year?String(r.year):'';
+  $('rme-what').value=r&&r.kind==='reminder'?(r.title||''):'';
+  $('rme-date').value=r&&r.kind==='reminder'?r.date:new Date(Date.UTC(now.getFullYear(),now.getMonth(),now.getDate())).toISOString().slice(0,10);
+  $('rme-time').value=r&&r.time?r.time:'09:00';
+  $('rme-repeat').value=r&&r.repeat?r.repeat:'none';
+  rmSetAlerts(r?rmAlertsOf(r):(kind==='birthday'?[{d:0,t:'09:00'},{d:1,t:'20:00'}]:[{m:0}]));
+  rmSeg('rme-for',r?(r.for||'both'):'both');
+  $('rme-note').value=r&&r.note?r.note:'';
+  $('rme-err').textContent='';
+  $('rme-del').style.display=r?'':'none';
+  $('rmedit').classList.add('on');syncPanelFlag();
+}
+function rmCloseEdit(){$('rmedit').classList.remove('on');syncPanelFlag();rmEditing=null;}
+function rmTell(text,r){                     // let the other person know, if it involves them
+  if(NF.muted||!deviceOwner)return;
+  if(r&&r.for===deviceOwner)return;           // a reminder just for yourself is nobody else's business
+  NF.pend.list.push(text);nfSchedule();
+}
+async function rmSave(){
+  const kind=rmSegVal('rme-kind'), err=$('rme-err');err.textContent='';
+  const alerts=rmGetAlerts();
+  if(!alerts.length){err.textContent='Add at least one alert, so it actually reminds you.';return;}
+  const r={kind,alerts,for:rmSegVal('rme-for')||'both',note:$('rme-note').value.trim().slice(0,200),by:deviceOwner||null,at:Date.now()};
+  if(kind==='birthday'){
+    const name=$('rme-name').value.trim(), d=+$('rme-day').value, m=+$('rme-mon').value, ys=$('rme-year').value.trim();
+    if(!name){err.textContent='Whose birthday is it?';return;}
+    const year=/^\d{4}$/.test(ys)?+ys:null;
+    if(ys&&(!year||year<1900||year>new Date().getFullYear())){err.textContent='That year doesn\u2019t look right.';return;}
+    if(d>rmDim(2000,m)){err.textContent=RM_MNL[m]+' doesn\u2019t have '+d+' days.';return;}
+    r.name=name.slice(0,40);r.year=year;r.date=(year||2000)+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');r.time='09:00';
+  }else{
+    const what=$('rme-what').value.trim(), date=$('rme-date').value, time=$('rme-time').value||'09:00';
+    if(!what){err.textContent='What\u2019s the reminder for?';return;}
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){err.textContent='Pick a date.';return;}
+    r.title=what.slice(0,60);r.date=date;r.time=time;r.repeat=$('rme-repeat').value||'none';
+  }
+  const id=rmEditing||('r'+Date.now().toString(36)+Math.random().toString(36).slice(2,6));
+  const isNew=!rmEditing;
+  reminders[id]=r;
+  await sset('reminders',JSON.stringify(reminders));
+  if(fbReady&&DB){try{await DB.ref('shared/reminders/'+id).set(r);}catch(e){}}
+  const o=rmNext(r,rmToday());
+  rmTell((isNew?(r.kind==='birthday'?'Added ':'Added a reminder: '):'Changed: ')+rmName(r)+(o!=null?' ('+rmNice(o)+')':''),r);
+  rmCloseEdit();rmRender();rmTileSub();
+}
+async function rmDelete(){
+  if(!rmEditing||!reminders[rmEditing])return;
+  const r=reminders[rmEditing];
+  if(!confirm('Delete \u201c'+rmName(r)+'\u201d?'))return;
+  delete reminders[rmEditing];
+  await sset('reminders',JSON.stringify(reminders));
+  if(fbReady&&DB){try{await DB.ref('shared/reminders/'+rmEditing).remove();}catch(e){}}
+  rmTell('Removed: '+rmName(r),r);
+  rmCloseEdit();rmRender();rmTileSub();
+}
+function openRem(){rmRender();$('rempanel').classList.add('on');syncPanelFlag();}
+function closeRem(){$('rempanel').classList.remove('on');syncPanelFlag();}
+$('go-rem-tile').onclick=()=>{closeSettings();openRem();};
+$('closeRem').onclick=closeRem;
+$('closeRmEdit').onclick=rmCloseEdit;
+$('rm-add-b').onclick=()=>rmOpenEdit(null,'birthday');
+$('rm-add-r').onclick=()=>rmOpenEdit(null,'reminder');
+$('rm-list').addEventListener('click',e=>{const b=e.target.closest('.rm-row');if(b)rmOpenEdit(b.dataset.id);});
+$('rme-save').onclick=rmSave;
+$('rme-del').onclick=rmDelete;
 
 /* ---------- lock ---------- */
 const PASSWORD='Cookies9!';
