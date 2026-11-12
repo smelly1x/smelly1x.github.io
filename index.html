@@ -2239,7 +2239,7 @@ function nfLoadSdk(){
 function nfHash(s){let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return 'd'+h.toString(36)+s.length.toString(36);}
 async function nfGetToken(){
   await nfLoadSdk();
-  const reg=await navigator.serviceWorker.register('firebase-messaging-sw.js');
+  const reg=await navigator.serviceWorker.register('firebase-messaging-sw.js',{updateViaCache:'none'});
   await navigator.serviceWorker.ready;
   return await firebase.messaging().getToken({vapidKey:VAPID_KEY,serviceWorkerRegistration:reg});
 }
@@ -6462,7 +6462,8 @@ $('saveSettings').onclick=async()=>{
 };
 
 /* ---------- keep today fresh ---------- */
-function tick(){const t=computeToday();if(t!==todayKey){todayKey=t;markGearDue();renderAll();checkStarDay();}}
+function tick(){const t=computeToday();if(t!==todayKey){todayKey=t;markGearDue();renderAll();checkStarDay();}
+  upCheck(60*60000);}
 setInterval(()=>{if(!document.hidden)tick();},60000);
 setInterval(()=>{if(!document.hidden)paintPresence();},15000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick();});
@@ -6955,6 +6956,55 @@ $('au-btn').onclick=()=>{
 };
 makeDraggable($('ausheet'),$('ausheet-drag'),auClose);
 
+/* ---------- the newest version, and a copy for when there's no signal ----------
+   firebase-messaging-sw.js (the same file that receives notifications) keeps a copy
+   of the app on the phone and asks GitHub for the latest every time the app opens,
+   so there's no more ?v=2. A phone that has had the app sitting open for days checks
+   when you come back to it and reloads itself if GitHub has a newer one - but only
+   when nothing is open and nothing is being typed. */
+const UP_OK='serviceWorker' in navigator&&'caches' in window&&(location.protocol==='https:'||location.hostname==='localhost');
+const UP_HOME=new URL('./',location.href).href;
+let upTag=null, upLast=0, upWant=false;
+async function upRunning(){                    // which version is this page? (as the service worker saved it when it loaded)
+  try{const c=await caches.open('sf-app-v1'), r=await c.match(UP_HOME);
+    return r?(r.headers.get('etag')||r.headers.get('last-modified')||null):null;}catch(e){return null;}
+}
+function upIdle(){                             // safe to reload: nothing open, nothing half-typed, nothing mid-send
+  const a=document.activeElement;
+  if(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)&&!$('lock').contains(a))return false;
+  if(document.body.classList.contains('panel-open')||document.querySelector('.sheet.on'))return false;
+  if(marking||measuring||CS.saving||_fbPush||NF.t)return false;
+  return true;
+}
+function upReload(){
+  if(!upWant||!upIdle())return;
+  let last=0;try{last=+localStorage.getItem('upReloaded')||0;}catch(e){}
+  if(Date.now()-last<10*60000)return;          // at most once in ten minutes, so it can never loop
+  try{localStorage.setItem('upReloaded',String(Date.now()));}catch(e){return;}
+  location.reload();
+}
+async function upCheck(gap){
+  if(!UP_OK||navigator.onLine===false)return;
+  if(upWant){upReload();return;}
+  if(Date.now()-upLast<gap)return;upLast=Date.now();
+  if(!upTag)upTag=await upRunning();
+  if(!upTag)return;
+  try{
+    const isEtag=/^(W\/)?"/.test(upTag);
+    const r=await fetch(UP_HOME,{cache:'no-store',headers:isEtag?{'If-None-Match':upTag}:{}});
+    if(r.status===304||!r.ok)return;
+    const now=r.headers.get('etag')||r.headers.get('last-modified');
+    if(now&&now!==upTag){upWant=true;upReload();}
+  }catch(e){}
+}
+function upBoot(){
+  if(!UP_OK)return;
+  navigator.serviceWorker.register('firebase-messaging-sw.js',{updateViaCache:'none'}).catch(()=>{});
+  setTimeout(()=>upCheck(0),6000);
+}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)upCheck(5*60000);});
+window.addEventListener('online',()=>upCheck(60000));
+
 /* ---------- lock ---------- */
 const PASSWORD='Cookies9!';
 function tryUnlock(){
@@ -6982,6 +7032,7 @@ $('lock-input').addEventListener('keydown',e=>{if(e.key==='Enter')tryUnlock();})
   initFirebase();
   nfOpenFromLink();
   nfBoot();
+  upBoot();
 })();
 </script>
 </body>
