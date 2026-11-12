@@ -2324,6 +2324,9 @@ async function loadAll(){
   if(money.paydayF===undefined)money.paydayF=25;
   money.actuals=money.actuals||{};bumpEarn();
   try{deviceOwner=localStorage.getItem('deviceOwner')||null;}catch(e){}
+  _ovSeen=nfClone(overrides||{});
+  try{const u=JSON.parse(localStorage.getItem('ovUnsent')||'null');
+    if(u&&u.p&&typeof u.p==='object'&&Date.now()-(+u.at||0)<30*DAY)_ovUnsent=u.p;}catch(e){}
   nfReset();
 }
 
@@ -2345,7 +2348,7 @@ function initFirebase(){
     auth.signInAnonymously().catch(()=>{});
     auth.onAuthStateChanged(u=>{
       if(!u)return; DB=firebase.database(); fbReady=true; startPresence();
-      DB.ref('shared/settings').on('value',s=>{const v=s.val();if(v){S={...DEFAULTS,...v};bumpEarn();renderAll();}});
+      DB.ref('shared/settings').on('value',s=>{const v=s.val();if(v){S={...DEFAULTS,...v};sset('settings',JSON.stringify(S));bumpEarn();renderAll();}});
       DB.ref('shared/overrides').on('value',s=>{
         const remote=s.val();
         const haveLocal=Object.keys(overrides||{}).length>0;
@@ -2356,20 +2359,31 @@ function initFirebase(){
           try{DB.ref('shared/overrides').set(overrides);}catch(e){}
           return;
         }
-        overrides=remote||{};migrateOverrides();NF.snapO=nfClone(overrides);bumpEarn();renderAll();
+        if(_ovReplace){queueFbWrite();return;}        // a restore is about to replace everything
+        overrides=ovApply(remote||{},_ovUnsent);migrateOverrides();
+        _ovSeen=nfClone(overrides);lastGoodOverrideCount=Object.keys(overrides).length;
+        sset('overrides',JSON.stringify(overrides));  // so the latest is here next time, signal or not
+        NF.snapO=nfClone(overrides);bumpEarn();renderAll();
+        if(_ovRetry&&Object.keys(_ovUnsent).length){_ovRetry=false;queueFbWrite();}
       });
-      DB.ref('shared/events').on('value',s=>{const v=s.val();events=Array.isArray(v)?v:Object.values(v||{});NF.snapE=nfClone(events);renderAll();});
+      DB.ref('shared/events').on('value',s=>{const v=s.val();events=Array.isArray(v)?v:Object.values(v||{});
+        if(events.length)sset('events',JSON.stringify(events));NF.snapE=nfClone(events);renderAll();});
       DB.ref('shared/health').on('value',s=>{
         const v=s.val();
         const haveLocal=Object.keys(health||{}).length>0;
         if((!v||!Object.keys(v).length)&&haveLocal){try{DB.ref('shared/health').set(health);}catch(e){}return;}
-        health=v||{}; bumpHealth(); if(view==='health')renderHealth();
+        health=v||{}; sset('health',JSON.stringify(health)); bumpHealth(); if(view==='health')renderHealth();
       });
-      DB.ref('shared/wishes').on('value',s=>{const v=s.val();wishes=Array.isArray(v)?v:Object.values(v||{});NF.snapW=nfClone(wishes);renderAll();});
+      DB.ref('shared/wishes').on('value',s=>{const v=s.val();wishes=Array.isArray(v)?v:Object.values(v||{});
+        if(wishes.length)sset('wishes',JSON.stringify(wishes));NF.snapW=nfClone(wishes);renderAll();});
       DB.ref('shared/reminders').on('value',s=>{reminders=s.val()||{};sset('reminders',JSON.stringify(reminders));if($('rempanel').classList.contains('on'))rmRender();});
       nfOnline();
       DB.ref('shared/money').on('value',s=>{const v=s.val();
-        if(v){money={...money,...v};money.entries=Array.isArray(v.entries)?v.entries:Object.values(v.entries||{});bumpEarn();
+        if(v){money={...money,...v};money.entries=Array.isArray(v.entries)?v.entries:Object.values(v.entries||{});
+          money.ratesS=Array.isArray(v.ratesS)?v.ratesS:Object.values(v.ratesS||{});
+          money.ratesF=Array.isArray(v.ratesF)?v.ratesF:Object.values(v.ratesF||{});
+          money.actuals=(v.actuals&&typeof v.actuals==='object')?v.actuals:{};
+          sset('money',JSON.stringify(money));bumpEarn();
           if(view==='money')renderMoney();}});
       DB.ref('shared/nudge').on('value',s=>{const v=s.val();if(!v||!v.at)return;
         if(v.from&&deviceOwner&&v.from===deviceOwner)return;      // don't echo your own
@@ -3102,12 +3116,70 @@ function renderAll(){
   _raPending=requestAnimationFrame(()=>{_raPending=0;renderAllNow();});
 }
 async function saveSettingsStore(){bumpEarn();await sset('settings',JSON.stringify(S));if(fbReady&&DB){try{await DB.ref('shared/settings').set(S);}catch(e){}}}
+/* ---- calendar sync ----
+   Each save sends only the days and fields this phone actually changed. It used to
+   upload the whole calendar every time, so a phone holding an out-of-date copy
+   (just opened, bad signal, no signal) could wipe what the other one had added.
+   Anything Firebase hasn't confirmed yet is kept on the phone in ovUnsent, so it
+   survives the app being closed and goes up the next time there's a connection. */
+let _ovSeen={};            // the calendar as it stood after the last save or sync
+let _ovUnsent={};          // changes not confirmed yet: {'2026-11-13/shaad':'off','2026-11-14/note':null}
+let _ovFlying={};          // ...of those, the ones already on their way
+let _ovReplace=false;      // restoring a backup replaces the lot
+let _ovRetry=true;         // re-send leftovers once per connection, never in a loop
+const ovSame=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+function ovDiff(a,b){      // what turns calendar a into calendar b, as {'day/field': value or null}
+  const p={};
+  new Set([...Object.keys(a||{}),...Object.keys(b||{})]).forEach(k=>{
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(k))return;
+    const x=(a&&a[k]&&typeof a[k]==='object')?a[k]:{}, y=(b&&b[k]&&typeof b[k]==='object')?b[k]:{};
+    new Set([...Object.keys(x),...Object.keys(y)]).forEach(f=>{
+      if(!ovSame(x[f],y[f]))p[k+'/'+f]=y[f]===undefined?null:y[f];});
+  });
+  return p;
+}
+function ovApply(o,p){     // put those changes on top of a calendar
+  Object.keys(p||{}).forEach(path=>{
+    const i=path.indexOf('/');if(i<1)return;
+    const k=path.slice(0,i), f=path.slice(i+1);
+    if(p[path]===null||p[path]===undefined){if(o[k]&&typeof o[k]==='object'){delete o[k][f];if(!Object.keys(o[k]).length)delete o[k];}}
+    else{if(!o[k]||typeof o[k]!=='object')o[k]={};o[k][f]=p[path];}
+  });
+  return o;
+}
+function ovStash(){
+  try{if(Object.keys(_ovUnsent).length)localStorage.setItem('ovUnsent',JSON.stringify({at:Date.now(),p:_ovUnsent}));
+      else localStorage.removeItem('ovUnsent');}catch(e){}
+}
+function ovNote(){         // remember what this phone just changed
+  if(_ovReplace)return;
+  Object.assign(_ovUnsent,ovDiff(_ovSeen,overrides));
+  _ovSeen=nfClone(overrides||{});
+  ovStash();
+}
+function ovSend(){
+  if(!(fbReady&&DB))return;
+  if(_ovReplace){
+    _ovReplace=false;_ovUnsent={};_ovFlying={};_ovSeen=nfClone(overrides||{});ovStash();
+    try{DB.ref('shared/overrides').set(overrides);}catch(e){}
+    return;
+  }
+  const sent={};
+  Object.keys(_ovUnsent).forEach(k=>{if(!(k in _ovFlying)||!ovSame(_ovFlying[k],_ovUnsent[k]))sent[k]=_ovUnsent[k];});
+  if(!Object.keys(sent).length)return;
+  Object.assign(_ovFlying,sent);
+  const done=ok=>{
+    Object.keys(sent).forEach(k=>{
+      if(ovSame(_ovFlying[k],sent[k]))delete _ovFlying[k];
+      if(ok&&ovSame(_ovUnsent[k],sent[k]))delete _ovUnsent[k];});
+    ovStash();};
+  try{Promise.resolve(DB.ref('shared/overrides').update(sent)).then(()=>done(true),()=>done(false));}
+  catch(e){done(false);}
+}
 let _fbPush=null;
 function queueFbWrite(){                       // coalesce rapid toggles into one network write
   clearTimeout(_fbPush);
-  _fbPush=setTimeout(()=>{
-    if(fbReady&&DB){try{DB.ref('shared/overrides').set(overrides);}catch(e){}}
-  },450);
+  _fbPush=setTimeout(()=>{_fbPush=null;ovSend();},450);
 }
 let lastGoodOverrideCount=0;
 async function saveOverrides(){
@@ -3120,6 +3192,7 @@ async function saveOverrides(){
     return;
   }
   if(n>0)lastGoodOverrideCount=n;
+  ovNote();
   await sset('overrides',JSON.stringify(overrides));   // local is instant, keeps UI honest
   nfTrackDays();
   queueFbWrite();
@@ -4772,12 +4845,13 @@ $('since').addEventListener('dblclick',()=>{
 document.addEventListener('visibilitychange',()=>{
   document.body.classList.toggle('hidden-tab',document.hidden);
   if(document.hidden)stopPresence(); else startPresence();
+  if(document.hidden&&_fbPush){clearTimeout(_fbPush);_fbPush=null;ovSend();}   // don't leave a change waiting on a frozen timer
   paintPresence();});
 document.addEventListener('visibilitychange',maybeReopen);
 window.addEventListener('pagehide',()=>{
   stopPresence();
-  clearTimeout(_fbPush);
-  if(fbReady&&DB){try{DB.ref('shared/overrides').set(overrides);}catch(e){}}
+  clearTimeout(_fbPush);_fbPush=null;
+  ovSend();
 });
 /* NOTE: the settings click handler is bound in the press-and-hold block above.
    Re-assigning .onclick here used to wipe out its guard. */
@@ -6089,7 +6163,7 @@ async function csReadFile(f){
     try{await csPut('mwho',whoNow);}catch(e){}
     await csDel('zip');await csDel('mtotal');
     CS.stored=csNormStored(await csGet('mindex'));CS.alias=(await csGet('malias'))||{};
-    CS.msgs=msgs;CS.raw=raw;CS.shown=40;CS.zip=hasMedia?zip:null;CS.mediaKept=true;CS.shortNote='';
+    CS.msgs=msgs;CS.shown=40;CS.zip=hasMedia?zip:null;CS.mediaKept=true;CS.shortNote='';
     try{await csPut('chat',raw);}catch(e){}
     st.textContent='';$('cs-q').value='';
     csShowMain();
@@ -6147,7 +6221,7 @@ async function openChat(){
   $('chatpanel').classList.add('on');syncPanelFlag();
   if(!CS.msgs){
     const raw=await csLoadRaw();
-    if(raw){try{CS.msgs=csParse(raw);CS.raw=raw;}catch(e){CS.msgs=null;}}
+    if(raw){try{CS.msgs=csParse(raw);}catch(e){CS.msgs=null;}}
     if(CS.msgs){
       const zb=await csGet('zip');                       // an export saved by the older version of this
       if(zb){try{CS.zip=await zIndex(zb);}catch(e){CS.zip=null;}}
@@ -6169,7 +6243,9 @@ function closeChat(){
     CS.msgs=null;CS.raw=null;CS.zip=null;CS.byName=null;CS.media=[];CS.stored=null;
     $('cs-results').innerHTML='';$('cs-photos').innerHTML='';$('cs-ctx-body').innerHTML='';
   },120000);
-  csCloseViewer();csReleaseAll();$('cs-ctx-body').innerHTML='';$('chatpanel').classList.remove('on');syncPanelFlag();}
+  csCloseViewer();csReleaseAll();
+  if(csCtxObs)csCtxObs.disconnect();if(csGridObs)csGridObs.disconnect();   // let go of the photos they were watching
+  $('cs-ctx-body').innerHTML='';$('cs-photos').innerHTML='';$('chatpanel').classList.remove('on');syncPanelFlag();}
 $('closeChat').onclick=closeChat;
 $('go-chat-tile').onclick=()=>{closeSettings();openChat();};
 $('cs-pick').onclick=()=>$('cs-file').click();
@@ -6249,7 +6325,7 @@ $('bk-file').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new Fil
 $('bk-no').onclick=()=>{$('bk-confirm').style.display='none';pendingImport=null;$('bk-yes').style.display='';};
 $('bk-yes').onclick=async()=>{if(!pendingImport)return;const d=pendingImport;
   if(d.settings)S={...DEFAULTS,...d.settings};
-  overrides=d.overrides||{};migrateOverrides();events=Array.isArray(d.events)?d.events:[];wishes=Array.isArray(d.wishes)?d.wishes:[];bumpEarn();
+  overrides=d.overrides||{};migrateOverrides();_ovReplace=Object.keys(overrides).length>0;events=Array.isArray(d.events)?d.events:[];wishes=Array.isArray(d.wishes)?d.wishes:[];bumpEarn();
   if(d.reminders&&typeof d.reminders==='object'){reminders=d.reminders;await sset('reminders',JSON.stringify(reminders));if(fbReady&&DB){try{await DB.ref('shared/reminders').set(reminders);}catch(e){}}}
   if(d.health&&typeof d.health==='object'){health=d.health;bumpHealth();}
   if(d.money&&typeof d.money==='object'){money={...money,...d.money};
