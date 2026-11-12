@@ -1763,6 +1763,19 @@
   <button class="reset" id="t-delete" style="margin-top:10px">Delete</button>
 </div>
 
+<div class="sheet" id="ausheet">
+  <div id="ausheet-drag"><div class="grab"></div><h3>Sign in</h3></div>
+  <div class="hint" id="au-why" style="margin:6px 0 2px">Once on each phone. After that, only the two of you can open the calendar.</div>
+  <form id="au-form" autocomplete="on">
+    <label class="tlab" for="au-email">Email</label>
+    <input id="au-email" class="tin" type="email" inputmode="email" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false">
+    <label class="tlab" for="au-pass">Password</label>
+    <input id="au-pass" class="tin" type="password" autocomplete="current-password">
+    <div class="rme-err" id="au-err"></div>
+    <button class="save-btn" id="au-go" type="submit">Sign in</button>
+  </form>
+</div>
+
 <div class="sheet" id="spsheet">
   <div id="spsheet-drag"><div class="grab"></div><h3>Add a special day</h3></div>
   <label class="tlab">Date</label>
@@ -2032,6 +2045,13 @@
           <button class="nf-btn" id="nf-btn">Turn on</button>
         </div>
       </div>
+      <div class="nf-sec" id="sec-signin">
+        <div class="nf-row">
+          <span class="nf-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><rect x="5" y="10.5" width="14" height="9.5" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+          <div class="nf-txt"><b id="au-head">Sign-in</b><span id="au-status">Not signed in on this phone yet</span></div>
+          <button class="nf-btn" id="au-btn">Sign in</button>
+        </div>
+      </div>
       <button class="morebtn" id="go-phone">This phone: <b id="more-owner"></b> &rsaquo;</button>
     </div>
   </div>
@@ -2182,7 +2202,7 @@ function nfFlush(){
 }
 function nfSend(msg){
   if(fbReady&&DB){
-    try{DB.ref('shared/notify').push(Object.assign({},msg,{at:firebase.database.ServerValue.TIMESTAMP}));return;}catch(e){}
+    try{fbQuiet(DB.ref('shared/notify').push(Object.assign({},msg,{at:firebase.database.ServerValue.TIMESTAMP})));return;}catch(e){}
   }
   // offline: hold on to it and send when we're back
   try{const q=JSON.parse(localStorage.getItem('nfQueue')||'[]');q.push(msg);localStorage.setItem('nfQueue',JSON.stringify(q.slice(-20)));}catch(e){}
@@ -2340,60 +2360,143 @@ const firebaseConfig={
   messagingSenderId:"49327927291",
   appId:"1:49327927291:web:0286d5f58264cec193e55e"
 };
+/* ---- who is signed in on this phone ----
+   Each of us signs in once with our own email and password (Settings > Phone settings).
+   Until a phone has done that it carries on with the old shared access for as long as
+   Firebase still allows it, so nobody is locked out while we switch over. Once the
+   database rules are locked, a phone that isn't signed in is asked to. */
+let fbUser=null, fbSubs=[], fbDenied=false, fbApproved=null, fbRole=null, auAsked=false, fbIn=false;
+function fbOn(q,fn){q.on('value',fn,fbLost);fbSubs.push(q);}
+function fbOffAll(){fbSubs.forEach(q=>{try{q.off();}catch(e){}});fbSubs=[];presenceBound=false;opensBound=false;}
+function fbLost(e){                              // Firebase said no: this phone isn't allowed in (yet)
+  if(!e||!/permission/i.test(String(e.code||'')+' '+String(e.message||'')))return;
+  if(fbDenied)return;
+  fbDenied=true;fbReady=false;
+  auSync();auAsk();
+}
+// a refused write is expected on a phone that isn't signed in yet: keep it out of the error log
+const fbQuiet=p=>{try{if(p&&p.then)p.then(undefined,()=>{});}catch(e){}};   // .then, not .catch: push()'s own .catch doesn't catch
+window.addEventListener('unhandledrejection',e=>{
+  const r=e.reason;if(r&&/permission/i.test(String(r.code||'')+' '+String(r.message||'')))e.preventDefault();});
+function fbListen(){
+  fbOffAll();
+  fbOn(DB.ref('shared/settings'),s=>{
+    if(!fbIn){fbIn=true;nfOnline();}             // first answer from Firebase = this phone is let in: now send anything that was waiting
+    const v=s.val();if(v){S={...DEFAULTS,...v};sset('settings',JSON.stringify(S));bumpEarn();renderAll();}});
+  fbOn(DB.ref('shared/overrides'),s=>{
+    const remote=s.val();
+    const haveLocal=Object.keys(overrides||{}).length>0;
+    const remoteEmpty=!remote||Object.keys(remote).length===0;
+    if(remoteEmpty&&haveLocal){
+      // cloud lost it (or hasn't been written yet) but this phone still has
+      // everything - restore upward instead of wiping ourselves out
+      try{DB.ref('shared/overrides').set(overrides);}catch(e){}
+      return;
+    }
+    if(_ovReplace){queueFbWrite();return;}        // a restore is about to replace everything
+    overrides=ovApply(remote||{},_ovUnsent);migrateOverrides();
+    _ovSeen=nfClone(overrides);lastGoodOverrideCount=Object.keys(overrides).length;
+    sset('overrides',JSON.stringify(overrides));  // so the latest is here next time, signal or not
+    NF.snapO=nfClone(overrides);bumpEarn();renderAll();
+    if(_ovRetry&&Object.keys(_ovUnsent).length){_ovRetry=false;queueFbWrite();}
+  });
+  fbOn(DB.ref('shared/events'),s=>{const v=s.val();events=Array.isArray(v)?v:Object.values(v||{});
+    if(events.length)sset('events',JSON.stringify(events));NF.snapE=nfClone(events);renderAll();});
+  fbOn(DB.ref('shared/health'),s=>{
+    const v=s.val();
+    const haveLocal=Object.keys(health||{}).length>0;
+    if((!v||!Object.keys(v).length)&&haveLocal){try{DB.ref('shared/health').set(health);}catch(e){}return;}
+    health=v||{}; sset('health',JSON.stringify(health)); bumpHealth(); if(view==='health')renderHealth();
+  });
+  fbOn(DB.ref('shared/wishes'),s=>{const v=s.val();wishes=Array.isArray(v)?v:Object.values(v||{});
+    if(wishes.length)sset('wishes',JSON.stringify(wishes));NF.snapW=nfClone(wishes);renderAll();});
+  fbOn(DB.ref('shared/reminders'),s=>{reminders=s.val()||{};sset('reminders',JSON.stringify(reminders));if($('rempanel').classList.contains('on'))rmRender();});
+  fbOn(DB.ref('shared/money'),s=>{const v=s.val();
+    if(v){money={...money,...v};money.entries=Array.isArray(v.entries)?v.entries:Object.values(v.entries||{});
+      money.ratesS=Array.isArray(v.ratesS)?v.ratesS:Object.values(v.ratesS||{});
+      money.ratesF=Array.isArray(v.ratesF)?v.ratesF:Object.values(v.ratesF||{});
+      money.actuals=(v.actuals&&typeof v.actuals==='object')?v.actuals:{};
+      sset('money',JSON.stringify(money));bumpEarn();
+      if(view==='money')renderMoney();}});
+  fbOn(DB.ref('shared/nudge'),s=>{const v=s.val();if(!v||!v.at)return;
+    if(v.from&&deviceOwner&&v.from===deviceOwner)return;      // don't echo your own
+    if(v.at<=lastNudgeSeen)return;                            // already shown
+    lastNudgeSeen=v.at;
+    if(Date.now()-v.at<120000)nudgeRain();                    // only if it's fresh
+    try{localStorage.setItem('lastNudgeSeen',String(v.at));}catch(e){}
+  });
+}
 function initFirebase(){
   if(typeof firebase==='undefined')return;
   try{
     firebase.initializeApp(firebaseConfig);
     const auth=firebase.auth();
-    auth.signInAnonymously().catch(()=>{});
     auth.onAuthStateChanged(u=>{
-      if(!u)return; DB=firebase.database(); fbReady=true; startPresence();
-      DB.ref('shared/settings').on('value',s=>{const v=s.val();if(v){S={...DEFAULTS,...v};sset('settings',JSON.stringify(S));bumpEarn();renderAll();}});
-      DB.ref('shared/overrides').on('value',s=>{
-        const remote=s.val();
-        const haveLocal=Object.keys(overrides||{}).length>0;
-        const remoteEmpty=!remote||Object.keys(remote).length===0;
-        if(remoteEmpty&&haveLocal){
-          // cloud lost it (or hasn't been written yet) but this phone still has
-          // everything - restore upward instead of wiping ourselves out
-          try{DB.ref('shared/overrides').set(overrides);}catch(e){}
-          return;
-        }
-        if(_ovReplace){queueFbWrite();return;}        // a restore is about to replace everything
-        overrides=ovApply(remote||{},_ovUnsent);migrateOverrides();
-        _ovSeen=nfClone(overrides);lastGoodOverrideCount=Object.keys(overrides).length;
-        sset('overrides',JSON.stringify(overrides));  // so the latest is here next time, signal or not
-        NF.snapO=nfClone(overrides);bumpEarn();renderAll();
-        if(_ovRetry&&Object.keys(_ovUnsent).length){_ovRetry=false;queueFbWrite();}
-      });
-      DB.ref('shared/events').on('value',s=>{const v=s.val();events=Array.isArray(v)?v:Object.values(v||{});
-        if(events.length)sset('events',JSON.stringify(events));NF.snapE=nfClone(events);renderAll();});
-      DB.ref('shared/health').on('value',s=>{
-        const v=s.val();
-        const haveLocal=Object.keys(health||{}).length>0;
-        if((!v||!Object.keys(v).length)&&haveLocal){try{DB.ref('shared/health').set(health);}catch(e){}return;}
-        health=v||{}; sset('health',JSON.stringify(health)); bumpHealth(); if(view==='health')renderHealth();
-      });
-      DB.ref('shared/wishes').on('value',s=>{const v=s.val();wishes=Array.isArray(v)?v:Object.values(v||{});
-        if(wishes.length)sset('wishes',JSON.stringify(wishes));NF.snapW=nfClone(wishes);renderAll();});
-      DB.ref('shared/reminders').on('value',s=>{reminders=s.val()||{};sset('reminders',JSON.stringify(reminders));if($('rempanel').classList.contains('on'))rmRender();});
-      nfOnline();
-      DB.ref('shared/money').on('value',s=>{const v=s.val();
-        if(v){money={...money,...v};money.entries=Array.isArray(v.entries)?v.entries:Object.values(v.entries||{});
-          money.ratesS=Array.isArray(v.ratesS)?v.ratesS:Object.values(v.ratesS||{});
-          money.ratesF=Array.isArray(v.ratesF)?v.ratesF:Object.values(v.ratesF||{});
-          money.actuals=(v.actuals&&typeof v.actuals==='object')?v.actuals:{};
-          sset('money',JSON.stringify(money));bumpEarn();
-          if(view==='money')renderMoney();}});
-      DB.ref('shared/nudge').on('value',s=>{const v=s.val();if(!v||!v.at)return;
-        if(v.from&&deviceOwner&&v.from===deviceOwner)return;      // don't echo your own
-        if(v.at<=lastNudgeSeen)return;                            // already shown
-        lastNudgeSeen=v.at;
-        if(Date.now()-v.at<120000)nudgeRain();                    // only if it's fresh
-        try{localStorage.setItem('lastNudgeSeen',String(v.at));}catch(e){}
-      });
+      fbUser=u||null;fbDenied=false;fbApproved=null;fbRole=null;fbIn=false;
+      if(!u){
+        // nobody signed in on this phone: use the old shared access while it still exists.
+        // (Only ever asked for when there's no one signed in - it would replace a real sign-in.)
+        fbReady=false;fbOffAll();auSync();
+        auth.signInAnonymously().catch(e=>{if(/admin-restricted|operation-not-allowed/.test(String(e&&e.code)))auAsk();});
+        return;
+      }
+      DB=firebase.database();fbReady=true;_ovRetry=true;
+      fbListen();startPresence();auCheck();auSync();
     });
   }catch(e){}
+}
+/* is this account on the approved list? (the same list the locked rules use, so a tick here
+   means this phone keeps working after the switch) */
+function auCheck(){
+  const u=fbUser;if(!u||u.isAnonymous||!DB)return;
+  DB.ref('allow/'+u.uid).once('value',s=>{
+    if(fbUser!==u)return;
+    const v=s.val();fbApproved=!!v;fbRole=(v==='shaad'||v==='fiaza')?v:null;auSync();
+  },()=>{if(fbUser===u){fbApproved=null;auSync();}});
+}
+function auSync(){                               // the row in Phone settings
+  const st=$('au-status'), btn=$('au-btn');if(!st||!btn)return;
+  const off=typeof firebase==='undefined', u=fbUser, real=!!(u&&!u.isAnonymous);
+  btn.textContent=real?'Sign out':'Sign in';btn.classList.toggle('on',real);btn.disabled=off;
+  if(off){st.textContent='No connection right now';return;}
+  if(real){
+    const who=u.email||'your account';
+    st.textContent=(fbDenied||fbApproved===false)?who+' · not on the approved list yet'
+      :(fbRole&&deviceOwner&&fbRole!==deviceOwner)?who+' · but this phone is set to '+nfName(deviceOwner)
+      :fbApproved?who+' · this phone is ready':who;
+  }else st.textContent=fbDenied?'Sign in to keep this phone in sync':'Not signed in on this phone yet';
+}
+function auOpen(){
+  $('au-err').textContent='';$('au-pass').value='';
+  scrim.classList.add('on');$('ausheet').classList.add('on');
+}
+function auClose(){$('ausheet').classList.remove('on');updateScrim();}
+function auAsk(){                                // this phone has to sign in before it can sync
+  if(fbUser&&!fbUser.isAnonymous){nfBanner('This account isn’t on the approved list');return;}
+  if(auAsked)return;auAsked=true;
+  if(document.body.classList.contains('panel-open')||document.querySelector('.sheet.on')){
+    nfBanner('Sign in to keep this phone in sync: Settings › Phone settings');return;}
+  auOpen();
+}
+function auWhy(e){
+  const c=String((e&&e.code)||'');
+  if(/network/.test(c))return 'No connection. Try again when you’re online.';
+  if(/too-many/.test(c))return 'Too many tries. Give it a few minutes.';
+  if(/operation-not-allowed/.test(c))return 'Email sign-in isn’t switched on in Firebase yet.';
+  if(/invalid|wrong-password|user-not-found|user-disabled|missing/.test(c))return 'That email or password isn’t right.';
+  return 'Couldn’t sign in ('+(c||'unknown error')+').';
+}
+async function auSignIn(ev){
+  if(ev)ev.preventDefault();
+  const em=$('au-email').value.trim(), pw=$('au-pass').value, err=$('au-err'), btn=$('au-go');
+  if(!em||!pw){err.textContent='Enter your email and password.';return;}
+  if(typeof firebase==='undefined'){err.textContent='No connection. Try again when you’re online.';return;}
+  btn.disabled=true;err.textContent='';
+  try{
+    await firebase.auth().signInWithEmailAndPassword(em,pw);
+    $('au-pass').value='';auAsked=false;auClose();nfBanner('Signed in');
+  }catch(e){err.textContent=auWhy(e);}
+  btn.disabled=false;
 }
 
 /* ================= health & fitness (Google Takeout import) ================= */
@@ -3709,7 +3812,7 @@ function paintPresence(){
 function beat(){
   if(!fbReady||!DB||!deviceOwner)return;
   if(document.hidden)return;                       // only while actually on screen
-  try{DB.ref('shared/presence/'+deviceOwner).set(Date.now());}catch(e){}
+  try{fbQuiet(DB.ref('shared/presence/'+deviceOwner).set(Date.now()));}catch(e){}
 }
 /* ---- the log itself: press and hold the names at the top left ---- */
 function renderLog(){
@@ -3832,9 +3935,9 @@ function countOpen(){
   const who=deviceOwner;
   const at=Date.now();
   try{
-    DB.ref('shared/opens/'+who+'/count').transaction(n=>(n||0)+1);
-    DB.ref('shared/opens/'+who+'/last').set(at);
-    DB.ref('shared/openlog').push({who,at});
+    fbQuiet(DB.ref('shared/opens/'+who+'/count').transaction(n=>(n||0)+1));
+    fbQuiet(DB.ref('shared/opens/'+who+'/last').set(at));
+    fbQuiet(DB.ref('shared/openlog').push({who,at}));
   }catch(e){}
   // local mirror, so the log still shows something if firebase is unreachable
   try{const l=JSON.parse(localStorage.getItem('openlog')||'[]');
@@ -3848,11 +3951,11 @@ function pruneOldLog(){
   prunedThisSession=true;
   const cutoff=Date.now()-180*DAY;                 // keep ~6 months
   try{
-    DB.ref('shared/openlog').limitToFirst(100).once('value',sn=>{
+    fbQuiet(DB.ref('shared/openlog').limitToFirst(100).once('value',sn=>{
       const v=sn.val();if(!v)return;
       const dead=Object.entries(v).filter(([,e])=>(+e.at||0)<cutoff).map(([id])=>id);
-      dead.forEach(id=>{try{DB.ref('shared/openlog/'+id).remove();}catch(e){}});
-    });
+      dead.forEach(id=>{try{fbQuiet(DB.ref('shared/openlog/'+id).remove());}catch(e){}});
+    },()=>{}));
   }catch(e){}
 }
 function maybeReopen(){                    // back on screen after a long gap
@@ -3867,7 +3970,7 @@ function startPresence(){
   // always listen, even if this device hasn't been claimed yet
   if(!presenceBound){
     presenceBound=true;
-    DB.ref('shared/presence').on('value',sn=>{
+    fbOn(DB.ref('shared/presence'),sn=>{
       const v=sn.val()||{};
       presence.shaad=+v.shaad||0;presence.fiaza=+v.fiaza||0;
       paintPresence();
@@ -3875,12 +3978,12 @@ function startPresence(){
   }
   if(!opensBound){
     opensBound=true;
-    DB.ref('shared/opens').on('value',sn=>{
+    fbOn(DB.ref('shared/opens'),sn=>{
       const v=sn.val()||{};
       ['shaad','fiaza'].forEach(w=>{opens[w]={count:+((v[w]||{}).count)||0,last:+((v[w]||{}).last)||0};});
       if(view==='stats')renderStats();
     });
-    DB.ref('shared/openlog').limitToLast(300).on('value',sn=>{
+    fbOn(DB.ref('shared/openlog').limitToLast(300),sn=>{
       const v=sn.val()||{};
       openLog=Object.entries(v).map(([id,e])=>({id,who:e.who,at:+e.at||0}))
         .filter(e=>e.who&&e.at).sort((a,b)=>b.at-a.at);
@@ -3890,14 +3993,14 @@ function startPresence(){
   countOpen();
   setTimeout(pruneOldLog,8000);   // idle housekeeping, well after boot
   if(!deviceOwner)return;                          // can't report without an identity
-  try{DB.ref('shared/presence/'+deviceOwner).onDisconnect().set(0);}catch(e){}
+  try{fbQuiet(DB.ref('shared/presence/'+deviceOwner).onDisconnect().set(0));}catch(e){}
   beat();
   clearInterval(hbTimer);
   hbTimer=setInterval(beat,20000);
 }
 function stopPresence(){
   clearInterval(hbTimer);hbTimer=null;
-  if(fbReady&&DB&&deviceOwner){try{DB.ref('shared/presence/'+deviceOwner).set(0);}catch(e){}}
+  if(fbReady&&DB&&deviceOwner){try{fbQuiet(DB.ref('shared/presence/'+deviceOwner).set(0));}catch(e){}}
 }
 function nudgeRain(n){
   const N=n||14;
@@ -4571,7 +4674,7 @@ makeDraggable(wsheet,$('wsheet-drag'),closeWish);
 /* ---------- day editor ---------- */
 let sheetKey=null,noteBy='shaad';
 const scrim=$('scrim'),sheet=$('sheet');
-function updateScrim(){if(!sheet.classList.contains('on')&&!$('tsheet').classList.contains('on')&&!$('spsheet').classList.contains('on')&&!$('wsheet').classList.contains('on')&&!$('msheet').classList.contains('on')&&!$('asheet').classList.contains('on'))scrim.classList.remove('on');}
+function updateScrim(){if(!sheet.classList.contains('on')&&!$('tsheet').classList.contains('on')&&!$('spsheet').classList.contains('on')&&!$('wsheet').classList.contains('on')&&!$('msheet').classList.contains('on')&&!$('asheet').classList.contains('on')&&!$('ausheet').classList.contains('on'))scrim.classList.remove('on');}
 function openSheet(k){sheetKey=k;
   $('sh-date').textContent=fmtLong(k);
   $('sh-state').textContent=stateWords(k);
@@ -4593,7 +4696,7 @@ function openSheet(k){sheetKey=k;
 function closeSheet(){
   try{const n=$('sh-note');if(document.activeElement===n)n.blur();}catch(e){}  // fires the save while the date is still set
   sheet.classList.remove('on');sheetKey=null;updateScrim();}
-scrim.onclick=()=>{closeSheet();closeTracker();closeSpecialAdd();closeWish();closeMoneyEntry();closeActuals();};
+scrim.onclick=()=>{closeSheet();closeTracker();closeSpecialAdd();closeWish();closeMoneyEntry();closeActuals();auClose();};
 
 /* swipe a sheet down to dismiss */
 function makeDraggable(sheetEl,handle,close){
@@ -4743,6 +4846,7 @@ function openSettings(){
   showPhoneSec=false;tmpOwner=deviceOwner;syncOwnerPick();syncOwnerUI();updateBackupUI();renderNextSee();
   $('go-hundred').style.display=daysTogether()>=MILESTONE?'':'none';
   try{nfStatus();}catch(e){}
+  try{auSync();}catch(e){}
   try{rmTileSub();const f=$('rme-for').children;f[1].textContent=S.shaadName;f[2].textContent=S.fiazaName;}catch(e){}
   $('settings').classList.add('on');syncPanelFlag();
 }
@@ -6841,6 +6945,15 @@ $('rm-add-r').onclick=()=>rmOpenEdit(null,'reminder');
 $('rm-list').addEventListener('click',e=>{const b=e.target.closest('.rm-row');if(b)rmOpenEdit(b.dataset.id);});
 $('rme-save').onclick=rmSave;
 $('rme-del').onclick=rmDelete;
+
+/* ---------- sign-in sheet ---------- */
+$('au-form').addEventListener('submit',auSignIn);
+$('au-btn').onclick=()=>{
+  if(fbUser&&!fbUser.isAnonymous){
+    if(confirm('Sign out on this phone? You\u2019ll need your email and password to get back in.'))firebase.auth().signOut().catch(()=>{});
+  }else{closeSettings();auOpen();}
+};
+makeDraggable($('ausheet'),$('ausheet-drag'),auClose);
 
 /* ---------- lock ---------- */
 const PASSWORD='Cookies9!';
